@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.github.cao.awa.sepals.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "collection.TypeFilterableListMixin",
+    "registry.RegistryEntryReferenceMixin"
+  ],
+  "client": [
+  ],
+  "server": [
+    "collection.TypeFilterableListAccessor",
+    "entity.track.EntityTrackingSectionMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

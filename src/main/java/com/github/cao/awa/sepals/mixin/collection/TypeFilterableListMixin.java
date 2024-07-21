@@ -1,0 +1,44 @@
+package com.github.cao.awa.sepals.mixin.collection;
+
+import com.github.cao.awa.catheter.Catheter;
+import com.google.common.collect.Lists;
+import net.minecraft.util.Util;
+import net.minecraft.util.collection.TypeFilterableList;
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.*;
+
+@Mixin(TypeFilterableList.class)
+public class TypeFilterableListMixin<T> {
+    @Shadow @Final private Class<T> elementType;
+
+    @Shadow @Final private Map<Class<?>, List<T>> elementsByType;
+
+    @Shadow @Final private List<T> allElements;
+
+//    @Inject(
+//            method = "getAllOfType",
+//            at = @At("HEAD"),
+//            cancellable = true
+//    )
+//    @SuppressWarnings("unchecked")
+//    public <S> void getAllOfType(Class<S> type, CallbackInfoReturnable<Collection<S>> cir) {
+//        if (this.elementType.isAssignableFrom(type)) {
+//            List<? extends T> list = this.elementsByType
+//                    .computeIfAbsent(type, typeClass ->
+//                            Catheter.of(this.allElements)
+//                                    .filter(typeClass::isInstance)
+//                                    .list()
+//                    );
+//            cir.setReturnValue((List<S>) Collections.unmodifiableCollection(list));
+//            return;
+//        } else {
+//            throw new IllegalArgumentException("Don't know how to search for " + type);
+//        }
+//    }
+}

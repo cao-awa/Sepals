@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "sepals",
+  "version": "${version}",
+  "name": "sepals",
+  "description": "",
+  "authors": [],
+  "contact": {
+    "repo": "https://github.com/cao-awa/sepals"
+  },
+  "license": "GPL-3.0",
+  "icon": "assets/sepals/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+    ],
+    "main": [
+      "com.github.cao.awa.sepals.Sepals"
+    ]
+  },
+  "mixins": [
+    "sepals.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": "*",
+    "fabric": "*",
+    "minecraft": "1.21.x"
+  }
+}

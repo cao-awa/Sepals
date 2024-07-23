@@ -18,9 +18,18 @@ A test was done in cao-awa personal computer, CPU: 5950x; Memory: 128G DDR4-3200
 ### Entities cramming
 2993 large slime cramming in a 20x20 space:
 
-|    Environment   |  MSPT(Min)   | MSPT(Avg.) | MSPT(Max) |
-|:------------------:|:---------:|:--------------------------:|:----------:|
-|   Vanilla   |   160 ms   |         183 ms         |  241 ms  |
-| With Sepals |   128 ms   |         157 ms         | 191 ms |
-| With Lithium |   111 ms   |         134 ms         | 205 ms |
-| With Sepals<br/> and configured Lithium |   72 ms   |         88 ms         | 115 ms |
+|               Environment               |  MSPT(Min)  | MSPT(Avg.) | MSPT(Max) |
+|:---------------------------------------:|:-----------:|:----------:|:---------:|
+|                 Vanilla                 |   160 ms    |   183 ms   |  241 ms   |
+|               With Sepals               |   128 ms    |   157 ms   |  191 ms   |
+|              With Lithium               |   111 ms    |   134 ms   |  205 ms   |
+| With Sepals<br/> and configured Lithium |    72 ms    |   88 ms    |  115 ms   |
+
+### Weighted random
+997 frogs:
+
+|                  Environment                   | MSPT(Min) | MSPT(Avg.) | MSPT(Max) |
+|:----------------------------------------------:|:---------:|:----------:|:---------:|
+|                    Vanilla                     |  105 ms   |   135 ms   |  206 ms   |
+|                  With Sepals                   |   43 ms   |   96 ms    |  163 ms   |
+| Direct random <br/> (Not vanilla, no approved) |   45 ms   |   73 ms    |  111 ms   |

@@ -1,5 +1,6 @@
 package com.github.cao.awa.sepals.mixin.entity.track;
 
+import com.github.cao.awa.apricot.annotations.Stable;
 import com.github.cao.awa.apricot.util.collection.ApricotCollectionFactor;
 import com.github.cao.awa.sepals.mixin.collection.TypeFilterableListAccessor;
 import net.minecraft.util.TypeFilter;
@@ -19,6 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Collection;
 import java.util.List;
 
+@Stable
 @Mixin(EntityTrackingSection.class)
 public abstract class EntityTrackingSectionMixin<T extends EntityLike>  {
     @Shadow @Final private TypeFilterableList<T> collection;
@@ -48,7 +50,6 @@ public abstract class EntityTrackingSectionMixin<T extends EntityLike>  {
         }
 
         cir.setReturnValue(LazyIterationConsumer.NextIteration.CONTINUE);
-        return;
     }
 
     @Inject(
@@ -79,6 +80,5 @@ public abstract class EntityTrackingSectionMixin<T extends EntityLike>  {
         }
 
         cir.setReturnValue(LazyIterationConsumer.NextIteration.CONTINUE);
-        return;
     }
 }

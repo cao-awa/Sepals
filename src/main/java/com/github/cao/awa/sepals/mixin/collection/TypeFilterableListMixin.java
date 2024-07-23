@@ -1,5 +1,6 @@
 package com.github.cao.awa.sepals.mixin.collection;
 
+import com.github.cao.awa.apricot.annotations.Stable;
 import com.github.cao.awa.apricot.util.collection.ApricotCollectionFactor;
 import com.github.cao.awa.catheter.Catheter;
 import com.google.common.collect.Lists;
@@ -15,6 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.*;
 
+@Stable
 @Mixin(TypeFilterableList.class)
 public class TypeFilterableListMixin<T> {
     @Shadow @Final private Class<T> elementType;

@@ -1,13 +1,5 @@
 package com.github.cao.awa.sepals.weight;
 
-import com.github.cao.awa.apricot.util.collection.ApricotCollectionFactor;
-import net.minecraft.component.type.ItemEnchantmentsComponent;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.collection.Weight;
 import net.minecraft.util.collection.Weighted;
 import net.minecraft.util.math.random.Random;
@@ -37,13 +29,24 @@ public class WeightTable<T extends Weighted> {
         return this;
     }
 
+    /**
+     * Select a weighted element by binary search.
+     * <p>
+     * When all weight all be zero(range==0) then direct return a random element.
+     *
+     * @param random a minecraft random generator
+     *
+     * @author cao_awa
+     *
+     * @since 1.0.0
+     */
     public T select(Random random) {
         if (this.weighted.length == 1) {
             return this.weighted[0].element();
         }
 
         if (this.range == 1) {
-            return this.weighted[0].element();
+            return this.weighted[random.nextInt(this.weighted.length)].element();
         }
 
         int expected = random.nextInt(this.range);
@@ -64,8 +67,10 @@ public class WeightTable<T extends Weighted> {
                 }
 
                 if (range.isBigger(expected)) {
+                    // Update index(bottom edge).
                     index += Math.max((dynamicMaxEdge - index) / 2, 1);
                 } else {
+                    // Update index and adjust the up edge.
                     dynamicMaxEdge = index;
                     index -= Math.max(index / 2, 1);
                 }

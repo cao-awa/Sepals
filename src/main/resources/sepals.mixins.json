@@ -4,7 +4,6 @@
   "package": "com.github.cao.awa.sepals.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "collection.weight.WeightingMixin"
   ],
   "client": [
   ],
@@ -13,7 +12,8 @@
     "collection.TypeFilterableListMixin",
     "entity.track.EntityTrackingSectionMixin",
     "registry.RegistryEntryReferenceMixin",
-    "registry.key.RegistryKeyMixin"
+    "registry.key.RegistryKeyMixin",
+    "collection.weight.WeightingMixin"
   ],
   "injectors": {
     "defaultRequire": 1

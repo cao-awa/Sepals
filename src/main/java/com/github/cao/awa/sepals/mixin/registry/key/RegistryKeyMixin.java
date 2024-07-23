@@ -1,5 +1,6 @@
 package com.github.cao.awa.sepals.mixin.registry.key;
 
+import com.github.cao.awa.apricot.annotations.Planning;
 import com.github.cao.awa.sepals.registry.key.ReferenceLocatedRegistryKey;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -7,6 +8,7 @@ import net.minecraft.registry.tag.TagKey;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
+@Planning
 @Mixin(RegistryKey.class)
 public abstract class RegistryKeyMixin<T> implements ReferenceLocatedRegistryKey<T> {
     @Unique

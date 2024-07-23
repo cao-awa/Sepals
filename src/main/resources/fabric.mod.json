@@ -4,7 +4,9 @@
   "version": "${version}",
   "name": "sepals",
   "description": "",
-  "authors": [],
+  "authors": [
+    "cao_awa"
+  ],
   "contact": {
     "repo": "https://github.com/cao-awa/sepals"
   },

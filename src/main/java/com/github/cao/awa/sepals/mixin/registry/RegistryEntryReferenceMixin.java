@@ -1,5 +1,6 @@
 package com.github.cao.awa.sepals.mixin.registry;
 
+import com.github.cao.awa.apricot.annotations.Planning;
 import com.github.cao.awa.apricot.util.collection.ApricotCollectionFactor;
 import com.github.cao.awa.sepals.registry.key.ReferenceLocatedRegistryKey;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -15,6 +16,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
+@Planning
 @Mixin(RegistryEntry.Reference.class)
 public class RegistryEntryReferenceMixin<T> {
     @Inject(

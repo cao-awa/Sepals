@@ -15,16 +15,15 @@ public class WeightTable<T extends Weighted> {
 
     public WeightTable<T> initWeight(List<T> pool) {
         int size = pool.size();
-        this.weighted = new Range[size];
+        Range<T>[] ranges = new Range[size];
         int range = 0;
         for (int i = 0; i < size; i ++) {
             T weighted = pool.get(i);
-            Weight weight = weighted.getWeight();
-            int weightValue = weight.getValue();
-            int nextRange = range + weightValue;
-            this.weighted[i] = new Range<>(range, nextRange, weighted);
+            int nextRange = range + weighted.getWeight().getValue();
+            ranges[i] = new Range<>(range, nextRange, weighted);
             range = nextRange;
         }
+        this.weighted = ranges;
         this.range = Math.max(range, 1);
         return this;
     }
@@ -41,26 +40,29 @@ public class WeightTable<T extends Weighted> {
      * @since 1.0.0
      */
     public T select(Random random) {
-        if (this.weighted.length == 1) {
-            return this.weighted[0].element();
-        }
+        // Push in stack to improves performance.
+        Range<T>[] ranges = this.weighted;
 
+        // When range is one then means all weighted element are all weighted zero.
+        // Do not care the weights, direct random to select.
         if (this.range == 1) {
-            return this.weighted[random.nextInt(this.weighted.length)].element();
+            return ranges[random.nextInt(ranges.length)].element();
         }
 
         int expected = random.nextInt(this.range);
 
-        int maxEdge = this.weighted.length - 1;
+        int maxEdge = ranges.length - 1;
         int index = maxEdge / 2;
 
         Range<Object> weightedEdge = new Range<>(0, maxEdge, null);
 
         int dynamicMaxEdge = maxEdge;
 
+        // Binary search.
         while (true) {
+            // Should check the edge, return null when index out of bounds.
             if (weightedEdge.isIn(index)) {
-                Range<T> range = this.weighted[index];
+                Range<T> range = ranges[index];
 
                 if (range.isIn(expected)) {
                     return range.element();

@@ -37,11 +37,11 @@ public class WeightingMixin {
     private static <T extends Weighted> void getRandom(Random random, List<T> pool, CallbackInfoReturnable<Optional<T>> cir) {
         T result = new WeightTable<T>().initWeight(pool).select(random);
 
-        if (result != null) {
-            cir.setReturnValue(Optional.of(result));
+        if (result == null) {
+            cir.setReturnValue(Optional.empty());
             return;
         }
 
-        cir.setReturnValue(Optional.empty());
+        cir.setReturnValue(Optional.of(result));
     }
 }

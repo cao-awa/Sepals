@@ -91,10 +91,19 @@ java {
     withSourcesJar()
 }
 
+
 jar {
     from("LICENSE") {
-        rename { "${it}_${project.archivesBaseName}"}
+        rename { "${it}" }
     }
+
+    with copySpec({
+        from(configurations.shadow.collect {
+            it.isDirectory() ? it : zipTree(it)
+        })
+
+        duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+    })
 }
 
 // configure the maven publication

@@ -11,8 +11,6 @@
     "collection.TypeFilterableListAccessor",
     "collection.TypeFilterableListMixin",
     "entity.track.EntityTrackingSectionMixin",
-    "registry.RegistryEntryReferenceMixin",
-    "registry.key.RegistryKeyMixin",
     "collection.weight.WeightingMixin"
   ],
   "injectors": {

@@ -13,12 +13,14 @@ public class WeightTable<T extends Weighted> {
     private Range<T>[] weighted;
     private int range;
 
+    @SuppressWarnings("unchecked")
     public WeightTable<T> initWeight(List<T> pool) {
-        int size = pool.size();
+        T[] elements = (T[]) pool.toArray(Weighted[]::new);
+        int size = elements.length;
         Range<T>[] ranges = new Range[size];
         int range = 0;
         for (int i = 0; i < size; i ++) {
-            T weighted = pool.get(i);
+            T weighted = elements[i];
             int nextRange = range + weighted.getWeight().getValue();
             ranges[i] = new Range<>(range, nextRange, weighted);
             range = nextRange;

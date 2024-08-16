@@ -60,7 +60,9 @@ public abstract class EntityTrackingSectionMixin<T extends EntityLike>  {
     @SuppressWarnings("unchecked")
     public <U extends T> void forEach(TypeFilter<T, U> type, Box box, LazyIterationConsumer<? super U> consumer, CallbackInfoReturnable<LazyIterationConsumer.NextIteration> cir) {
         List<? extends T> collection = (List<? extends T>) this.collection.getAllOfType(type.getBaseClass());
-        if (!collection.isEmpty()) {
+        if (collection.isEmpty()) {
+            cir.setReturnValue(LazyIterationConsumer.NextIteration.CONTINUE);
+        } else {
             int endIndex = collection.size();
 
             for (int index = 0; ; index++) {
@@ -78,7 +80,5 @@ public abstract class EntityTrackingSectionMixin<T extends EntityLike>  {
                 }
             }
         }
-
-        cir.setReturnValue(LazyIterationConsumer.NextIteration.CONTINUE);
     }
 }

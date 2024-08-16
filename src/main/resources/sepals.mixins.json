@@ -4,14 +4,16 @@
   "package": "com.github.cao.awa.sepals.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "explosion.ExplosionMixin",
+    "world.WorldMixin"
   ],
   "client": [
   ],
   "server": [
     "collection.TypeFilterableListAccessor",
     "collection.TypeFilterableListMixin",
-    "entity.track.EntityTrackingSectionMixin",
-    "collection.weight.WeightingMixin"
+    "collection.weight.WeightingMixin",
+    "entity.track.EntityTrackingSectionMixin"
   ],
   "injectors": {
     "defaultRequire": 1

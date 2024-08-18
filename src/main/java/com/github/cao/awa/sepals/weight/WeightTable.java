@@ -1,5 +1,6 @@
 package com.github.cao.awa.sepals.weight;
 
+import com.github.cao.awa.catheter.Catheter;
 import net.minecraft.util.collection.Weight;
 import net.minecraft.util.collection.Weighted;
 import net.minecraft.util.math.random.Random;
@@ -10,23 +11,50 @@ import java.util.Objects;
 import java.util.TreeMap;
 
 public class WeightTable<T extends Weighted> {
-    private Range<T>[] weighted;
+    private Ranged<T>[] weighted;
     private int range;
 
     @SuppressWarnings("unchecked")
-    public WeightTable<T> initWeight(List<T> pool) {
-        T[] elements = (T[]) pool.toArray(Weighted[]::new);
-        int size = elements.length;
+    public WeightTable<T> initWeight(Catheter<T> pool) {
+        int size = pool.count();
         Range<T>[] ranges = new Range[size];
         int range = 0;
-        for (int i = 0; i < size; i ++) {
+        int i = 0;
+        while (i < size) {
+            T weighted = pool.fetch(i);
+            int nextRange = range + weighted.getWeight().getValue();
+            ranges[i] = new Range<>(range, nextRange, weighted);
+            range = nextRange;
+            i++;
+        }
+        this.weighted = ranges;
+        this.range = Math.max(range, 1);
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public WeightTable<T> initWeight(List<T> pool) {
+        int size = pool.size();
+        T[] elements = (T[]) new Weighted[size];
+        pool.toArray(elements);
+        Range<T>[] ranges = new Range[size];
+        int range = 0;
+        int i = 0;
+        while (i < size) {
             T weighted = elements[i];
             int nextRange = range + weighted.getWeight().getValue();
             ranges[i] = new Range<>(range, nextRange, weighted);
             range = nextRange;
+            i++;
         }
         this.weighted = ranges;
         this.range = Math.max(range, 1);
+        return this;
+    }
+
+    public WeightTable<T> initWeightWithPrecalculate(Ranged<T>[] weighted, int range) {
+        this.weighted = weighted;
+        this.range = range;
         return this;
     }
 
@@ -36,14 +64,16 @@ public class WeightTable<T extends Weighted> {
      * When all weight all be zero(range==0) then direct return a random element.
      *
      * @param random a minecraft random generator
-     *
      * @author cao_awa
-     *
      * @since 1.0.0
      */
     public T select(Random random) {
         // Push in stack to improves performance.
-        Range<T>[] ranges = this.weighted;
+        Ranged<T>[] ranges = this.weighted;
+
+        if (ranges.length == 1) {
+            return ranges[0].element();
+        }
 
         // When range is one then means all weighted element are all weighted zero.
         // Do not care the weights, direct random to select.
@@ -64,7 +94,7 @@ public class WeightTable<T extends Weighted> {
         while (true) {
             // Should check the edge, return null when index out of bounds.
             if (weightedEdge.isIn(index)) {
-                Range<T> range = ranges[index];
+                Ranged<T> range = ranges[index];
 
                 if (range.isIn(expected)) {
                     return range.element();
@@ -86,17 +116,47 @@ public class WeightTable<T extends Weighted> {
         return null;
     }
 
-    private record Range<T>(int min, int max, T element) {
-        public boolean isIn(int value) {
+    public static final class Range<T> implements Ranged<T> {
+        private final int min;
+        private final int max;
+        private final T element;
+
+        public Range(int min, int max, T element) {
+            this.min = min;
+            this.max = max;
+            this.element = element;
+        }
+
+        public int min() {
+            return this.min;
+        }
+
+        public int max() {
+            return this.max;
+        }
+
+        public T element() {
+            return this.element;
+        }
+    }
+
+    public interface Ranged<T> {
+        default boolean isIn(int value) {
             return !(min() > value || max() < value);
         }
 
-        public boolean isSmaller(int value) {
+        default boolean isSmaller(int value) {
             return min() > value;
         }
 
-        public boolean isBigger(int value) {
+        default boolean isBigger(int value) {
             return max() < value;
         }
+
+        int min();
+
+        int max();
+
+        T element();
     }
 }

@@ -1,6 +1,8 @@
 package com.github.cao.awa.sepals.mixin.collection.weight;
 
 import com.github.cao.awa.apricot.annotations.Stable;
+import com.github.cao.awa.sepals.Sepals;
+import com.github.cao.awa.sepals.weight.SepalsWeighting;
 import com.github.cao.awa.sepals.weight.WeightTable;
 import net.minecraft.util.Util;
 import net.minecraft.util.collection.Weighted;
@@ -35,13 +37,15 @@ public class WeightingMixin {
             cancellable = true
     )
     private static <T extends Weighted> void getRandom(Random random, List<T> pool, CallbackInfoReturnable<Optional<T>> cir) {
-        T result = new WeightTable<T>().initWeight(pool).select(random);
+        if (Sepals.enableSepalsWeightTable) {
+            T result = SepalsWeighting.getRandom(random, pool);
 
-        if (result == null) {
-            cir.setReturnValue(Optional.empty());
-            return;
+            if (result == null) {
+                cir.setReturnValue(Optional.empty());
+                return;
+            }
+
+            cir.setReturnValue(Optional.of(result));
         }
-
-        cir.setReturnValue(Optional.of(result));
     }
 }

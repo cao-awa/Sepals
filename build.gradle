@@ -21,7 +21,7 @@ repositories {
         url = "https://maven.pkg.github.com/cao-awa/Catheter"
         credentials {
             username = "cao-awa"
-            password = "ghp_8yGFQIhfc0wz43ws" + "Orpdne0yOkzhN20XimQl"
+            password = "ghp_UgALm1Ta2ONYeNh" + "S2m0XoWSc27BcE22v4Umn"
         }
     }
     maven {
@@ -29,7 +29,7 @@ repositories {
         url = "https://maven.pkg.github.com/cao-awa/Sinuatum"
         credentials {
             username = "cao-awa"
-            password = "ghp_8yGFQIhfc0wz43ws" + "Orpdne0yOkzhN20XimQl"
+            password = "ghp_UgALm1Ta2ONYeNh" + "S2m0XoWSc27BcE22v4Umn"
         }
     }
 }
@@ -50,7 +50,7 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 
-    shadow 'com.github.cao.awa:catheter:1.0.6'
+    shadow 'com.github.cao.awa:catheter:1.0.12'
     shadow 'com.github.cao.awa:sinuatum:1.0.10'
 
 }

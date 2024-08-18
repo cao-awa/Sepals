@@ -12,6 +12,7 @@
     "collection.TypeFilterableListMixin",
     "collection.weight.WeightingMixin",
     "entity.track.EntityTrackingSectionMixin",
+    "entity.frog.FrogBrainMixin",
     "explosion.ExplosionMixin",
     "world.WorldMixin"
   ],

@@ -2,6 +2,7 @@ package com.github.cao.awa.sepals.mixin.entity.track;
 
 import com.github.cao.awa.apricot.annotations.Stable;
 import com.github.cao.awa.apricot.util.collection.ApricotCollectionFactor;
+import com.github.cao.awa.sepals.Sepals;
 import com.github.cao.awa.sepals.mixin.collection.TypeFilterableListAccessor;
 import net.minecraft.util.TypeFilter;
 import net.minecraft.util.collection.TypeFilterableList;
@@ -32,24 +33,26 @@ public abstract class EntityTrackingSectionMixin<T extends EntityLike>  {
     )
     @SuppressWarnings("unchecked")
     public void forEach(Box box, LazyIterationConsumer<T> consumer, CallbackInfoReturnable<LazyIterationConsumer.NextIteration> cir) {
-        // Access and clone the elements to match the vanilla behavior.
-        List<T> elements = ApricotCollectionFactor.arrayList(
-                ((TypeFilterableListAccessor<T>) this.collection).getAllElements()
-        );
-        int endIndex = elements.size();
+        if (Sepals.enableEntitiesCramming) {
+            // Access and clone the elements to match the vanilla behavior.
+            List<T> elements = ApricotCollectionFactor.arrayList(
+                    ((TypeFilterableListAccessor<T>) this.collection).getAllElements()
+            );
+            int endIndex = elements.size();
 
-        for (int index = 0; ; index++) {
-            if (index == endIndex) {
-                break;
+            for (int index = 0; ; index++) {
+                if (index == endIndex) {
+                    break;
+                }
+                T entityLike = elements.get(index);
+                if (entityLike.getBoundingBox().intersects(box) && consumer.accept(entityLike).shouldAbort()) {
+                    cir.setReturnValue(LazyIterationConsumer.NextIteration.ABORT);
+                    return;
+                }
             }
-            T entityLike = elements.get(index);
-            if (entityLike.getBoundingBox().intersects(box) && consumer.accept(entityLike).shouldAbort()) {
-                cir.setReturnValue(LazyIterationConsumer.NextIteration.ABORT);
-                return;
-            }
+
+            cir.setReturnValue(LazyIterationConsumer.NextIteration.CONTINUE);
         }
-
-        cir.setReturnValue(LazyIterationConsumer.NextIteration.CONTINUE);
     }
 
     @Inject(
@@ -57,26 +60,27 @@ public abstract class EntityTrackingSectionMixin<T extends EntityLike>  {
             at = @At("HEAD"),
             cancellable = true
     )
-    @SuppressWarnings("unchecked")
     public <U extends T> void forEach(TypeFilter<T, U> type, Box box, LazyIterationConsumer<? super U> consumer, CallbackInfoReturnable<LazyIterationConsumer.NextIteration> cir) {
-        List<? extends T> collection = (List<? extends T>) this.collection.getAllOfType(type.getBaseClass());
-        if (collection.isEmpty()) {
-            cir.setReturnValue(LazyIterationConsumer.NextIteration.CONTINUE);
-        } else {
-            int endIndex = collection.size();
+        if (Sepals.enableEntitiesCramming) {
+            List<? extends T> collection = (List<? extends T>) this.collection.getAllOfType(type.getBaseClass());
+            if (collection.isEmpty()) {
+                cir.setReturnValue(LazyIterationConsumer.NextIteration.CONTINUE);
+            } else {
+                int endIndex = collection.size();
 
-            for (int index = 0; ; index++) {
-                if (index == endIndex) {
-                    break;
-                }
-                T entityLike = collection.get(index);
-                U entityLike2 = type.downcast(entityLike);
-                if (entityLike2 == null) {
-                    continue;
-                }
-                if (entityLike.getBoundingBox().intersects(box) && consumer.accept(entityLike2).shouldAbort()) {
-                    cir.setReturnValue(LazyIterationConsumer.NextIteration.ABORT);
-                    return;
+                for (int index = 0; ; index++) {
+                    if (index == endIndex) {
+                        break;
+                    }
+                    T entityLike = collection.get(index);
+                    U entityLike2 = type.downcast(entityLike);
+                    if (entityLike2 == null) {
+                        continue;
+                    }
+                    if (entityLike.getBoundingBox().intersects(box) && consumer.accept(entityLike2).shouldAbort()) {
+                        cir.setReturnValue(LazyIterationConsumer.NextIteration.ABORT);
+                        return;
+                    }
                 }
             }
         }

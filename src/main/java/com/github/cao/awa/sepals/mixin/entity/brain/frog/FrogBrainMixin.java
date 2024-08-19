@@ -1,4 +1,4 @@
-package com.github.cao.awa.sepals.mixin.entity.frog;
+package com.github.cao.awa.sepals.mixin.entity.brain.frog;
 
 import com.github.cao.awa.sepals.Sepals;
 import com.github.cao.awa.sepals.entity.task.biased.SepalsBiasedLongJumpTask;

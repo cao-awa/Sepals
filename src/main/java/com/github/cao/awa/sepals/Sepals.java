@@ -5,6 +5,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
 public class Sepals implements ModInitializer {
+    public static boolean nearestLivingEntitiesSensorUseQuickSort = true;
     public static boolean enableSepalsBiasedJumpLongTask = true;
     public static boolean enableSepalsWeightTable = true;
     public static boolean enableEntitiesCramming = true;
@@ -17,3 +18,5 @@ public class Sepals implements ModInitializer {
         ServerLifecycleEvents.SERVER_STARTING.register(SepalsConfigCommand::register);
     }
 }
+
+// /spark profiler start --timeout 60

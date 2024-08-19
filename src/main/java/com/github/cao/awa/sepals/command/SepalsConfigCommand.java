@@ -55,6 +55,20 @@ public class SepalsConfigCommand {
                                     }
                                     return 0;
                                 })
+                        )).then(CommandManager.literal("nearestLivingEntitiesSensorUseQuickSort").then(
+                                CommandManager.argument("nearestLivingEntitiesSensorUseQuickSort", BoolArgumentType.bool()).executes(context -> {
+                                    Sepals.nearestLivingEntitiesSensorUseQuickSort = BoolArgumentType.getBool(context, "nearestLivingEntitiesSensorUseQuickSort");
+                                    if (Sepals.nearestLivingEntitiesSensorUseQuickSort) {
+                                        context.getSource().sendFeedback(() -> {
+                                            return Text.of("The nearest living entities sensor will use quick sort to sort");
+                                        }, true);
+                                    } else {
+                                        context.getSource().sendFeedback(() -> {
+                                            return Text.of("The nearest living entities sensor will use tim sort to sort");
+                                        }, true);
+                                    }
+                                    return 0;
+                                })
                         ))
                 );
     }

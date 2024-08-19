@@ -1,10 +1,13 @@
 # Sepals
+
 An extremely radical and experimental optimization for Minecraft server performances.
 
 ## Compatibility
+
 Currently, sepals are compatible to almost all mods.
 
 ### Lithium
+
 The entities cramming optimization of sepals will be auto-disabled when you used lithium and without configurations.
 
 This feature require disable lithium's cramming to enable:
@@ -12,24 +15,71 @@ This feature require disable lithium's cramming to enable:
 ```properties
 mixin.entity.collisions.unpushable_cramming=false
 ```
+
 ## Performance
+
 A test was done in cao-awa personal computer, CPU: 5950x; Memory: 128G DDR4-3200MHz; OS: Windows 11; Minecraft: 1.21.
 
 ### Entities cramming
-2993 large slime cramming in a 20x20 space:
+```
+Use index to access element to replaced iterator
+```
 
-|               Environment               |  MSPT(Min)  | MSPT(Avg.) | MSPT(Max) | Percent(Avg.) |
-|:---------------------------------------:|:-----------:|:----------:|:---------:|:-------------:|
-|                 Vanilla                 |   160 ms    |   183 ms   |  241 ms   |     100 %     |
-|               With Sepals               |   128 ms    |   157 ms   |  191 ms   |     85 %      |
-|              With Lithium               |   111 ms    |   134 ms   |  205 ms   |     73 %      |
-| With Sepals<br/> and configured Lithium |    72 ms    |   88 ms    |  115 ms   |     48 %      |
+496 large slime cramming in a 20x20 space:
+
+|               Environment               | tickCramming | Percent |
+|:---------------------------------------:|:------------:|:-------:|
+|                 Vanilla                 |   45.3 ms    |  100 %  |
+|               With Sepals               |    44 ms     |  97 %   |
+|              With Lithium               |   43.1 ms    |  95 %   |
+| With Sepals<br/> and configured Lithium |   40.8 ms    |  90 %   |
 
 ### Weighted random
-997 frogs cramming in a 10x10 space:
+```
+Use binary search to replaced vanilla weight random
 
-|                  Environment                   | MSPT(Min) | MSPT(Avg.) | MSPT(Max) | Percent(Avg.) |
-|:----------------------------------------------:|:---------:|:----------:|:---------:|:-------------:|
-|                    Vanilla                     |  105 ms   |   135 ms   |  206 ms   |     100 %     |
-|                  With Sepals                   |   43 ms   |   96 ms    |  163 ms   |     71 %      |
-| Direct random <br/> (Not vanilla, no approved) |   45 ms   |   73 ms    |  111 ms   |     54 %      |
+-- Warning --
+This feature may not provided good optimization
+because it was proved by spark that slower than vanilla when constructing range table
+even if the binary search almost close to 0ms
+```
+
+900 frogs cramming in a 3x3 space:
+
+| Environment | Weighting#getRandom | Percent(Avg.) |
+|:-----------:|:-------------------:|:-------------:|
+|   Vanilla   |       8.4 ms        |     100 %     |
+| With Sepals |       9.2 ms        |     109 %     |
+
+### Biased long jump task
+```
+Use sepals long jump task impletation to replaced vanilla impletation
+
+As mentioned above, the binary search is almost no costs
+sepals impletation will construct the range table at the same time as generating targets
+and used Catheter to replaced java stream
+
+-- Notice --
+This feature is unable to change in game runtime
+required restart the server to apply changes
+```
+
+900 frogs cramming in a 3x3 space:
+
+|                     Environment                     | keepRunning | Percent(Avg.) |
+|:---------------------------------------------------:|:-----------:|:-------------:|
+|      Vanilla <br /> (LongJumpTask#keepRunning)      |   13.1 ms   |     100 %     |
+| With Sepals <br /> (SepalsLongJumpTask#keepRunning) |   1.5 ms    |     11 %      |
+
+### Quick sort in NearestLivingEntitiesSensor
+
+```
+Quick sort supports by fastutil to replace java tim sort
+```
+
+900 frogs cramming in a 3x3 space:
+
+| Environment | sort (NearestLivingEntitiesSensor#sense) | Percent(Avg.) |
+|------------:|:----------------------------------------:|:-------------:|
+|     Vanilla |                  6.5 ms                  |     100 %     |
+| With Sepals |                   3 ms                   |     46 %      |

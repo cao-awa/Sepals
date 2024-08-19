@@ -4,6 +4,7 @@
   "package": "com.github.cao.awa.sepals.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "entity.brain.sensor.NearestLivingEntitiesSensorMixin"
   ],
   "client": [
   ],
@@ -11,8 +12,8 @@
     "collection.TypeFilterableListAccessor",
     "collection.TypeFilterableListMixin",
     "collection.weight.WeightingMixin",
+    "entity.brain.frog.FrogBrainMixin",
     "entity.track.EntityTrackingSectionMixin",
-    "entity.frog.FrogBrainMixin",
     "explosion.ExplosionMixin",
     "world.WorldMixin"
   ],

@@ -21,6 +21,7 @@ mixin.entity.collisions.unpushable_cramming=false
 A test was done in cao-awa personal computer, CPU: 5950x; Memory: 128G DDR4-3200MHz; OS: Windows 11; Minecraft: 1.21.
 
 ### Entities cramming
+
 ```
 Use index to access element to replaced iterator
 ```
@@ -35,6 +36,7 @@ Use index to access element to replaced iterator
 | With Sepals<br/> and configured Lithium |   40.8 ms    |  90 %   |
 
 ### Weighted random
+
 ```
 Use binary search to replaced vanilla weight random
 
@@ -52,6 +54,7 @@ even if the binary search almost close to 0ms
 | With Sepals |       9.2 ms        |     109 %     |
 
 ### Biased long jump task
+
 ```
 Use sepals long jump task impletation to replaced vanilla impletation
 
@@ -90,3 +93,45 @@ Quick sort supports by fastutil to replace java tim sort
 |------------:|:----------------------------------------:|:-------------:|
 |     Vanilla |                  6.5 ms                  |     100 %     |
 | With Sepals |                   3 ms                   |     46 %      |
+
+### Frog attackable target filter
+
+```
+Rearrange the attackable conditions
+let less costs predicate running first
+reduce the probability of high-costs calculating
+```
+
+1366 frogs cramming in a 3x3 space:
+
+| Environment | sort (NearestLivingEntitiesSensor#sense) | Percent(Avg.) |
+|------------:|:----------------------------------------:|:-------------:|
+|     Vanilla |                  6.5 ms                  |     100 %     |
+| With Sepals |                   3 ms                   |     46 %      |
+
+### Frog look-at target filter
+
+```
+Use interval's shouldRun predicate to reducing TargetPredicate test
+make less raycast is the best way to optimizations at currently
+
+-- Warning --
+Not long-term stability tested, increased 'shouldRun' maybe cause behavoirs change
+this feature does not be proved 100% vanilla
+also it does not be proved has not vanilla in statistical significance
+
+-- Notice --
+The raycast is in TargetPredicate test
+at the findFirst in LivingTargetCache when input predicate is success
+
+but if subsequent conditions is failures, then to calculate this anymore is ueless
+because even if the findFirst has found (raycast success)
+but we don't used this result in subsequent contexts 
+```
+
+1366 frogs cramming in a 3x3 space:
+
+|                                                          Environment |  sort   | Percent(Avg.) | The ```raycast``` time | The ```raycast``` percent |
+|---------------------------------------------------------------------:|:-------:|:-------------:|:----------------------:|:-------------------------:|
+|           Vanilla <br /> (LookAtMobWithIntervalTask$$Lambda#trigger) | 26.5 ms |     100 %     |        25.1 ms         |           94 %            |
+| With Sepals <br /> (SepalsLookAtMobWithIntervalTask$$Lambda#trigger) | 3.4 ms  |     13 %      |         3.3 ms         |           97 %            |

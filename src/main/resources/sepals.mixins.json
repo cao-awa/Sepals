@@ -11,8 +11,9 @@
     "collection.TypeFilterableListAccessor",
     "collection.TypeFilterableListMixin",
     "collection.weight.WeightingMixin",
-    "entity.brain.frog.FrogBrainMixin",
-    "entity.brain.sensor.NearestLivingEntitiesSensorMixin",
+    "entity.ai.brain.frog.FrogBrainMixin",
+    "entity.ai.brain.sensor.NearestLivingEntitiesSensorMixin",
+    "entity.ai.brain.sensor.frog.FrogAttackablesSensorMixin",
     "entity.track.EntityTrackingSectionMixin",
     "explosion.ExplosionMixin",
     "world.WorldMixin"

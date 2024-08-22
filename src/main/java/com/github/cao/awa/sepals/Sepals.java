@@ -5,6 +5,9 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
 public class Sepals implements ModInitializer {
+    public static boolean enableSepalsFrogLookAt= true;
+    public static boolean enableSepalsFrogAttackableSensor = true;
+    public static boolean enableSepalsLivingTargetCache = true;
     public static boolean nearestLivingEntitiesSensorUseQuickSort = true;
     public static boolean enableSepalsBiasedJumpLongTask = true;
     public static boolean enableSepalsWeightTable = false;

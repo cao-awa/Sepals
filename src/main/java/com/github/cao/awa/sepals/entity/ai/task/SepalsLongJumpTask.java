@@ -1,4 +1,4 @@
-package com.github.cao.awa.sepals.entity.task;
+package com.github.cao.awa.sepals.entity.ai.task;
 
 import com.github.cao.awa.apricot.util.collection.ApricotCollectionFactor;
 import com.github.cao.awa.catheter.Catheter;
@@ -6,8 +6,6 @@ import com.github.cao.awa.sepals.weight.SepalsWeighting;
 import com.github.cao.awa.sepals.weight.WeightTable;
 import com.github.cao.awa.sepals.weight.result.WeightingResult;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-import it.unimi.dsi.fastutil.objects.ObjectArrays;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.ai.brain.BlockPosLookTarget;
@@ -22,7 +20,6 @@ import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.Util;
 import net.minecraft.util.collection.Weighted;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.LongJumpUtil;

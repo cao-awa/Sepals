@@ -1,14 +1,22 @@
-package com.github.cao.awa.sepals.entity.brain.frog;
+package com.github.cao.awa.sepals.entity.ai.brain.frog;
 
-import com.github.cao.awa.sepals.entity.task.SepalsLongJumpTask;
+import com.github.cao.awa.sepals.entity.ai.task.SepalsLongJumpTask;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.brain.MemoryModuleType;
+import net.minecraft.entity.ai.brain.sensor.Sensor;
 import net.minecraft.entity.ai.pathing.LandPathNodeMaker;
 import net.minecraft.entity.ai.pathing.PathContext;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.passive.FrogEntity;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class SepalsFrogBrain {
     public static <E extends MobEntity> boolean shouldJumpTo(E frog, BlockPos pos) {
@@ -50,5 +58,23 @@ public class SepalsFrogBrain {
                 nodeTypeIsTrapdoor1 || LandPathNodeMaker.getLandNodeType(
                         pathContext, posDown.mutableCopy()
                 ) == PathNodeType.TRAPDOOR;
+    }
+
+    public static boolean attackable(LivingEntity entity, LivingEntity target) {
+        if (FrogEntity.isValidFrogFood(target) && target.isInRange(entity, 10.0)) {
+            if (entity.getBrain().hasMemoryModule(MemoryModuleType.HAS_HUNTING_COOLDOWN)) {
+                if (isTargetUnreachable(entity, target)){
+                    return Sensor.testAttackableTargetPredicate(entity, target);
+                }
+            }
+        }
+        return false;
+    }
+
+    private static boolean isTargetUnreachable(LivingEntity entity, LivingEntity target) {
+        return entity.getBrain()
+                .getOptionalRegisteredMemory(MemoryModuleType.UNREACHABLE_TONGUE_TARGETS)
+                .orElseGet(ArrayList::new)
+                .contains(target.getUuid());
     }
 }

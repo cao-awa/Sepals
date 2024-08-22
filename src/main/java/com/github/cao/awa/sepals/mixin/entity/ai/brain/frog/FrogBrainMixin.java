@@ -1,38 +1,37 @@
-package com.github.cao.awa.sepals.mixin.entity.brain.frog;
+package com.github.cao.awa.sepals.mixin.entity.ai.brain.frog;
 
 import com.github.cao.awa.sepals.Sepals;
-import com.github.cao.awa.sepals.entity.brain.frog.SepalsFrogBrain;
-import com.github.cao.awa.sepals.entity.task.biased.SepalsBiasedLongJumpTask;
+import com.github.cao.awa.sepals.entity.ai.brain.frog.SepalsFrogBrain;
+import com.github.cao.awa.sepals.entity.ai.task.biased.SepalsBiasedLongJumpTask;
+import com.github.cao.awa.sepals.entity.ai.task.look.SepalsLookAtMobWithIntervalTask;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.Activity;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleState;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
-import net.minecraft.entity.ai.brain.task.LeapingChargeTask;
-import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.ai.brain.task.*;
 import net.minecraft.entity.passive.FrogBrain;
 import net.minecraft.entity.passive.FrogEntity;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(FrogBrain.class)
 public abstract class FrogBrainMixin {
-    @Shadow @Final private static UniformIntProvider longJumpCooldownRange;
-
     @Shadow
-    private static <E extends MobEntity> boolean shouldJumpTo(E frog, BlockPos pos) {
-        return false;
-    }
+    @Final
+    private static UniformIntProvider longJumpCooldownRange;
 
     @Inject(
             method = "addLongJumpActivities",
@@ -70,5 +69,47 @@ public abstract class FrogBrainMixin {
             ci.cancel();
             return;
         }
+    }
+
+    @Redirect(
+            method = "addIdleActivities",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/entity/ai/brain/task/LookAtMobWithIntervalTask;follow(Lnet/minecraft/entity/EntityType;FLnet/minecraft/util/math/intprovider/UniformIntProvider;)Lnet/minecraft/entity/ai/brain/task/Task;"
+            )
+    )
+    private static Task<LivingEntity> addIdleActivities(EntityType<?> type, float maxDistance, UniformIntProvider interval) {
+        if (Sepals.enableSepalsFrogLookAt) {
+            return SepalsLookAtMobWithIntervalTask.frogFollow(6.0f, UniformIntProvider.create(30, 60));
+        }
+        return LookAtMobWithIntervalTask.follow(type, maxDistance, interval);
+    }
+
+    @Redirect(
+            method = "addSwimActivities",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/entity/ai/brain/task/LookAtMobWithIntervalTask;follow(Lnet/minecraft/entity/EntityType;FLnet/minecraft/util/math/intprovider/UniformIntProvider;)Lnet/minecraft/entity/ai/brain/task/Task;"
+            )
+    )
+    private static Task<LivingEntity> addSwimActivities(EntityType<?> type, float maxDistance, UniformIntProvider interval) {
+        if (Sepals.enableSepalsFrogLookAt) {
+            return SepalsLookAtMobWithIntervalTask.frogFollow(6.0f, UniformIntProvider.create(30, 60));
+        }
+        return LookAtMobWithIntervalTask.follow(type, maxDistance, interval);
+    }
+
+    @Redirect(
+            method = "addLaySpawnActivities",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/entity/ai/brain/task/LookAtMobWithIntervalTask;follow(Lnet/minecraft/entity/EntityType;FLnet/minecraft/util/math/intprovider/UniformIntProvider;)Lnet/minecraft/entity/ai/brain/task/Task;"
+            )
+    )
+    private static Task<LivingEntity> addLaySpawnActivities(EntityType<?> type, float maxDistance, UniformIntProvider interval) {
+        if (Sepals.enableSepalsFrogLookAt) {
+            return SepalsLookAtMobWithIntervalTask.frogFollow(6.0f, UniformIntProvider.create(30, 60));
+        }
+        return LookAtMobWithIntervalTask.follow(type, maxDistance, interval);
     }
 }

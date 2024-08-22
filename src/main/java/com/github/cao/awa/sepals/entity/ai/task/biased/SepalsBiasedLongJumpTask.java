@@ -1,10 +1,7 @@
-package com.github.cao.awa.sepals.entity.task.biased;
+package com.github.cao.awa.sepals.entity.ai.task.biased;
 
-import com.github.cao.awa.sepals.entity.task.SepalsLongJumpTask;
-import com.github.cao.awa.sepals.weight.SepalsWeighting;
-import com.github.cao.awa.sepals.weight.result.WeightingResult;
+import com.github.cao.awa.sepals.entity.ai.task.SepalsLongJumpTask;
 import net.minecraft.block.Block;
-import net.minecraft.entity.ai.brain.task.LongJumpTask;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.server.world.ServerWorld;
@@ -15,7 +12,6 @@ import net.minecraft.util.math.intprovider.UniformIntProvider;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 

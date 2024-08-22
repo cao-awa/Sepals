@@ -1,17 +1,18 @@
-package com.github.cao.awa.sepals.collection;
+package com.github.cao.awa.sepals.collection.binary.set;
 
-import com.github.cao.awa.sepals.weight.WeightTable;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 
-import java.util.Random;
+import java.util.Arrays;
+import java.util.stream.Stream;
 
-public class ReadonlyBinaryIntegerSet {
+public class ReadonlyBinaryIntegerList implements BinarySearchList<Integer> {
     private final int[] elements;
 
-    public ReadonlyBinaryIntegerSet(int[] elements) {
+    public ReadonlyBinaryIntegerList(int[] elements) {
         this.elements = elements;
     }
 
-    public ReadonlyBinaryIntegerSet(Integer[] elements) {
+    public ReadonlyBinaryIntegerList(Integer[] elements) {
         this.elements = new int[elements.length];
         for (int i = 0, elementsLength = elements.length; i < elementsLength; i++) {
             this.elements[i] = elements[i];
@@ -55,18 +56,28 @@ public class ReadonlyBinaryIntegerSet {
         return false;
     }
 
-    public static void main(String[] args) {
-        Random random = new Random();
-        int[] elements = random.ints(16384000).toArray();
+    @Override
+    public boolean containsElement(Integer element) {
+        return contains(element);
+    }
 
-        ReadonlyBinaryIntegerSet set = new ReadonlyBinaryIntegerSet(elements);
+    @Override
+    public Integer get(int index) {
+        return this.elements[index];
+    }
 
-        System.out.println(set.contains(201));
+    @Override
+    public int size() {
+        return this.elements.length;
+    }
 
-        long start = System.currentTimeMillis();
+    @Override
+    public Stream<Integer> stream() {
+        return Arrays.stream(this.elements).boxed();
+    }
 
-        set.contains(201);
-
-        System.out.println("Done in: " + (System.currentTimeMillis() - start) + "ms");
+    @Override
+    public Iterable<Integer> iterable() {
+        return IntArrayList.of(this.elements);
     }
 }

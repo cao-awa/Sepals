@@ -38,7 +38,7 @@ public class WeightingMixin {
     )
     private static <T extends Weighted> void getRandom(Random random, List<T> pool, CallbackInfoReturnable<Optional<T>> cir) {
         if (Sepals.enableSepalsWeightTable) {
-            T result = SepalsWeighting.getRandom(random, pool);
+            T result = SepalsWeighting.getRandomDirect(random, pool);
 
             if (result == null) {
                 cir.setReturnValue(Optional.empty());

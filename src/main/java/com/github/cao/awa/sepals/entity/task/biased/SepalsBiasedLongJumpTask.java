@@ -1,6 +1,8 @@
 package com.github.cao.awa.sepals.entity.task.biased;
 
 import com.github.cao.awa.sepals.entity.task.SepalsLongJumpTask;
+import com.github.cao.awa.sepals.weight.SepalsWeighting;
+import com.github.cao.awa.sepals.weight.result.WeightingResult;
 import net.minecraft.block.Block;
 import net.minecraft.entity.ai.brain.task.LongJumpTask;
 import net.minecraft.entity.mob.MobEntity;
@@ -50,25 +52,11 @@ public class SepalsBiasedLongJumpTask<E extends MobEntity> extends SepalsLongJum
         if (this.useBias) {
             BlockPos.Mutable mutable = new BlockPos.Mutable();
 
-            if (this.isNoRange) {
-                int i = 0;
-                int count = this.targets.count();
-                while (i < count) {
-                    Target target = this.precalculatedTargets[i++];
+            while (this.targets.isPresent()) {
+                Target target = super.getTarget(world);
 
-                    if (addUnfavored(world, mutable, target)) {
-                        return target;
-                    }
-                }
-
-                this.targets.reset();
-            } else {
-                while (this.targets.isPresent()) {
-                    Target target = super.getTarget(world);
-
-                    if (addUnfavored(world, mutable, target)) {
-                        return target;
-                    }
+                if (addUnfavored(world, mutable, target)) {
+                    return target;
                 }
             }
 

@@ -1,6 +1,7 @@
 package com.github.cao.awa.sepals.mixin.entity.brain.frog;
 
 import com.github.cao.awa.sepals.Sepals;
+import com.github.cao.awa.sepals.entity.brain.frog.SepalsFrogBrain;
 import com.github.cao.awa.sepals.entity.task.biased.SepalsBiasedLongJumpTask;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -54,7 +55,7 @@ public abstract class FrogBrainMixin {
                                             frog -> SoundEvents.ENTITY_FROG_LONG_JUMP,
                                             BlockTags.FROG_PREFER_JUMP_TO,
                                             0.5F,
-                                            FrogBrainMixin::shouldJumpTo
+                                            SepalsFrogBrain::shouldJumpTo
                                     )
                             )
                     ),

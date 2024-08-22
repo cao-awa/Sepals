@@ -50,7 +50,7 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 
-    shadow 'com.github.cao.awa:catheter:1.0.12'
+    shadow 'com.github.cao.awa:catheter:1.0.16'
     shadow 'com.github.cao.awa:sinuatum:1.0.10'
 
 }

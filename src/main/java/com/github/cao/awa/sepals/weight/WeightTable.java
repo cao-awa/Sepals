@@ -1,6 +1,7 @@
 package com.github.cao.awa.sepals.weight;
 
 import com.github.cao.awa.catheter.Catheter;
+import com.github.cao.awa.sepals.weight.result.WeightingResult;
 import net.minecraft.util.collection.Weight;
 import net.minecraft.util.collection.Weighted;
 import net.minecraft.util.math.random.Random;
@@ -58,6 +59,14 @@ public class WeightTable<T extends Weighted> {
         return this;
     }
 
+    public T select(Random random) {
+        WeightingResult<T> result = selectWithIndex(random);
+        if (result == null) {
+            return null;
+        }
+        return result.value();
+    }
+
     /**
      * Select a weighted element by binary search.
      * <p>
@@ -67,23 +76,25 @@ public class WeightTable<T extends Weighted> {
      * @author cao_awa
      * @since 1.0.0
      */
-    public T select(Random random) {
+    public WeightingResult<T> selectWithIndex(Random random) {
         // Push in stack to improves performance.
         Ranged<T>[] ranges = this.weighted;
 
         if (ranges.length == 1) {
-            return ranges[0].element();
+            return new WeightingResult<>(ranges[0].element(), 0);
         }
 
         // When range is one then means all weighted element are all weighted zero.
         // Do not care the weights, direct random to select.
         if (this.range == 1) {
-            return ranges[random.nextInt(ranges.length)].element();
+            int index = random.nextInt(ranges.length);
+            return new WeightingResult<>(ranges[index].element(), index);
         }
 
         int expected = random.nextInt(this.range);
 
-        int maxEdge = ranges.length - 1;
+        int size = ranges.length;
+        int maxEdge = size - 1;
         int index = maxEdge / 2;
 
         Range<Object> weightedEdge = new Range<>(0, maxEdge, null);
@@ -91,13 +102,13 @@ public class WeightTable<T extends Weighted> {
         int dynamicMaxEdge = maxEdge;
 
         // Binary search.
-        while (true) {
+        while (index < size && index > -1) {
             // Should check the edge, return null when index out of bounds.
             if (weightedEdge.isIn(index)) {
                 Ranged<T> range = ranges[index];
 
                 if (range.isIn(expected)) {
-                    return range.element();
+                    return new WeightingResult<>(range.element(), index);
                 }
 
                 if (range.isBigger(expected)) {

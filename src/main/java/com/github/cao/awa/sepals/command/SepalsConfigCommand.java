@@ -11,7 +11,7 @@ public class SepalsConfigCommand {
         server.getCommandManager()
                 .getDispatcher()
                 .register(
-                        CommandManager.literal("sepals").then(
+                        CommandManager.literal("sepals").requires(serverCommandSource -> serverCommandSource.hasPermissionLevel(4)).then(
                                 CommandManager.literal("weightTable").then(
                                         CommandManager.argument("enableSepalsWeightTable", BoolArgumentType.bool()).executes(context -> {
                                             Sepals.enableSepalsWeightTable = BoolArgumentType.getBool(context, "enableSepalsWeightTable");

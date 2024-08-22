@@ -4,48 +4,48 @@ import com.github.cao.awa.apricot.util.collection.ApricotCollectionFactor;
 import com.github.cao.awa.catheter.Catheter;
 import com.github.cao.awa.sepals.weight.SepalsWeighting;
 import com.github.cao.awa.sepals.weight.WeightTable;
+import com.github.cao.awa.sepals.weight.result.WeightingResult;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import it.unimi.dsi.fastutil.objects.ObjectArrays;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.ai.brain.BlockPosLookTarget;
 import net.minecraft.entity.ai.brain.MemoryModuleState;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.task.LongJumpTask;
 import net.minecraft.entity.ai.brain.task.MultiTickTask;
-import net.minecraft.entity.ai.pathing.EntityNavigation;
-import net.minecraft.entity.ai.pathing.LandPathNodeMaker;
 import net.minecraft.entity.ai.pathing.Path;
+import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.util.Util;
 import net.minecraft.util.collection.Weighted;
-import net.minecraft.util.collection.Weighting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.LongJumpUtil;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class SepalsLongJumpTask<E extends MobEntity> extends MultiTickTask<E> {
-    private static final List<Integer> RAM_RANGES = Lists.newArrayList(65, 70, 75, 80);
+    private static final int[] RAM_RANGES = new int[]{65, 70, 75, 80};
     private final UniformIntProvider cooldownRange;
     protected final int verticalRange;
     protected final int horizontalRange;
     protected final float maxRange;
     protected Catheter<BlockPos> targets = null;
-    protected Target[] precalculatedTargets = null;
-    private int precalculatedRange = 0;
+    protected Catheter<Target> precalculatedTargets = null;
+    protected int precalculatedRange = 0;
     private int precalculatingIndex = 0;
     protected Vec3d lastPos = null;
     protected boolean isNoRange = false;
@@ -60,11 +60,8 @@ public class SepalsLongJumpTask<E extends MobEntity> extends MultiTickTask<E> {
         this(cooldownRange, verticalRange, horizontalRange, maxRange, entityToSound, LongJumpTask::shouldJumpTo);
     }
 
-    public static <E extends MobEntity> boolean shouldJumpTo(E entity, BlockPos pos) {
-        World world = entity.getWorld();
-        BlockPos blockPos = pos.down();
-        return world.getBlockState(blockPos).isOpaqueFullCube(world, blockPos)
-                && entity.getPathfindingPenalty(LandPathNodeMaker.getLandNodeType(entity, pos)) == 0.0F;
+    public static <E extends MobEntity> boolean shouldJumpTo(World world, E entity, BlockPos posDown, BlockState posDownState, PathNodeType pathNodeType) {
+        return posDownState.isOpaqueFullCube(world, posDown) && entity.getPathfindingPenalty(pathNodeType) == 0.0F;
     }
 
     public SepalsLongJumpTask(
@@ -130,7 +127,7 @@ public class SepalsLongJumpTask<E extends MobEntity> extends MultiTickTask<E> {
         int k = blockPos.getZ();
         this.precalculatedRange = 0;
         this.precalculatingIndex = 0;
-        this.isNoRange = true;
+        this.isNoRange = false;
         this.targets = Catheter.of(makeBlockPos(
                         i - this.horizontalRange,
                         j - this.verticalRange,
@@ -139,22 +136,23 @@ public class SepalsLongJumpTask<E extends MobEntity> extends MultiTickTask<E> {
                         j + this.verticalRange,
                         k + this.horizontalRange
                 ))
-                .discard(blockPos::equals)
-                .ifPresent(cather -> this.precalculatedTargets = new Target[cather.count()])
+                .distinct()
+                .filter(blockPos2 -> !blockPos2.equals(blockPos))
+                .ifPresent(cather -> this.precalculatedTargets = new Catheter<>(new Target[cather.count()]).arrayGenerator(Target[]::new))
                 .whenAlternate(0, (min, blockPos2) -> {
                     int weight = MathHelper.ceil(blockPos.getSquaredDistance(blockPos2));
                     int max = min + weight;
-                    this.precalculatedTargets[this.precalculatingIndex++] = new Target(
+                    this.precalculatedTargets.fetch(this.precalculatingIndex++, new Target(
                             blockPos2.toImmutable(),
                             weight,
                             min,
                             max
-                    );
+                    ));
                     return max;
                 }, precalculatedRange -> this.precalculatedRange = precalculatedRange);
 
         if (this.targets.isPresent()) {
-            if (this.precalculatedRange / this.precalculatedTargets[0].weightValue() == this.precalculatedTargets.length) {
+            if (this.precalculatedRange / this.precalculatedTargets.fetch(0).weightValue() == this.precalculatedTargets.count()) {
                 this.isNoRange = true;
             }
         }
@@ -187,9 +185,13 @@ public class SepalsLongJumpTask<E extends MobEntity> extends MultiTickTask<E> {
         while (this.targets.isPresent()) {
             Target target = getTarget(world);
 
+            if (target == null) {
+                continue;
+            }
             BlockPos blockPos = target.getPos();
-            if (canJumpTo(world, entity, blockPos)) {
-                Vec3d vec3d2 = getJumpingVelocity(entity, Vec3d.ofCenter(blockPos));
+
+            if (canJumpTo(entity, blockPos)) {
+                Vec3d vec3d2 = getJumpingVelocity(world, entity, Vec3d.ofCenter(blockPos));
                 if (vec3d2 == null) {
                     continue;
                 }
@@ -206,45 +208,90 @@ public class SepalsLongJumpTask<E extends MobEntity> extends MultiTickTask<E> {
     }
 
     protected Target getTarget(ServerWorld world) {
-        if (this.targets.isEmpty()) {
-            return null;
-        }
+        if (this.targets.isPresent()) {
+            WeightingResult<Target> target;
+            if (this.isNoRange) {
+                int index = world.random.nextInt(this.precalculatedTargets.count());
+                target = new WeightingResult<>(this.precalculatedTargets.fetch(index), index);
+            } else {
+                target = SepalsWeighting.getRandom(world.random, this.precalculatedTargets.dArray(), this.precalculatedRange);
+            }
 
-        Target target;
-        if (this.isNoRange) {
-            target = this.precalculatedTargets[0];
-        } else {
-            target = SepalsWeighting.getRandom(world.random, this.precalculatedTargets, this.precalculatedRange);
-        }
+            if (target != null) {
+                this.targets.removeWithIndex(target.index());
+                this.precalculatedTargets.removeWithIndex(target.index());
 
-        if (target != null) {
-            this.targets.remove(target.getPos());
+                Target value = target.value();
+                if (value != null) {
+                    this.precalculatedRange -= value.weightValue();
+
+                    return value;
+                }
+            }
         }
-        return target;
+        return null;
     }
 
-    private boolean canJumpTo(ServerWorld world, E entity, BlockPos pos) {
-        BlockPos blockPos = entity.getBlockPos();
-        int i = blockPos.getX();
-        int j = blockPos.getZ();
-        return (i != pos.getX() || j != pos.getZ()) && this.jumpToPredicate.test(entity, pos);
+    private boolean canJumpTo(E entity, BlockPos targetPos) {
+        BlockPos entityPos = entity.getBlockPos();
+        if (entityPos.getX() == targetPos.getX() && entityPos.getZ() == targetPos.getZ()) {
+            return false;
+        }
+        return this.jumpToPredicate.test(entity, targetPos);
     }
 
     @Nullable
-    protected Vec3d getJumpingVelocity(MobEntity entity, Vec3d targetPos) {
-        List<Integer> list = Lists.newArrayList(RAM_RANGES);
-        Collections.shuffle(list);
+    protected Vec3d getJumpingVelocity(World world, MobEntity entity, Vec3d targetPos) {
         float f = (float) (entity.getAttributeValue(EntityAttributes.GENERIC_JUMP_STRENGTH) * (double) this.maxRange);
 
-        for (int i : list) {
-            Optional<Vec3d> optional = LongJumpUtil.getJumpingVelocity(entity, targetPos, f, i, true);
-            if (optional.isPresent()) {
-                return optional.get();
-            }
-        }
+        shuffle(RAM_RANGES, world.random);
 
-        return null;
+        return LongJumpUtil.getJumpingVelocity(
+                entity,
+                targetPos,
+                f,
+                RAM_RANGES[0],
+                true
+        ).orElseGet(() ->
+                LongJumpUtil.getJumpingVelocity(
+                        entity,
+                        targetPos,
+                        f,
+                        RAM_RANGES[1],
+                        true
+                ).orElseGet(() ->
+                        LongJumpUtil.getJumpingVelocity(
+                                entity,
+                                targetPos,
+                                f,
+                                RAM_RANGES[2],
+                                true
+                        ).orElseGet(() ->
+                                LongJumpUtil.getJumpingVelocity(
+                                        entity,
+                                        targetPos,
+                                        f,
+                                        RAM_RANGES[3],
+                                        true
+                                ).orElse(null)
+                        )
+                )
+        );
     }
+
+    public static void shuffle(int[] ranges, Random random) {
+        int i = ranges.length;
+
+        for (int j = i; j > 1; --j) {
+            int k = random.nextInt(j);
+            int posFrom = j - 1;
+            int from = ranges[posFrom];
+            int to = ranges[k];
+            ranges[posFrom] = to;
+            ranges[k] = from;
+        }
+    }
+
 
     public static class Target extends Weighted.Absent implements WeightTable.Ranged<Target> {
         private final BlockPos pos;

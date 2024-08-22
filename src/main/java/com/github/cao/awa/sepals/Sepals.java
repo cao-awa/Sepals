@@ -7,7 +7,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 public class Sepals implements ModInitializer {
     public static boolean nearestLivingEntitiesSensorUseQuickSort = true;
     public static boolean enableSepalsBiasedJumpLongTask = true;
-    public static boolean enableSepalsWeightTable = true;
+    public static boolean enableSepalsWeightTable = false;
     public static boolean enableEntitiesCramming = true;
 
     /**

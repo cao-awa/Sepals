@@ -59,17 +59,24 @@ As mentioned above, the binary search is almost no costs
 sepals impletation will construct the range table at the same time as generating targets
 and used Catheter to replaced java stream
 
+The same time, rearrange should jump conditions in frog brain, make a good performance
+
 -- Notice --
 This feature is unable to change in game runtime
 required restart the server to apply changes
 ```
 
-900 frogs cramming in a 3x3 space:
+1366 frogs cramming in a 3x3 space:
 
 |                     Environment                     | keepRunning | Percent(Avg.) |
 |:---------------------------------------------------:|:-----------:|:-------------:|
-|      Vanilla <br /> (LongJumpTask#keepRunning)      |   13.1 ms   |     100 %     |
-| With Sepals <br /> (SepalsLongJumpTask#keepRunning) |   1.5 ms    |     11 %      |
+|      Vanilla <br /> (LongJumpTask#keepRunning)      |   15.6 ms   |     100 %     |
+| With Sepals <br /> (SepalsLongJumpTask#keepRunning) |   0.3 ms    |    0.02 %     |
+
+|                     Environment                     | getTarget | Percent(Avg.) | Percent(in ```keepRunning```) |
+|:---------------------------------------------------:|:---------:|:-------------:|:-----------------------------:|
+|      Vanilla <br /> (LongJumpTask#keepRunning)      |  13.4 ms  |     100 %     |             85 %              |
+| With Sepals <br /> (SepalsLongJumpTask#keepRunning) |  0.02 ms  |    0.001 %    |            0.06 %             |
 
 ### Quick sort in NearestLivingEntitiesSensor
 

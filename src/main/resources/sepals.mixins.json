@@ -4,7 +4,6 @@
   "package": "com.github.cao.awa.sepals.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "entity.LivingEntityMixin"
   ],
   "client": [
   ],
@@ -12,14 +11,20 @@
     "collection.TypeFilterableListAccessor",
     "collection.TypeFilterableListMixin",
     "collection.weight.WeightingMixin",
+    "entity.LivingEntityMixin",
     "entity.ai.brain.frog.FrogBrainMixin",
     "entity.ai.brain.sensor.NearestLivingEntitiesSensorMixin",
     "entity.ai.brain.sensor.frog.FrogAttackablesSensorMixin",
+    "entity.ai.brain.villager.VillagerTaskListProviderMixin",
     "entity.track.EntityTrackingSectionMixin",
     "explosion.ExplosionMixin",
     "server.MinecraftServerMixin",
     "world.MinecraftServerAccessor",
-    "world.WorldMixin"
+    "world.WorldMixin",
+    "world.poi.PointOfInterestAccessor",
+    "world.poi.PointOfInterestSetAccessor",
+    "world.poi.PointOfInterestStorageAccessor",
+    "world.storage.SerializingRegionBasedStorageAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

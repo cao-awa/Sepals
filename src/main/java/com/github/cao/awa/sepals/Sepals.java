@@ -9,13 +9,13 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
 public class Sepals implements ModInitializer {
     public static SepalsBackupCenter backupCenter;
-    public static boolean enableSepalsFrogLookAt= false;
-    public static boolean enableSepalsFrogAttackableSensor = false;
-    public static boolean enableSepalsLivingTargetCache = false;
-    public static boolean nearestLivingEntitiesSensorUseQuickSort = false;
-    public static boolean enableSepalsBiasedJumpLongTask = false;
-    public static boolean enableSepalsWeightTable = false;
-    public static boolean enableEntitiesCramming = false;
+    public static boolean enableSepalsFrogLookAt = true;
+    public static boolean enableSepalsFrogAttackableSensor = true;
+    public static boolean enableSepalsLivingTargetCache = true;
+    public static boolean nearestLivingEntitiesSensorUseQuickSort = true;
+    public static boolean enableSepalsBiasedJumpLongTask = true;
+    public static boolean enableSepalsWeightTable = true;
+    public static boolean enableEntitiesCramming = true;
 
     /**
      * Runs the mod initializer.

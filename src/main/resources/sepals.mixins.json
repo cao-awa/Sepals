@@ -4,6 +4,7 @@
   "package": "com.github.cao.awa.sepals.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "entity.LivingEntityMixin"
   ],
   "client": [
   ],
@@ -16,6 +17,8 @@
     "entity.ai.brain.sensor.frog.FrogAttackablesSensorMixin",
     "entity.track.EntityTrackingSectionMixin",
     "explosion.ExplosionMixin",
+    "server.MinecraftServerMixin",
+    "world.MinecraftServerAccessor",
     "world.WorldMixin"
   ],
   "injectors": {

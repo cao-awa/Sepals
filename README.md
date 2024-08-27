@@ -100,6 +100,39 @@ Quick sort supports by fastutil to replace java tim sort
 Rearrange the attackable conditions
 let less costs predicate running first
 reduce the probability of high-costs calculating
+
+-- The complaints --
+Mojang's attackable predicate is:
+
+!entity.getBrain().hasMemoryModule(MemoryModuleType.HAS_HUNTING_COOLDOWN)
+ && Sensor.testAttackableTargetPredicate(entity, target)
+ && FrogEntity.isValidFrogFood(target)
+ && !this.isTargetUnreachable(entity, target)
+ && target.isInRange(entity, 10.0)
+
+in this case, 'Sensor#testAttackableTargetPredicate' has calls 'TargetPredicate#test'
+that cause a very lots raycast calculate when entities too much in the area
+but... minecraft's raycast is absolutely bad, very slow
+
+the 'TargetPredicate#test' in this case (1366 frogs) has make 44.3ms costs in once game tick
+among them, 'BlockView.raycast' contributed 39.7ms
+
+then i make it be:
+
+FrogEntity.isValidFrogFood(target) && 
+ target.isInRange(entity, 10.0) && 
+ entity.getBrain().hasMemoryModule(MemoryModuleType.HAS
+ isTargetUnreachable(entity, target) && 
+ Sensor.testAttackableTargetPredicate(entity, target);
+ 
+the 'isValidFrogFood' is simple conditions, check the entity's tag has in 'frog_food'
+and a extra check when entity is slime then skip it when it size not 1
+
+the 'isInRange' also simple, it only a few math calculates
+
+the 'hasMemoryModule' simple but it still can be said that high-cost
+this method getting element from map, but the key type 'MemoryModuleType' are not hash-able or comparable
+it cause getting in this 1366 frogs case make 5ms costs in once game tick
 ```
 
 1366 frogs cramming in a 3x3 space:
@@ -126,7 +159,7 @@ at the findFirst in LivingTargetCache when input predicate is success
 
 but if subsequent conditions is failures, then to calculate this anymore is ueless
 because even if the findFirst has found (raycast success)
-but we don't used this result in subsequent contexts 
+but we don't used this result in subsequent contexts  
 ```
 
 1366 frogs cramming in a 3x3 space:

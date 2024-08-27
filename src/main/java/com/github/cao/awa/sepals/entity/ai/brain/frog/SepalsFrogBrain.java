@@ -61,14 +61,11 @@ public class SepalsFrogBrain {
     }
 
     public static boolean attackable(LivingEntity entity, LivingEntity target) {
-        if (FrogEntity.isValidFrogFood(target) && target.isInRange(entity, 10.0)) {
-            if (entity.getBrain().hasMemoryModule(MemoryModuleType.HAS_HUNTING_COOLDOWN)) {
-                if (isTargetUnreachable(entity, target)){
-                    return Sensor.testAttackableTargetPredicate(entity, target);
-                }
-            }
-        }
-        return false;
+        return FrogEntity.isValidFrogFood(target) &&
+                target.isInRange(entity, 10.0) &&
+                entity.getBrain().hasMemoryModule(MemoryModuleType.HAS_HUNTING_COOLDOWN) &&
+                isTargetUnreachable(entity, target) &&
+                Sensor.testAttackableTargetPredicate(entity, target);
     }
 
     private static boolean isTargetUnreachable(LivingEntity entity, LivingEntity target) {

@@ -168,3 +168,19 @@ but we don't used this result in subsequent contexts
 |---------------------------------------------------------------------:|:-------:|:-------------:|:----------------------:|:-------------------------:|
 |           Vanilla <br /> (LookAtMobWithIntervalTask$$Lambda#trigger) | 26.5 ms |     100 %     |        25.1 ms         |           94 %            |
 | With Sepals <br /> (SepalsLookAtMobWithIntervalTask$$Lambda#trigger) | 3.4 ms  |     13 %      |         3.3 ms         |           97 %            |
+
+### Find point of interest task (WIP)
+
+```
+Used catheter to replaced java stream
+
+-- Warning --
+This feature may not provided good optimization
+```
+
+88 villagers cramming in a 1x1 space:
+
+|                            Environment                             | keepRunning | Percent(Avg.) |
+|:------------------------------------------------------------------:|:-----------:|:-------------:|
+|      Vanilla <br /> (FindPointOfInterestTask$$Lambda#trigger)      |   0.6 ms    |     100 %     |
+| With Sepals <br /> (SepalsFindPointOfInterestTask$$Lambda#trigger) |    1 ms     |     166 %     |

@@ -36,6 +36,7 @@ import net.minecraft.world.storage.StorageKey;
 
 import java.nio.file.Path;
 import java.util.Comparator;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiPredicate;
@@ -88,7 +89,7 @@ public class SepalsPointOfInterestStorage {
     ) {
         return Catheter.of(accessor(set).getPointsOfInterestByType().entrySet())
                 .filter(entry -> predicate.test(entry.getKey()))
-                .flatTo(entry -> Catheter.of(entry.getValue()))
+                .flatToByCollection(Map.Entry::getValue)
                 .filter((Predicate<PointOfInterest>) occupationStatus.getPredicate());
     }
 

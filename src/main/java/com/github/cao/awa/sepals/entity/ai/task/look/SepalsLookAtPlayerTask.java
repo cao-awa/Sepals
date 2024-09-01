@@ -1,23 +1,21 @@
 package com.github.cao.awa.sepals.entity.ai.task.look;
 
 import com.github.cao.awa.sepals.entity.ai.cache.SepalsLivingTargetCache;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.ai.brain.EntityLookTarget;
 import net.minecraft.entity.ai.brain.LivingTargetCache;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
-import net.minecraft.entity.ai.brain.task.LookAtMobWithIntervalTask;
+import net.minecraft.entity.ai.brain.task.SingleTickTask;
 import net.minecraft.entity.ai.brain.task.Task;
 import net.minecraft.entity.ai.brain.task.TaskTriggerer;
-import net.minecraft.util.math.intprovider.UniformIntProvider;
 
 import java.util.Optional;
+import java.util.function.Predicate;
 
-public class SepalsLookAtMobWithIntervalTask {
-    public static Task<LivingEntity> frogFollow(float maxDistance, UniformIntProvider interval) {
-        double d = maxDistance * maxDistance;
-        LookAtMobWithIntervalTask.Interval interval2 = new LookAtMobWithIntervalTask.Interval(interval);
+public class SepalsLookAtPlayerTask {
+    public static SingleTickTask<LivingEntity> create(float maxDistance) {
+        float f = maxDistance * maxDistance;
         return TaskTriggerer.task(
                 context -> context.group(context.queryMemoryAbsent(MemoryModuleType.LOOK_TARGET), context.queryMemoryValue(MemoryModuleType.VISIBLE_MOBS))
                         .apply(
@@ -25,16 +23,22 @@ public class SepalsLookAtMobWithIntervalTask {
                                 (lookTarget, visibleMobs) -> (world, entity, time) -> {
                                     LivingTargetCache cache = context.getValue(visibleMobs);
 
+                                    Predicate<LivingEntity> distance = target -> target.squaredDistanceTo(entity) <= f;
+
                                     Optional<? extends LivingEntity> optional;
                                     if (cache instanceof SepalsLivingTargetCache sepalsCache) {
-                                         optional = sepalsCache.findFirstPlayer(e -> e.squaredDistanceTo(entity) <= d);
+                                        optional = entity.hasPassengers() ?
+                                                sepalsCache.findFirstPlayer(distance::test, entity::hasPassenger) :
+                                                sepalsCache.findFirstPlayer(distance::test);
                                     } else {
-                                        optional = cache.findFirst(e -> e.isPlayer() && e.squaredDistanceTo(entity) <= d);
+                                        optional = entity.hasPassengers() ?
+                                                cache.findFirst(target -> distance.test(target) && !entity.hasPassenger(target)) :
+                                                cache.findFirst(distance);
                                     }
 
-                                    if (optional.isEmpty() || !interval2.shouldRun(world.random)) {
+                                    if (optional.isEmpty()) {
                                         return false;
-                                    }  else {
+                                    } else {
                                         lookTarget.remember(new EntityLookTarget(optional.get(), true));
                                         return true;
                                     }

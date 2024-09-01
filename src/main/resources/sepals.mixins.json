@@ -4,6 +4,12 @@
   "package": "com.github.cao.awa.sepals.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "entity.ai.brain.BrainMixin",
+    "entity.ai.brain.sensor.nearest.NearestPlayersSensorMixin",
+    "entity.ai.brain.sensor.villager.VillagerBabiesSensorMixin",
+    "world.poi.SerializingRegionBasedStorageMixin",
+    "world.storage.PointOfInterestSetMixin",
+    "world.storage.PointOfInterestStorageMixin"
   ],
   "client": [
   ],
@@ -13,8 +19,8 @@
     "collection.weight.WeightingMixin",
     "entity.LivingEntityMixin",
     "entity.ai.brain.frog.FrogBrainMixin",
-    "entity.ai.brain.sensor.NearestLivingEntitiesSensorMixin",
     "entity.ai.brain.sensor.frog.FrogAttackablesSensorMixin",
+    "entity.ai.brain.sensor.nearest.NearestLivingEntitiesSensorMixin",
     "entity.ai.brain.villager.VillagerTaskListProviderMixin",
     "entity.track.EntityTrackingSectionMixin",
     "explosion.ExplosionMixin",

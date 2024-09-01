@@ -50,12 +50,12 @@ public class SepalsFindPointOfInterestTask {
                                     if (onlyRunIfChild && entity.isBaby()) {
                                         return false;
                                     } else if (mutableLong.getValue() == 0L) {
-                                        mutableLong.setValue(world.getTime() + (long)world.random.nextInt(20));
+                                        mutableLong.setValue(world.getTime() + (long) world.random.nextInt(20));
                                         return false;
                                     } else if (world.getTime() < mutableLong.getValue()) {
                                         return false;
                                     } else {
-                                        mutableLong.setValue(time + 20L + (long)world.getRandom().nextInt(20));
+                                        mutableLong.setValue(time + 20L + (long) world.getRandom().nextInt(20));
                                         PointOfInterestStorage pointOfInterestStorage = world.getPointOfInterestStorage();
                                         long2ObjectMap.long2ObjectEntrySet().removeIf(entry -> !entry.getValue().isAttempting(time));
                                         Predicate<BlockPos> predicate2 = pos -> {
@@ -70,18 +70,19 @@ public class SepalsFindPointOfInterestTask {
                                             }
                                         };
                                         Pair<RegistryEntry<PointOfInterestType>, BlockPos>[] set = SepalsPointOfInterestStorage.getSortedTypesAndPositions(
-                                                pointOfInterestStorage,
+                                                        pointOfInterestStorage,
                                                         poiPredicate, predicate2, entity.getBlockPos(), 48, PointOfInterestStorage.OccupationStatus.HAS_SPACE
                                                 )
                                                 .holdTill(5)
                                                 .distinct()
-                                                .dArray();
+                                                .safeArray();
+
                                         Path path = findPathToPoi(entity, set);
                                         if (path == null || !path.reachesTarget()) {
-                                            for(Pair<RegistryEntry<PointOfInterestType>, BlockPos> pair : set) {
+                                            for (Pair<RegistryEntry<PointOfInterestType>, BlockPos> pair : set) {
                                                 long2ObjectMap.computeIfAbsent(
                                                         pair.getSecond().asLong(),
-                                                        (Long2ObjectFunction<? extends RetryMarker>)(m -> new RetryMarker(world.random, time))
+                                                        (Long2ObjectFunction<? extends RetryMarker>) (m -> new RetryMarker(world.random, time))
                                                 );
                                             }
                                         } else {
@@ -145,7 +146,7 @@ public class SepalsFindPointOfInterestTask {
             this.previousAttemptAt = time;
             int i = this.currentDelay + this.random.nextInt(40) + 40;
             this.currentDelay = Math.min(i, 400);
-            this.nextScheduledAttemptAt = time + (long)this.currentDelay;
+            this.nextScheduledAttemptAt = time + (long) this.currentDelay;
         }
 
         public boolean isAttempting(long time) {

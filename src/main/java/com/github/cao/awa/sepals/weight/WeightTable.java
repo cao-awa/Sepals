@@ -2,55 +2,89 @@ package com.github.cao.awa.sepals.weight;
 
 import com.github.cao.awa.catheter.Catheter;
 import com.github.cao.awa.sepals.weight.result.WeightingResult;
-import net.minecraft.util.collection.Weight;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.util.collection.Weighted;
 import net.minecraft.util.math.random.Random;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.TreeMap;
+import java.util.*;
+import java.util.function.ToIntFunction;
 
-public class WeightTable<T extends Weighted> {
+public class WeightTable<T> {
     private Ranged<T>[] weighted;
     private int range;
 
     @SuppressWarnings("unchecked")
-    public WeightTable<T> initWeight(Catheter<T> pool) {
+    public static <X extends Weighted> WeightTable<X> initWeight(Catheter<X> pool) {
         int size = pool.count();
-        Range<T>[] ranges = new Range[size];
+        Ranged<X>[] ranges = new Range[size];
         int range = 0;
         int i = 0;
         while (i < size) {
-            T weighted = pool.fetch(i);
+            X weighted = pool.fetch(i);
             int nextRange = range + weighted.getWeight().getValue();
             ranges[i] = new Range<>(range, nextRange, weighted);
             range = nextRange;
             i++;
         }
-        this.weighted = ranges;
-        this.range = Math.max(range, 1);
-        return this;
+        return new WeightTable<X>().initWeightWithPrecalculate(ranges, Math.max(range, 1));
     }
 
     @SuppressWarnings("unchecked")
-    public WeightTable<T> initWeight(List<T> pool) {
-        int size = pool.size();
-        T[] elements = (T[]) new Weighted[size];
+    public static <X extends Weighted> WeightTable<X> initWeight(List<X> pool) {
+        X[] elements = (X[]) new Weighted[pool.size()];
         pool.toArray(elements);
-        Range<T>[] ranges = new Range[size];
+        return initWeight(elements, weighted -> weighted.getWeight().getValue());
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <X> WeightTable<X> initWeight(Collection<X> pool, ToIntFunction<X> weightGenerator) {
+        int size = pool.size();
+        X[] elements = (X[]) new Object[size];
+        pool.toArray(elements);
+        Ranged<X>[] ranges = new Range[size];
         int range = 0;
         int i = 0;
         while (i < size) {
-            T weighted = elements[i];
-            int nextRange = range + weighted.getWeight().getValue();
+            X weighted = elements[i];
+            int nextRange = range + weightGenerator.applyAsInt(weighted);
             ranges[i] = new Range<>(range, nextRange, weighted);
             range = nextRange;
             i++;
         }
-        this.weighted = ranges;
-        this.range = Math.max(range, 1);
-        return this;
+        return new WeightTable<X>().initWeightWithPrecalculate(ranges, Math.max(range, 1));
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <X> WeightTable<X> initWeight(X[] pool, ToIntFunction<X> weightGenerator) {
+        int size = pool.length;
+        Ranged<X>[] ranges = new Range[size];
+        int range = 0;
+        int i = 0;
+        while (i < size) {
+            X weighted = pool[i];
+            int nextRange = range + weightGenerator.applyAsInt(weighted);
+            ranges[i] = new Range<>(range, nextRange, weighted);
+            range = nextRange;
+            i++;
+        }
+        return new WeightTable<X>().initWeightWithPrecalculate(ranges, Math.max(range, 1));
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <X> WeightTable<X> initWeight(Pair<X, Integer>[] pool) {
+        int size = pool.length;
+        Ranged<X>[] ranges = new Range[size];
+        int range = 0;
+        int i = 0;
+        while (i < size) {
+            Pair<X, Integer> pair = pool[i];
+            X x = pair.getFirst();
+            int nextRange = range + pair.getSecond();
+            ranges[i] = new Range<>(range, nextRange, x);
+            range = nextRange;
+            i++;
+        }
+        return new WeightTable<X>().initWeightWithPrecalculate(ranges, Math.max(range, 1));
     }
 
     public WeightTable<T> initWeightWithPrecalculate(Ranged<T>[] weighted, int range) {
@@ -60,7 +94,7 @@ public class WeightTable<T extends Weighted> {
     }
 
     public T select(Random random) {
-        WeightingResult<T> result = selectWithIndex(random);
+        WeightingResult<T> result = selectRange(random);
         if (result == null) {
             return null;
         }
@@ -76,7 +110,7 @@ public class WeightTable<T extends Weighted> {
      * @author cao_awa
      * @since 1.0.0
      */
-    public WeightingResult<T> selectWithIndex(Random random) {
+    public WeightingResult<T> selectRange(Random random) {
         // Push in stack to improves performance.
         Ranged<T>[] ranges = this.weighted;
 
@@ -125,6 +159,13 @@ public class WeightTable<T extends Weighted> {
         }
 
         return null;
+    }
+
+    public WeightingResult<T> selectWithIndex(int index) {
+        if (index < this.weighted.length) {
+            return new WeightingResult<>(this.weighted[index].element(), index);
+        }
+        return new WeightingResult<>(null, index);
     }
 
     public static final class Range<T> implements Ranged<T> {

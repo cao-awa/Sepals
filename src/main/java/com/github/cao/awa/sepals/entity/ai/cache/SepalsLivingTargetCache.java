@@ -1,6 +1,7 @@
 package com.github.cao.awa.sepals.entity.ai.cache;
 
 import com.github.cao.awa.apricot.util.collection.ApricotCollectionFactor;
+import com.github.cao.awa.catheter.Catheter;
 import com.google.common.collect.Iterables;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -8,30 +9,25 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.LivingTargetCache;
 import net.minecraft.entity.ai.brain.sensor.Sensor;
 import net.minecraft.entity.player.PlayerEntity;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class SepalsLivingTargetCache extends LivingTargetCache {
     private final LivingEntity[] entities;
+    private final PlayerEntity[] players;
     private final Object2BooleanOpenHashMap<LivingEntity> directSuccess;
     private final Predicate<LivingEntity> compute;
 
     @SuppressWarnings("unchecked")
-    public SepalsLivingTargetCache(LivingEntity owner, List<LivingEntity> entities) {
-        super(owner, Collections.EMPTY_LIST);
-        this.entities = entities.toArray(LivingEntity[]::new);
-        this.directSuccess = new Object2BooleanOpenHashMap<>(entities.size());
-        Predicate<LivingEntity> predicate = entity -> Sensor.testTargetPredicate(owner, entity);
-        this.compute = entity -> this.directSuccess.computeIfAbsent(entity, predicate);
-    }
-
-    @SuppressWarnings("unchecked")
-    public SepalsLivingTargetCache(LivingEntity owner, LivingEntity[] entities) {
+    public SepalsLivingTargetCache(LivingEntity owner, LivingEntity[] entities, PlayerEntity[] players) {
         super(owner, Collections.EMPTY_LIST);
         this.entities = entities;
+        this.players = players;
         this.directSuccess = new Object2BooleanOpenHashMap<>(entities.length);
         Predicate<LivingEntity> predicate = entity -> Sensor.testTargetPredicate(owner, entity);
         this.compute = entity -> this.directSuccess.computeIfAbsent(entity, predicate);
@@ -40,10 +36,7 @@ public class SepalsLivingTargetCache extends LivingTargetCache {
     public Optional<LivingEntity> findFirst(Predicate<LivingEntity> predicate) {
         LivingEntity[] entities = this.entities;
 
-        int i = 0;
-        int edge = entities.length;
-        for (; i < edge; i++) {
-            LivingEntity entity = entities[i];
+        for (LivingEntity entity : entities) {
             if (predicate.test(entity) && this.compute.test(entity)) {
                 return Optional.of(entity);
             }
@@ -52,30 +45,28 @@ public class SepalsLivingTargetCache extends LivingTargetCache {
         return Optional.empty();
     }
 
-    public Optional<LivingEntity> findFirstPlayer(Predicate<LivingEntity> predicate) {
-        LivingEntity[] entities = this.entities;
+    public Optional<PlayerEntity> findFirstPlayer(Predicate<PlayerEntity> predicate) {
+        return findFirstPlayer(predicate, () -> true);
+    }
 
-        int i = 0;
-        int edge = entities.length;
-        for (; i < edge; i++) {
-            LivingEntity entity = entities[i];
-            if (entity.isPlayer() && predicate.test(entity) && this.compute.test(entity)) {
-                return Optional.of(entity);
+    public Optional<PlayerEntity> findFirstPlayer(Predicate<PlayerEntity> predicate, BooleanSupplier canTargetPredicateWhen) {
+        PlayerEntity[] players = this.players;
+
+        for (PlayerEntity player : players) {
+            if (predicate.test(player) && canTargetPredicateWhen.getAsBoolean() && this.compute.test(player)) {
+                return Optional.of(player);
             }
         }
 
         return Optional.empty();
     }
 
-    public Optional<LivingEntity> findFirstPlayer(Predicate<LivingEntity> predicate, Supplier<Boolean> canTargetPredicateWhen) {
-        LivingEntity[] entities = this.entities;
+    public Optional<PlayerEntity> findFirstPlayer(Predicate<PlayerEntity> predicate, Predicate<PlayerEntity> canTargetPredicateWhen) {
+        PlayerEntity[] players = this.players;
 
-        int i = 0;
-        int edge = entities.length;
-        for (; i < edge; i++) {
-            LivingEntity entity = entities[i];
-            if (entity.isPlayer() && predicate.test(entity) && canTargetPredicateWhen.get() && this.compute.test(entity)) {
-                return Optional.of(entity);
+        for (PlayerEntity player : players) {
+            if (predicate.test(player) && canTargetPredicateWhen.test(player) && this.compute.test(player)) {
+                return Optional.of(player);
             }
         }
 
@@ -83,18 +74,20 @@ public class SepalsLivingTargetCache extends LivingTargetCache {
     }
 
     public Iterable<LivingEntity> iterate(Predicate<LivingEntity> predicate) {
-        return Iterables.filter(Arrays.asList(this.entities), entity -> predicate.test(entity) && this.compute.test(entity));
+        return () -> stream(predicate).iterator();
     }
 
     public Stream<LivingEntity> stream(Predicate<LivingEntity> predicate) {
         return Arrays.stream(this.entities).filter(entity -> predicate.test(entity) && this.compute.test(entity));
     }
 
+    public List<LivingEntity> collect(Predicate<LivingEntity> predicate) {
+        return Catheter.of(this.entities).filterTo(entity -> predicate.test(entity) && this.compute.test(entity)).list();
+    }
+
     public boolean contains(LivingEntity target) {
-        int i = 0;
-        int edge = entities.length;
-        for (; i < edge; i++) {
-            LivingEntity entity = entities[i];
+        LivingEntity[] entities = this.entities;
+        for (LivingEntity entity : entities) {
             if (entity == target) {
                 return this.compute.test(entity);
             }
@@ -106,10 +99,7 @@ public class SepalsLivingTargetCache extends LivingTargetCache {
     public boolean anyMatch(Predicate<LivingEntity> predicate) {
         LivingEntity[] entities = this.entities;
 
-        int i = 0;
-        int edge = entities.length;
-        for (; i < edge; i++) {
-            LivingEntity entity = entities[i];
+        for (LivingEntity entity : entities) {
             if (predicate.test(entity) && this.compute.test(entity)) {
                 return true;
             }

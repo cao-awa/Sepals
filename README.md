@@ -36,7 +36,6 @@ This feature require disable lithium's cramming to enable:
 mixin.entity.collisions.unpushable_cramming=false
 ```
 
-
 ### Weighted random
 
 ```
@@ -204,7 +203,7 @@ Listed what sepals to do here:
 Recommend use this feature with lithium and c2me to make best performance
 
 -- Warning --
-Not long-term stability tested, increased 'shouldRun' maybe cause behavoirs change
+Not long-term stability tested
 this feature does not be proved 100% vanilla
 also it does not be proved has not vanilla in statistical significance 
 
@@ -214,10 +213,10 @@ Default enabled
 
 591 villagers cramming in a 1x1 space:
 
-|               Environment                | Brain#tick | Percent | Brain#startTasks | Percent(startTasks) | Brain#tickSensors | Percent(tickSensors) | Brain#updateTasks | Percent(updateTasks) | Brain#tickMemories | Percent(tickMemories) |
-|:----------------------------------------:|:----------:|:-------:|:----------------:|:-------------------:|:-----------------:|:--------------------:|:-----------------:|:--------------------:|:------------------:|:---------------------:|
-|  Vanilla <br /> (No any sepals feature)  |   33 ms    |  100 %  |      22 ms       |        100 %        |       3 ms        |        100 %         |       7 ms        |        100 %         |       0.8 ms       |         100 %         |
-|   Vanilla <br /> (No sepals villager)    |  32.8 ms   |  99 %   |     22.3 ms      |        101 %        |      3.3 ms       |        110 %         |      6.1 ms       |         87 %         |       1.1 ms       |         137 %         |
-| With lithium <br /> (No sepals villager) |  11.7 ms   |  35 %   |      5.4 ms      |        24 %         |      3.4 ms       |        113 %         |      2.1 ms       |         30 %         |       0.9 ms       |         112 %         |
-|               With Sepals                |   8.3 ms   |  25 %   |      3.7 ms      |        16 %         |      3.6 ms       |        120 %         |      0.3 ms       |        0.04 %        |       0.8 ms       |         100 %         |
-|         With Sepals and lithium          |   7.3 ms   |  22 %   |      2.6 ms      |        11 %         |      3.5 ms       |        116 %         |      0.6 ms       |        0.08 %        |       0.6 ms       |         75 %          |
+|               Environment                | Brain#tick (Total) | Percent | Brain#startTasks | Percent(startTasks) | Brain#tickSensors | Percent(tickSensors) | Brain#updateTasks | Percent(updateTasks) | Brain#tickMemories | Percent(tickMemories) |
+|:----------------------------------------:|:------------------:|:-------:|:----------------:|:-------------------:|:-----------------:|:--------------------:|:-----------------:|:--------------------:|:------------------:|:---------------------:|
+|  Vanilla <br /> (No any sepals feature)  |       33 ms        |  100 %  |      22 ms       |        100 %        |       3 ms        |        100 %         |       7 ms        |        100 %         |       0.8 ms       |         100 %         |
+|   Vanilla <br /> (No sepals villager)    |      32.8 ms       |  99 %   |     22.3 ms      |        101 %        |      3.3 ms       |        110 %         |      6.1 ms       |         87 %         |       1.1 ms       |         137 %         |
+| With lithium <br /> (No sepals villager) |      11.7 ms       |  35 %   |      5.4 ms      |        24 %         |      3.4 ms       |        113 %         |      2.1 ms       |         30 %         |       0.9 ms       |         112 %         |
+|               With Sepals                |       8.3 ms       |  25 %   |      3.7 ms      |        16 %         |      3.6 ms       |        120 %         |      0.3 ms       |        0.04 %        |       0.8 ms       |         100 %         |
+|         With Sepals and lithium          |       7.3 ms       |  22 %   |      2.6 ms      |        11 %         |      3.5 ms       |        116 %         |      0.6 ms       |        0.08 %        |       0.6 ms       |         75 %          |

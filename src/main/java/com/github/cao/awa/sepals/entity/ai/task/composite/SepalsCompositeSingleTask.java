@@ -1,5 +1,6 @@
 package com.github.cao.awa.sepals.entity.ai.task.composite;
 
+import com.github.cao.awa.sepals.entity.ai.brain.DetailedDebuggableTask;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.MemoryModuleState;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
@@ -10,7 +11,7 @@ import net.minecraft.server.world.ServerWorld;
 import java.util.Map;
 import java.util.Set;
 
-public class SepalsCompositeSingleTask<E extends LivingEntity> implements Task<E> {
+public class SepalsCompositeSingleTask<E extends LivingEntity> implements Task<E>, DetailedDebuggableTask {
     private final Map<MemoryModuleType<?>, MemoryModuleState> requiredMemoryState;
     private final Set<MemoryModuleType<?>> memoriesToForgetWhenStopped;
     private final Task<? super E> task;
@@ -82,5 +83,14 @@ public class SepalsCompositeSingleTask<E extends LivingEntity> implements Task<E
 
     public String toString() {
         return "(" + getName() + "): " + (SepalsTaskStatus.isRunning(this.task) ? this.task : "[]");
+    }
+
+    @Override
+    public String information() {
+        if (this.task instanceof DetailedDebuggableTask detailedTask) {
+            return detailedTask.information();
+        } else {
+            return "SingleTask(delegate=" + this.task + ")";
+        }
     }
 }

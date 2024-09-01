@@ -1,6 +1,8 @@
 package com.github.cao.awa.sepals.entity.ai.task.composite;
 
 import com.github.cao.awa.catheter.Catheter;
+import com.github.cao.awa.sepals.entity.ai.brain.DetailedDebuggableTask;
+import com.github.cao.awa.sepals.entity.ai.brain.TaskDelegate;
 import com.github.cao.awa.sepals.weight.WeightedList;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.entity.LivingEntity;
@@ -17,7 +19,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class SepalsCompositeTask<E extends LivingEntity> implements Task<E> {
+public class SepalsCompositeTask<E extends LivingEntity> implements Task<E>, TaskDelegate<E>, DetailedDebuggableTask {
     private final Map<MemoryModuleType<?>, MemoryModuleState> requiredMemoryState;
     private final Set<MemoryModuleType<?>> memoriesToForgetWhenStopped;
     protected final Order order;
@@ -91,6 +93,19 @@ public class SepalsCompositeTask<E extends LivingEntity> implements Task<E> {
     public String toString() {
         Set<? extends Task<? super E>> set = this.tasks.elements().filter(SepalsTaskStatus::isRunning).set();
         return "(" + getName() + "): " + set;
+    }
+
+    @Override
+    public Catheter<Task<? super E>> sepals$tasks() {
+        return this.tasks.elements();
+    }
+
+    @Override
+    public String information() {
+        String orderMode = this.order == Order.SHUFFLED ? "SHUFFLED" : "ORDERED";
+        String runMode = this.runMode == RunMode.RUN_ONE ? "PICK ONCE" : "RUN ALL";
+
+        return "CompositeTask(" + this.status + ", " + orderMode + ", " + runMode + ", tasks(count=" + this.tasks.size() + "))";
     }
 
     public enum Order {

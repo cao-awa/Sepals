@@ -3,6 +3,7 @@ package com.github.cao.awa.sepals;
 import com.github.cao.awa.sepals.backup.SepalsBackupCenter;
 import com.github.cao.awa.sepals.command.SepalsBackupCommand;
 import com.github.cao.awa.sepals.command.SepalsConfigCommand;
+import com.github.cao.awa.sepals.command.SepalsDebugCommand;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import org.apache.logging.log4j.LogManager;
@@ -10,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 
 public class Sepals implements ModInitializer {
     public static final Logger LOGGER = LogManager.getLogger("Sepals");
+    public static final String VERSION = "1.0.1";
     public static SepalsBackupCenter backupCenter;
     public static boolean enableSepalsVillager = true;
     public static boolean enableSepalsFrogLookAt = true;
@@ -25,6 +27,18 @@ public class Sepals implements ModInitializer {
      */
     @Override
     public void onInitialize() {
+        LOGGER.info("Sepals {} loading", VERSION);
+        LOGGER.info("Sepals 'enableSepalsVillager' flag is {}, this flag unable to change in game runtime!", enableSepalsVillager);
+        LOGGER.info("Sepals 'enableSepalsFrogLookAt' flag is {}, this flag unable to change in game runtime!", enableSepalsFrogLookAt);
+        LOGGER.info("Sepals 'enableSepalsFrogAttackableSensor' flag is {}", enableSepalsFrogAttackableSensor);
+        LOGGER.info("Sepals 'enableSepalsLivingTargetCache' flag is {}", enableSepalsLivingTargetCache);
+        LOGGER.info("Sepals 'nearestLivingEntitiesSensorUseQuickSort' flag is {}", nearestLivingEntitiesSensorUseQuickSort);
+        LOGGER.info("Sepals 'enableSepalsBiasedJumpLongTask' flag is {}, this flag unable to change in game runtime!", enableSepalsBiasedJumpLongTask);
+        LOGGER.info("Sepals 'enableSepalsWeightTable' flag is {}", enableSepalsWeightTable);
+        LOGGER.info("Sepals 'enableEntitiesCramming' flag is {}", enableEntitiesCramming);
+
+
+        ServerLifecycleEvents.SERVER_STARTING.register(SepalsDebugCommand::register);
         ServerLifecycleEvents.SERVER_STARTING.register(SepalsConfigCommand::register);
         ServerLifecycleEvents.SERVER_STARTING.register(SepalsBackupCommand::register);
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {
@@ -36,5 +50,3 @@ public class Sepals implements ModInitializer {
         });
     }
 }
-
-// /spark profiler start --timeout 60

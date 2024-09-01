@@ -1,7 +1,10 @@
 package com.github.cao.awa.sepals.mixin.entity.ai.brain;
 
 import com.github.cao.awa.catheter.Catheter;
+import com.github.cao.awa.catheter.receptacle.BooleanReceptacle;
+import com.github.cao.awa.sepals.Sepals;
 import com.github.cao.awa.sepals.collection.binary.set.ReadonlyActivityBinaryList;
+import com.github.cao.awa.sepals.entity.ai.brain.TaskDelegate;
 import com.github.cao.awa.sepals.entity.ai.task.composite.SepalsTaskStatus;
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
@@ -11,6 +14,7 @@ import net.minecraft.entity.ai.brain.*;
 import net.minecraft.entity.ai.brain.sensor.Sensor;
 import net.minecraft.entity.ai.brain.sensor.SensorType;
 import net.minecraft.entity.ai.brain.task.Task;
+import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.server.world.ServerWorld;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,7 +30,7 @@ import java.util.*;
 import java.util.function.Supplier;
 
 @Mixin(Brain.class)
-public abstract class BrainMixin<E extends LivingEntity> {
+public abstract class BrainMixin<E extends LivingEntity> implements TaskDelegate<E> {
     @Shadow
     @Final
     private Map<Integer, Map<Activity, Set<Task<? super E>>>> tasks;
@@ -41,7 +45,6 @@ public abstract class BrainMixin<E extends LivingEntity> {
 
     @Shadow
     public abstract <U> void forget(MemoryModuleType<U> type);
-    private ReadonlyActivityBinaryList<Activity> activities = new ReadonlyActivityBinaryList<>(new Activity[0]);
     private Catheter<Task<? super E>> taskCatheter;
     private Catheter<Task<? super E>> runningTasks;
     private Catheter<Map.Entry<MemoryModuleType<?>, Optional<? extends Memory<?>>>> memoriesCatheter;
@@ -148,16 +151,14 @@ public abstract class BrainMixin<E extends LivingEntity> {
             )
     )
     private void startTasks(Brain<E> instance, ServerWorld world, E entity) {
-        long time = world.getTime();
-        getTasks().each(task -> {
-            if (SepalsTaskStatus.isStopped(task.getStatus())) {
-                task.tryStarting(world, entity, time);
-            }
-        });
+        long time = entity.getWorld().getTime();
 
-        if (getRunningTasks().isEmpty()) {
-            constructRunningTasks();
-        }
+        this.runningTasks = getTasks().filterTo(task -> {
+            if (SepalsTaskStatus.isStopped(task.getStatus())) {
+                return task.tryStarting(world, entity, time);
+            }
+            return true;
+        });
     }
 
     @Redirect(
@@ -168,7 +169,7 @@ public abstract class BrainMixin<E extends LivingEntity> {
             )
     )
     private void updateTasks(Brain<E> instance, ServerWorld world, E entity) {
-        long time = world.getTime();
+        long time = entity.getWorld().getTime();
 
         getRunningTasks().filter(task -> {
             boolean running = SepalsTaskStatus.isRunning(task.getStatus());
@@ -185,7 +186,7 @@ public abstract class BrainMixin<E extends LivingEntity> {
             cancellable = true
     )
     private void stopAllTasks(ServerWorld world, E entity, CallbackInfo ci) {
-        long time = world.getTime();
+        long time = entity.getWorld().getTime();
 
         getRunningTasks().each(task -> task.stop(world, entity, time));
 
@@ -219,13 +220,9 @@ public abstract class BrainMixin<E extends LivingEntity> {
         this.runningTasks = null;
     }
 
-    @Inject(
-            method = "hasActivity",
-            at = @At("HEAD"),
-            cancellable = true
-    )
-    public void hasActivity(Activity activity, CallbackInfoReturnable<Boolean> cir) {
-        cir.setReturnValue(this.activities.contains(activity));
+    @Override
+    public Catheter<Task<? super E>> sepals$tasks() {
+        return this.taskCatheter.dump();
     }
 
     @Inject(
@@ -238,7 +235,5 @@ public abstract class BrainMixin<E extends LivingEntity> {
     )
     private void resetPossibleActivities(Activity except, CallbackInfo ci) {
         constructTasks();
-
-        this.activities = new ReadonlyActivityBinaryList<>(this.possibleActivities.toArray(Activity[]::new));
     }
 }

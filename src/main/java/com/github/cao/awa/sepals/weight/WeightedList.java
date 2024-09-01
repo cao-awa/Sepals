@@ -24,6 +24,10 @@ public class WeightedList<U> {
         this.elements = Catheter.make();
     }
 
+    public int size() {
+        return this.entries.count();
+    }
+
     public WeightedList<U> add(U data, int weight) {
         this.entries.append(new WeightedList.Entry<>(data, weight));
         varyElements();

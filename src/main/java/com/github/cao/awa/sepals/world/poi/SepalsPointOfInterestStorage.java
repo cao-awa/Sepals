@@ -112,7 +112,7 @@ public class SepalsPointOfInterestStorage {
             PointOfInterestStorage.OccupationStatus occupationStatus
     ) {
         return getTypesAndPositions(storage, typePredicate, posPredicate, pos, radius, occupationStatus)
-                .ifPresent(catheter -> ObjectArrays.quickSort(catheter.dArray(), Comparator.comparingDouble(pair -> pair.getSecond().getSquaredDistance(pos))));
+                .sort(Comparator.comparingDouble(pair -> pair.getSecond().getSquaredDistance(pos)));
     }
 
     public static Optional<BlockPos> getPosition(

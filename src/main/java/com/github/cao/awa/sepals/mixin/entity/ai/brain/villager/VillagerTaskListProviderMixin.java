@@ -8,6 +8,9 @@ import com.github.cao.awa.sepals.entity.ai.task.look.SepalsFindEntityTask;
 import com.github.cao.awa.sepals.entity.ai.task.look.SepalsLookAtPlayerTask;
 import com.github.cao.awa.sepals.entity.ai.task.poi.SepalsFindPointOfInterestTask;
 import com.github.cao.awa.sepals.entity.ai.task.rest.SepalsWakeUpTask;
+import com.github.cao.awa.sepals.entity.ai.task.schedule.SepalsScheduleActivityTask;
+import com.github.cao.awa.sepals.entity.ai.task.sleep.SepalsSleepTask;
+import com.github.cao.awa.sepals.entity.ai.task.wait.SepalsWaitTask;
 import com.github.cao.awa.sepals.entity.ai.task.walk.SepalsWalkHomeTask;
 import com.github.cao.awa.sepals.entity.ai.task.wander.SepalsWanderIndoorsTask;
 import com.google.common.collect.ImmutableList;
@@ -25,21 +28,46 @@ import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.village.VillagerProfession;
 import net.minecraft.world.poi.PointOfInterestTypes;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(VillagerTaskListProvider.class)
 public abstract class VillagerTaskListProviderMixin {
-    @Shadow
+    @Unique
     private static Pair<Integer, Task<LivingEntity>> createFreeFollowTask() {
-        return null;
+        return Pair.of(
+                5,
+                new SepalsRandomTask<>(
+                        ImmutableList.of(
+                                Pair.of(LookAtMobTask.create(EntityType.CAT, 8.0F), 8),
+                                Pair.of(LookAtMobTask.create(EntityType.VILLAGER, 8.0F), 2),
+                                Pair.of(SepalsLookAtPlayerTask.create(8.0F), 2),
+                                Pair.of(LookAtMobTask.create(SpawnGroup.CREATURE, 8.0F), 1),
+                                Pair.of(LookAtMobTask.create(SpawnGroup.WATER_CREATURE, 8.0F), 1),
+                                Pair.of(LookAtMobTask.create(SpawnGroup.AXOLOTLS, 8.0F), 1),
+                                Pair.of(LookAtMobTask.create(SpawnGroup.UNDERGROUND_WATER_CREATURE, 8.0F), 1),
+                                Pair.of(LookAtMobTask.create(SpawnGroup.WATER_AMBIENT, 8.0F), 1),
+                                Pair.of(LookAtMobTask.create(SpawnGroup.MONSTER, 8.0F), 1),
+                                Pair.of(new SepalsWaitTask(30, 60), 2)
+                        )
+                )
+        );
     }
 
-    @Shadow
+    @Unique
     private static Pair<Integer, Task<LivingEntity>> createBusyFollowTask() {
-        return null;
+        return Pair.of(
+                5,
+                new SepalsRandomTask<>(
+                        ImmutableList.of(
+                                Pair.of(LookAtMobTask.create(EntityType.VILLAGER, 8.0F), 2),
+                                Pair.of(SepalsLookAtPlayerTask.create(8.0F), 2),
+                                Pair.of(new SepalsWaitTask(30, 60), 8)
+                        )
+                )
+        );
     }
 
     @Inject(
@@ -125,8 +153,8 @@ public abstract class VillagerTaskListProviderMixin {
                             )
                     ),
                     createFreeFollowTask(),
-                    Pair.of(99, ScheduleActivityTask.create())
-            ));
+                    Pair.of(99, new SepalsScheduleActivityTask()))
+            );
         }
     }
 
@@ -163,7 +191,7 @@ public abstract class VillagerTaskListProviderMixin {
                     Pair.of(10, SepalsFindInteractionTargetTask.createTypedPlayer(4)),
                     Pair.of(2, VillagerWalkTowardsTask.create(MemoryModuleType.JOB_SITE, speed, 9, 100, 1200)),
                     Pair.of(3, new GiveGiftsToHeroTask(100)),
-                    Pair.of(99, ScheduleActivityTask.create())
+                    Pair.of(99, new SepalsScheduleActivityTask())
             ));
         }
     }
@@ -188,7 +216,7 @@ public abstract class VillagerTaskListProviderMixin {
                                             Pair.of(FindWalkTargetTask.create(speed), 1),
                                             Pair.of(GoTowardsLookTargetTask.create(speed, 2), 1),
                                             Pair.of(new JumpInBedTask(speed), 1),
-                                            Pair.of(new WaitTask(30, 60), 1)
+                                            Pair.of(new SepalsWaitTask(30, 60), 1)
                                     )
                             )
                     ),
@@ -212,7 +240,7 @@ public abstract class VillagerTaskListProviderMixin {
                             )
                     ),
                     createFreeFollowTask(),
-                    Pair.of(99, ScheduleActivityTask.create())
+                    Pair.of(99, new SepalsScheduleActivityTask())
             ));
         }
     }
@@ -257,11 +285,11 @@ public abstract class VillagerTaskListProviderMixin {
                                             Pair.of(FindWalkTargetTask.create(speed), 1),
                                             Pair.of(GoTowardsLookTargetTask.create(speed, 2), 1),
                                             Pair.of(new JumpInBedTask(speed), 2),
-                                            Pair.of(new WaitTask(20, 40), 2)
+                                            Pair.of(new SepalsWaitTask(20, 40), 2)
                                     )
                             )
                     ),
-                    Pair.of(99, ScheduleActivityTask.create())
+                    Pair.of(99, new SepalsScheduleActivityTask())
             ));
         }
     }
@@ -273,25 +301,25 @@ public abstract class VillagerTaskListProviderMixin {
     )
     private static void createRestTasks(VillagerProfession profession, float speed, CallbackInfoReturnable<ImmutableList<Pair<Integer, ? extends Task<? super VillagerEntity>>>> cir) {
         if (Sepals.enableSepalsVillager) {
-        cir.setReturnValue(ImmutableList.of(
-                Pair.of(2, VillagerWalkTowardsTask.create(MemoryModuleType.HOME, speed, 1, 150, 1200)),
-                Pair.of(3, ForgetCompletedPointOfInterestTask.create(poiType -> poiType.matchesKey(PointOfInterestTypes.HOME), MemoryModuleType.HOME)),
-                Pair.of(3, new SleepTask()),
-                Pair.of(
-                        5,
-                        new SepalsRandomTask<>(
-                                ImmutableMap.of(MemoryModuleType.HOME, MemoryModuleState.VALUE_ABSENT),
-                                ImmutableList.of(
-                                        Pair.of(SepalsWalkHomeTask.create(speed), 1),
-                                        Pair.of(SepalsWanderIndoorsTask.create(speed), 4),
-                                        Pair.of(GoToPointOfInterestTask.create(speed, 4), 2),
-                                        Pair.of(new WaitTask(20, 40), 2)
-                                )
-                        )
-                ),
-                createBusyFollowTask(),
-                Pair.of(99, ScheduleActivityTask.create())
-        ));
+            cir.setReturnValue(ImmutableList.of(
+                    Pair.of(2, VillagerWalkTowardsTask.create(MemoryModuleType.HOME, speed, 1, 150, 1200)),
+                    Pair.of(3, ForgetCompletedPointOfInterestTask.create(poiType -> poiType.matchesKey(PointOfInterestTypes.HOME), MemoryModuleType.HOME)),
+                    Pair.of(3, new SepalsSleepTask()),
+                    Pair.of(
+                            5,
+                            new SepalsRandomTask<>(
+                                    ImmutableMap.of(MemoryModuleType.HOME, MemoryModuleState.VALUE_ABSENT),
+                                    ImmutableList.of(
+                                            Pair.of(SepalsWalkHomeTask.create(speed), 1),
+                                            Pair.of(SepalsWanderIndoorsTask.create(speed), 4),
+                                            Pair.of(GoToPointOfInterestTask.create(speed, 4), 2),
+                                            Pair.of(new SepalsWaitTask(20, 40), 2)
+                                    )
+                            )
+                    ),
+                    createBusyFollowTask(),
+                    Pair.of(99, new SepalsScheduleActivityTask())
+            ));
         }
     }
 
@@ -315,7 +343,7 @@ public abstract class VillagerTaskListProviderMixin {
                                     Pair.of(LookAtMobTask.create(SpawnGroup.UNDERGROUND_WATER_CREATURE, 8.0F), 1),
                                     Pair.of(LookAtMobTask.create(SpawnGroup.WATER_AMBIENT, 8.0F), 1),
                                     Pair.of(LookAtMobTask.create(SpawnGroup.MONSTER, 8.0F), 1),
-                                    Pair.of(new WaitTask(30, 60), 2)
+                                    Pair.of(new SepalsWaitTask(30, 60), 2)
                             )
                     )
             ));
@@ -335,7 +363,7 @@ public abstract class VillagerTaskListProviderMixin {
                             ImmutableList.of(
                                     Pair.of(LookAtMobTask.create(EntityType.VILLAGER, 8.0F), 2),
                                     Pair.of(SepalsLookAtPlayerTask.create(8.0F), 2),
-                                    Pair.of(new WaitTask(30, 60), 8)
+                                    Pair.of(new SepalsWaitTask(30, 60), 8)
                             )
                     )
             ));

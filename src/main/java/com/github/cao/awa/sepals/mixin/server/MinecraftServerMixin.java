@@ -1,7 +1,6 @@
 package com.github.cao.awa.sepals.mixin.server;
 
 import com.github.cao.awa.sepals.Sepals;
-import com.github.cao.awa.sepals.backup.SepalsBackup;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.world.level.storage.LevelStorage;

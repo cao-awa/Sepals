@@ -1,4 +1,4 @@
-package com.github.cao.awa.sepals.entity.ai.task.sleep;
+package com.github.cao.awa.sepals.entity.ai.task.rest.sleep;
 
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.BedBlock;
@@ -10,7 +10,6 @@ import net.minecraft.entity.ai.brain.MemoryModuleState;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.task.MultiTickTask;
 import net.minecraft.entity.ai.brain.task.OpenDoorsTask;
-import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
@@ -60,7 +59,7 @@ public class SepalsSleepTask extends MultiTickTask<LivingEntity> {
         } else {
             BlockPos blockPos = optional.get().pos();
 
-            return entity.getBrain().hasActivity(Activity.REST) && entity.getY() > (double) blockPos.getY() + 0.4 && blockPos.isWithinDistance(entity.getPos(), 1.14);
+            return entity.getBrain().hasActivity(Activity.REST) && entity.getY() > blockPos.getY() + 0.4 && blockPos.isWithinDistance(entity.getPos(), 1.14);
         }
     }
 

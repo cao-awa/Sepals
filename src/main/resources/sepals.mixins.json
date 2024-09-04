@@ -3,34 +3,38 @@
   "minVersion": "0.8",
   "package": "com.github.cao.awa.sepals.mixin",
   "compatibilityLevel": "JAVA_21",
+  "plugin": "com.github.cao.awa.sepals.mixin.SepalsMixinPlugin",
   "mixins": [
-    "entity.ai.brain.BrainMixin",
-    "entity.ai.brain.sensor.nearest.NearestPlayersSensorMixin",
-    "entity.ai.brain.sensor.villager.VillagerBabiesSensorMixin",
-    "world.poi.SerializingRegionBasedStorageMixin",
-    "world.storage.PointOfInterestSetMixin",
-    "world.storage.PointOfInterestStorageMixin"
+
   ],
   "client": [
   ],
   "server": [
     "collection.TypeFilterableListAccessor",
-    "collection.TypeFilterableListMixin",
     "collection.weight.WeightingMixin",
-    "entity.LivingEntityMixin",
+
     "entity.ai.brain.frog.FrogBrainMixin",
     "entity.ai.brain.sensor.frog.FrogAttackablesSensorMixin",
     "entity.ai.brain.sensor.nearest.NearestLivingEntitiesSensorMixin",
     "entity.ai.brain.villager.VillagerTaskListProviderMixin",
     "entity.track.EntityTrackingSectionMixin",
-    "explosion.ExplosionMixin",
-    "server.MinecraftServerMixin",
+    "entity.ai.brain.BrainMixin",
+    "entity.ai.brain.sensor.nearest.NearestPlayersSensorMixin",
+    "entity.ai.brain.sensor.villager.VillagerBabiesSensorMixin",
+
     "world.MinecraftServerAccessor",
     "world.WorldMixin",
+    "world.poi.SerializingRegionBasedStorageMixin",
     "world.poi.PointOfInterestAccessor",
     "world.poi.PointOfInterestSetAccessor",
     "world.poi.PointOfInterestStorageAccessor",
-    "world.storage.SerializingRegionBasedStorageAccessor"
+    "world.storage.SerializingRegionBasedStorageAccessor",
+    "world.storage.PointOfInterestSetMixin",
+    "world.storage.PointOfInterestStorageMixin",
+
+    "block.command.CommandBlockMixin",
+
+    "server.MinecraftServerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

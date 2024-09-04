@@ -1,9 +1,6 @@
 package com.github.cao.awa.sepals.mixin.entity.ai.brain;
 
 import com.github.cao.awa.catheter.Catheter;
-import com.github.cao.awa.catheter.receptacle.BooleanReceptacle;
-import com.github.cao.awa.sepals.Sepals;
-import com.github.cao.awa.sepals.collection.binary.set.ReadonlyActivityBinaryList;
 import com.github.cao.awa.sepals.entity.ai.brain.TaskDelegate;
 import com.github.cao.awa.sepals.entity.ai.task.composite.SepalsTaskStatus;
 import com.google.common.collect.ImmutableList;
@@ -14,7 +11,6 @@ import net.minecraft.entity.ai.brain.*;
 import net.minecraft.entity.ai.brain.sensor.Sensor;
 import net.minecraft.entity.ai.brain.sensor.SensorType;
 import net.minecraft.entity.ai.brain.task.Task;
-import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.server.world.ServerWorld;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,7 +20,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -37,14 +32,13 @@ public abstract class BrainMixin<E extends LivingEntity> implements TaskDelegate
 
     @Shadow
     @Final
-    private Set<Activity> possibleActivities;
-
-    @Shadow
-    @Final
     private Map<MemoryModuleType<?>, Optional<? extends Memory<?>>> memories;
 
     @Shadow
     public abstract <U> void forget(MemoryModuleType<U> type);
+
+    @Shadow public abstract boolean hasActivity(Activity activity);
+
     private Catheter<Task<? super E>> taskCatheter;
     private Catheter<Task<? super E>> runningTasks;
     private Catheter<Map.Entry<MemoryModuleType<?>, Optional<? extends Memory<?>>>> memoriesCatheter;
@@ -72,7 +66,7 @@ public abstract class BrainMixin<E extends LivingEntity> implements TaskDelegate
     private void constructTasks() {
         this.taskCatheter = Catheter.of(this.tasks.values())
                 .collectionFlatTo(Map::entrySet)
-                .filter(this.possibleActivities::contains, Map.Entry::getKey)
+                .filter(this::hasActivity, Map.Entry::getKey)
                 .collectionFlatTo(Map.Entry::getValue);
     }
 

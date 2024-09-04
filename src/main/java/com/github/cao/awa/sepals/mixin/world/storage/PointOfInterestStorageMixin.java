@@ -59,13 +59,15 @@ public class PointOfInterestStorageMixin {
             PointOfInterestStorage.OccupationStatus occupationStatus,
             CallbackInfoReturnable<Stream<PointOfInterest>> cir
     ) {
-        cir.setReturnValue(
-                SepalsPointOfInterestStorage.getInChunk(
-                instance(),
-                typePredicate,
-                chunkPos,
-                occupationStatus
-        ).stream());
+        if (!SepalsPointOfInterestStorage.isLithiumLoaded()) {
+            cir.setReturnValue(
+                    SepalsPointOfInterestStorage.getInChunk(
+                            instance(),
+                            typePredicate,
+                            chunkPos,
+                            occupationStatus
+                    ).stream());
+        }
     }
 
     @Inject(

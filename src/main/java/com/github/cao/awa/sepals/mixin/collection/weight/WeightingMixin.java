@@ -3,8 +3,6 @@ package com.github.cao.awa.sepals.mixin.collection.weight;
 import com.github.cao.awa.apricot.annotations.Stable;
 import com.github.cao.awa.sepals.Sepals;
 import com.github.cao.awa.sepals.weight.SepalsWeighting;
-import com.github.cao.awa.sepals.weight.WeightTable;
-import net.minecraft.util.Util;
 import net.minecraft.util.collection.Weighted;
 import net.minecraft.util.collection.Weighting;
 import net.minecraft.util.math.random.Random;

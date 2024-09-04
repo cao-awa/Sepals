@@ -1,0 +1,9 @@
+{
+  "package": "com.github.cao.awa.sepals.mixin",
+  "handlers": {
+    "world.poi.SerializingRegionBasedStorageMixin": {
+      "group": "poi",
+      "name": "region_based_storage"
+    }
+  }
+}

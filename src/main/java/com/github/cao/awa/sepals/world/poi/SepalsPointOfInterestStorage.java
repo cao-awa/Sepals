@@ -3,6 +3,8 @@ package com.github.cao.awa.sepals.world.poi;
 import com.github.cao.awa.catheter.Catheter;
 import com.github.cao.awa.sepals.mixin.world.poi.*;
 import com.github.cao.awa.sepals.mixin.world.storage.SerializingRegionBasedStorageAccessor;
+import com.mojang.datafixers.util.Function4;
+import com.mojang.datafixers.util.Function5;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrays;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -24,7 +26,32 @@ import java.util.Optional;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
+@SuppressWarnings("unchecked")
 public class SepalsPointOfInterestStorage {
+    public static Function4<
+            PointOfInterestStorage,
+            Predicate<RegistryEntry<PointOfInterestType>>,
+            ChunkPos,
+            PointOfInterestStorage.OccupationStatus,
+            Catheter<PointOfInterest>
+            > getInChunkFunction = (storage, typePredicate, chunkPos, occupationStatus) -> ((RegionBasedStorageSectionExtended<PointOfInterestSet>) storage)
+            .sepals$getWithinChunkColumn(chunkPos.x, chunkPos.z)
+            .flatTo(set -> get(set, typePredicate, occupationStatus));
+    private static boolean lithiumLoaded = false;
+
+    public static void onLithiumLoaded() {
+        getInChunkFunction = (storage, typePredicate, chunkPos, occupationStatus) -> Catheter.of(storage.getInChunk(
+                typePredicate,
+                chunkPos,
+                occupationStatus
+        ).toArray(PointOfInterest[]::new));
+        lithiumLoaded = true;
+    }
+
+    public static boolean isLithiumLoaded() {
+        return lithiumLoaded;
+    }
+
     public static Catheter<PointOfInterest> getInSquare(
             PointOfInterestStorage storage,
             Predicate<RegistryEntry<PointOfInterestType>> typePredicate,
@@ -42,15 +69,13 @@ public class SepalsPointOfInterestStorage {
     }
 
     @Debug
-    @SuppressWarnings("unchecked")
     public static Catheter<PointOfInterest> getInChunk(
             PointOfInterestStorage storage,
             Predicate<RegistryEntry<PointOfInterestType>> typePredicate,
             ChunkPos chunkPos,
             PointOfInterestStorage.OccupationStatus occupationStatus
     ) {
-        return ((RegionBasedStorageSectionExtended<PointOfInterestSet>) storage).sepals$getWithinChunkColumn(chunkPos.x, chunkPos.z)
-                .flatTo(set -> get(set, typePredicate, occupationStatus));
+        return getInChunkFunction.apply(storage, typePredicate, chunkPos, occupationStatus);
     }
 
     public static Catheter<PointOfInterest> get(

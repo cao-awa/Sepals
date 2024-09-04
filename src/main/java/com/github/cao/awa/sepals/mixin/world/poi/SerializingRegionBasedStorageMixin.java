@@ -2,10 +2,10 @@ package com.github.cao.awa.sepals.mixin.world.poi;
 
 import com.github.cao.awa.apricot.util.collection.ApricotCollectionFactor;
 import com.github.cao.awa.catheter.Catheter;
+import com.github.cao.awa.sepals.collection.listener.ActivableLong2ObjectMap;
 import com.github.cao.awa.sepals.world.poi.RegionBasedStorageSectionExtended;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import me.jellysquid.mods.lithium.common.util.collections.ListeningLong2ObjectOpenHashMap;
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.server.world.ChunkErrorHandler;
 import net.minecraft.util.math.ChunkPos;
@@ -42,17 +42,32 @@ public abstract class SerializingRegionBasedStorageMixin<R> implements RegionBas
     @Unique
     private Map<Long, BitSet> columns;
 
+    /**
+     * Create the activable map used to response the storage element changes
+     *
+     * @param storageAccess
+     * @param codecFactory
+     * @param factory
+     * @param registryManager
+     * @param errorHandler
+     * @param world
+     * @param ci
+     */
     @SuppressWarnings("rawtypes")
-    @Inject(method = "<init>", at = @At("RETURN"))
+    @Inject(
+            method = "<init>",
+            at = @At("RETURN"),
+            order = Integer.MAX_VALUE
+    )
     private void init(
             ChunkPosKeyedStorage storageAccess, Function codecFactory, Function factory, DynamicRegistryManager registryManager, ChunkErrorHandler errorHandler, HeightLimitView world, CallbackInfo ci
     ) {
         this.columns = new Long2ObjectOpenHashMap<>();
-        this.loadedElements = new ListeningLong2ObjectOpenHashMap<>(this::onEntryAdded, this::onEntryRemoved);
+        this.loadedElements = new ActivableLong2ObjectMap<>(this.loadedElements).triggerPutAndRemoved(this::handlePut, this::handleRemoved);
     }
 
     @Unique
-    private void onEntryRemoved(long key, Optional<R> value) {
+    private void handleRemoved(long key, Optional<R> value) {
         int y = ChunkSectionPos.unpackY(key) - this.world.getBottomSectionCoord();
 
         // We only care about items belonging to a valid sub-chunk
@@ -73,7 +88,7 @@ public abstract class SerializingRegionBasedStorageMixin<R> implements RegionBas
     }
 
     @Unique
-    private void onEntryAdded(long key, Optional<R> value) {
+    private void handlePut(long key, Optional<R> value) {
         int y = ChunkSectionPos.unpackY(key) - this.world.getBottomSectionCoord();
 
         // We only care about items belonging to a valid sub-chunk

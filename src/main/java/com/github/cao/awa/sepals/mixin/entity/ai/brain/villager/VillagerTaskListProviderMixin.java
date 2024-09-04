@@ -9,7 +9,7 @@ import com.github.cao.awa.sepals.entity.ai.task.look.SepalsLookAtPlayerTask;
 import com.github.cao.awa.sepals.entity.ai.task.poi.SepalsFindPointOfInterestTask;
 import com.github.cao.awa.sepals.entity.ai.task.rest.SepalsWakeUpTask;
 import com.github.cao.awa.sepals.entity.ai.task.schedule.SepalsScheduleActivityTask;
-import com.github.cao.awa.sepals.entity.ai.task.sleep.SepalsSleepTask;
+import com.github.cao.awa.sepals.entity.ai.task.rest.sleep.SepalsSleepTask;
 import com.github.cao.awa.sepals.entity.ai.task.wait.SepalsWaitTask;
 import com.github.cao.awa.sepals.entity.ai.task.walk.SepalsWalkHomeTask;
 import com.github.cao.awa.sepals.entity.ai.task.wander.SepalsWanderIndoorsTask;

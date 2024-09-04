@@ -2,7 +2,6 @@ package com.github.cao.awa.sepals.mixin.world.storage;
 
 import com.github.cao.awa.sepals.world.poi.SepalsPointOfInterestStorage;
 import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.poi.PointOfInterest;
 import net.minecraft.world.poi.PointOfInterestSet;
 import net.minecraft.world.poi.PointOfInterestStorage;
@@ -28,7 +27,7 @@ public class PointOfInterestSetMixin {
             at = @At("HEAD"),
             cancellable = true
     )
-    public void  get(
+    public void get(
             Predicate<RegistryEntry<PointOfInterestType>> predicate,
             PointOfInterestStorage.OccupationStatus occupationStatus,
             CallbackInfoReturnable<Stream<PointOfInterest>> cir

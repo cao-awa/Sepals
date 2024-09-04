@@ -5,7 +5,6 @@ import com.github.cao.awa.sepals.Sepals;
 import it.unimi.dsi.fastutil.objects.ObjectArrays;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.Brain;
-import net.minecraft.entity.ai.brain.LivingTargetCache;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.sensor.NearestPlayersSensor;
 import net.minecraft.entity.effect.StatusEffects;
@@ -14,7 +13,6 @@ import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.predicate.entity.EntityPredicates;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,9 +23,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static net.minecraft.entity.ai.brain.sensor.Sensor.testAttackableTargetPredicate;
 import static net.minecraft.entity.ai.brain.sensor.Sensor.testTargetPredicate;

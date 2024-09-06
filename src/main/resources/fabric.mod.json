@@ -16,7 +16,7 @@
   "entrypoints": {
     "client": [
     ],
-    "main": [
+    "server": [
       "com.github.cao.awa.sepals.Sepals"
     ]
   },

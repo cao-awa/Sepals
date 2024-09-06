@@ -5,36 +5,31 @@
   "compatibilityLevel": "JAVA_21",
   "plugin": "com.github.cao.awa.sepals.mixin.SepalsMixinPlugin",
   "mixins": [
-
   ],
   "client": [
   ],
   "server": [
+    "block.command.CommandBlockMixin",
     "collection.TypeFilterableListAccessor",
     "collection.weight.WeightingMixin",
-
+    "entity.ai.brain.BrainMixin",
     "entity.ai.brain.frog.FrogBrainMixin",
     "entity.ai.brain.sensor.frog.FrogAttackablesSensorMixin",
     "entity.ai.brain.sensor.nearest.NearestLivingEntitiesSensorMixin",
-    "entity.ai.brain.villager.VillagerTaskListProviderMixin",
-    "entity.track.EntityTrackingSectionMixin",
-    "entity.ai.brain.BrainMixin",
     "entity.ai.brain.sensor.nearest.NearestPlayersSensorMixin",
     "entity.ai.brain.sensor.villager.VillagerBabiesSensorMixin",
-
+    "entity.ai.brain.villager.VillagerTaskListProviderMixin",
+    "entity.track.EntityTrackingSectionMixin",
+    "server.MinecraftServerMixin",
     "world.MinecraftServerAccessor",
     "world.WorldMixin",
-    "world.poi.SerializingRegionBasedStorageMixin",
     "world.poi.PointOfInterestAccessor",
     "world.poi.PointOfInterestSetAccessor",
     "world.poi.PointOfInterestStorageAccessor",
-    "world.storage.SerializingRegionBasedStorageAccessor",
+    "world.poi.SerializingRegionBasedStorageMixin",
     "world.storage.PointOfInterestSetMixin",
     "world.storage.PointOfInterestStorageMixin",
-
-    "block.command.CommandBlockMixin",
-
-    "server.MinecraftServerMixin"
+    "world.storage.SerializingRegionBasedStorageAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

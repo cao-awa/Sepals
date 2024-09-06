@@ -5,12 +5,13 @@ import com.github.cao.awa.sepals.command.SepalsBackupCommand;
 import com.github.cao.awa.sepals.command.SepalsConfigCommand;
 import com.github.cao.awa.sepals.command.SepalsDebugCommand;
 import com.github.cao.awa.sepals.transform.mixin.handler.SepalsMixinHandler;
+import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class Sepals implements ModInitializer {
+public class Sepals implements DedicatedServerModInitializer {
     public static final Logger LOGGER = LogManager.getLogger("Sepals");
     public static final String VERSION = "1.0.1";
     public static SepalsBackupCenter backupCenter;
@@ -24,11 +25,8 @@ public class Sepals implements ModInitializer {
     public static boolean enableSepalsWeightTable = false;
     public static boolean enableEntitiesCramming = false;
 
-    /**
-     * Runs the mod initializer.
-     */
     @Override
-    public void onInitialize() {
+    public void onInitializeServer() {
         SepalsMixinHandler.startPostProcess();
 
         LOGGER.info("Sepals {} loading", VERSION);

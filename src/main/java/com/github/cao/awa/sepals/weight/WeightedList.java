@@ -36,12 +36,12 @@ public class WeightedList<U> {
 
     public WeightedList<U> shuffle() {
         this.entries.sort(Comparator.comparingDouble(WeightedList.Entry::getShuffledOrder));
-        this.elements = this.entries.vary((WeightedList.Entry<U> entry) -> entry.getElement());
+        this.elements = this.entries.varyTo(Entry::getElement);
         return this;
     }
 
     private void varyElements() {
-        this.elements = this.entries.vary((WeightedList.Entry<U> entry) -> entry.getElement());
+        this.elements = this.entries.varyTo(Entry::getElement);
     }
 
     public Catheter<U> elements() {

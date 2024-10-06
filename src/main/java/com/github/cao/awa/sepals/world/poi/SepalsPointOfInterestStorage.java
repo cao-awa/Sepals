@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
+import java.util.random.RandomGenerator;
 
 @SuppressWarnings("unchecked")
 public class SepalsPointOfInterestStorage {
@@ -110,7 +111,7 @@ public class SepalsPointOfInterestStorage {
             PointOfInterestStorage.OccupationStatus occupationStatus
     ) {
         return getInCircle(storage, typePredicate, pos, radius, occupationStatus)
-                .vary(PointOfInterest::getPos)
+                .varyTo(PointOfInterest::getPos)
                 .filter(posPredicate);
     }
 
@@ -124,7 +125,7 @@ public class SepalsPointOfInterestStorage {
     ) {
         return getInCircle(storage, typePredicate, pos, radius, occupationStatus)
                 .filter(posPredicate, PointOfInterest::getPos)
-                .vary((PointOfInterest poi) -> Pair.of(poi.getType(), poi.getPos()))
+                .varyTo((PointOfInterest poi) -> Pair.of(poi.getType(), poi.getPos()))
                 .arrayGenerator(Pair[]::new);
     }
 
@@ -162,7 +163,7 @@ public class SepalsPointOfInterestStorage {
     ) {
         return Optional.ofNullable(
                 getInCircle(storage, typePredicate, pos, radius, occupationStatus)
-                        .vary(PointOfInterest::getPos)
+                        .varyTo(PointOfInterest::getPos)
                         .min(Comparator.comparingDouble(blockPos2 -> blockPos2.getSquaredDistance(pos)))
         );
     }
@@ -189,7 +190,7 @@ public class SepalsPointOfInterestStorage {
     ) {
         return Optional.ofNullable(
                 getInCircle(storage, typePredicate, pos, radius, occupationStatus)
-                        .vary(PointOfInterest::getPos)
+                        .varyTo(PointOfInterest::getPos)
                         .filter(posPredicate)
                         .min(Comparator.comparingDouble(blockPos2 -> blockPos2.getSquaredDistance(pos)))
         );
@@ -222,7 +223,7 @@ public class SepalsPointOfInterestStorage {
             Random random
     ) {
         Catheter<PointOfInterest> catheter = getInCircle(storage, typePredicate, pos, radius, occupationStatus);
-        shuffle(catheter.dArray(), random);
+        catheter.shuffle(random::nextLong);
         return Optional.ofNullable(
                 catheter.filter(poi -> positionPredicate.test(poi.getPos()))
                         .findFirst(x -> true)
@@ -255,9 +256,9 @@ public class SepalsPointOfInterestStorage {
                                 storageAccessor(storage).getWorld().getTopSectionCoord()
                         ).toArray(ChunkSectionPos[]::new)
                 )
-                .vary((ChunkSectionPos sectionPos) -> Pair.of(sectionPos, storageAccessor(storage).invokeGet(sectionPos.asLong())))
+                .varyTo(sectionPos -> Pair.of(sectionPos, storageAccessor(storage).invokeGet(sectionPos.asLong())))
                 .discard(pair -> pair.getSecond().map(SepalsPointOfInterestStorage::isValid).orElse(false))
-                .vary((Pair<ChunkSectionPos, Optional<PointOfInterestSet>> pair) -> pair.getFirst().toChunkPos())
+                .varyTo(pair -> pair.getFirst().toChunkPos())
                 .filter(chunkPos -> accessor(storage).getPreloadedChunks().add(chunkPos.toLong()))
                 .each(chunkPos -> world.getChunk(chunkPos.x, chunkPos.z, ChunkStatus.EMPTY));
     }

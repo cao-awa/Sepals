@@ -69,7 +69,7 @@ public abstract class NearestLivingEntitiesSensorMixin<T extends LivingEntity> {
 
             if (Sepals.enableSepalsLivingTargetCache) {
                 PlayerEntity[] players = entities.filter(LivingEntity::isPlayer)
-                        .vary(PlayerEntity.class::cast)
+                        .varyTo(PlayerEntity.class::cast)
                         .arrayGenerator(PlayerEntity[]::new)
                         .safeArray();
 

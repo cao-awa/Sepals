@@ -6,6 +6,8 @@ import com.github.cao.awa.sepals.entity.ai.brain.DetailedDebuggableTask;
 import com.github.cao.awa.sepals.entity.ai.brain.TaskDelegate;
 import com.github.cao.awa.sepals.entity.ai.task.composite.SepalsCompositeTask;
 import com.github.cao.awa.sepals.entity.ai.task.composite.SepalsTaskStatus;
+import com.github.cao.awa.sepals.mixin.world.WorldAccessor;
+import com.google.common.base.Predicates;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.argument.EntityArgumentType;
@@ -17,8 +19,10 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.function.LazyIterationConsumer;
 import net.minecraft.util.math.BlockPos;
 
+import java.util.Map;
 import java.util.Set;
 
 public class SepalsDebugCommand {
@@ -61,6 +65,7 @@ public class SepalsDebugCommand {
                                 ))
                 );
     }
+
     private static int showCommandBlocks(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         ServerCommandSource source = context.getSource();
 

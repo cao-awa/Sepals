@@ -61,13 +61,19 @@ public class SepalsFrogBrain {
     }
 
     public static boolean attackable(LivingEntity entity, LivingEntity target) {
-        if (isHuntingCooldown(entity) || isTargetUnreachable(entity, target)) {
+        if (isHuntingCooldown(entity) || !FrogEntity.isValidFrogFood(target)) {
             return false;
         }
 
-        return FrogEntity.isValidFrogFood(target) &&
-                target.isInRange(entity, 10.0) &&
-                Sensor.testAttackableTargetPredicate(entity, target);
+        if (!target.isInRange(entity, 10.0)) {
+            return false;
+        }
+
+        if (Sensor.testAttackableTargetPredicate(entity, target)) {
+            return !isTargetUnreachable(entity, target);
+        }
+
+        return false;
     }
 
     private static boolean isHuntingCooldown(LivingEntity entity) {

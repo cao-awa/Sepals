@@ -67,7 +67,6 @@ public abstract class FrogBrainMixin {
             );
 
             ci.cancel();
-            return;
         }
     }
 

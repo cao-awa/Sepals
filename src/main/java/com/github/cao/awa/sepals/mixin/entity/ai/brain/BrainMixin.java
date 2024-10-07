@@ -39,27 +39,26 @@ public abstract class BrainMixin<E extends LivingEntity> implements TaskDelegate
 
     @Shadow public abstract boolean hasActivity(Activity activity);
 
+    @Unique
     private Catheter<Task<? super E>> taskCatheter;
+    @Unique
     private Catheter<Task<? super E>> runningTasks;
+    @Unique
     private Catheter<Map.Entry<MemoryModuleType<?>, Optional<? extends Memory<?>>>> memoriesCatheter;
 
     @Inject(
             method = "<init>",
             at = @At("RETURN")
     )
-    public void initMemories(
+    public void initBrain(
             Collection<? extends MemoryModuleType<?>> memories,
             Collection<? extends SensorType<? extends Sensor<? super E>>> sensors,
             ImmutableList<?> memoryEntries,
             Supplier<Codec<Brain<E>>> codecSupplier,
             CallbackInfo ci
     ) {
-        constructMemories();
-    }
-
-    @Unique
-    private void updatingTasks() {
         constructTasks();
+        constructMemories();
     }
 
     @Unique
@@ -147,12 +146,18 @@ public abstract class BrainMixin<E extends LivingEntity> implements TaskDelegate
     private void startTasks(Brain<E> instance, ServerWorld world, E entity) {
         long time = entity.getWorld().getTime();
 
-        this.runningTasks = getTasks().filterTo(task -> {
+        Catheter<Task<? super E>> running = getTasks().filterTo(task -> {
             if (SepalsTaskStatus.isStopped(task.getStatus())) {
                 return task.tryStarting(world, entity, time);
             }
             return true;
         });
+
+        if (this.runningTasks != null) {
+            this.runningTasks.merge(running);
+        } else {
+            this.runningTasks = running;
+        }
     }
 
     @Redirect(
@@ -190,19 +195,11 @@ public abstract class BrainMixin<E extends LivingEntity> implements TaskDelegate
     }
 
     @Inject(
-            method = "<init>(Ljava/util/Collection;Ljava/util/Collection;Lcom/google/common/collect/ImmutableList;Ljava/util/function/Supplier;)V",
-            at = @At("RETURN")
-    )
-    private void updateTasks(Collection<?> memories, Collection<?> sensors, ImmutableList<?> memoryEntries, Supplier<?> codecSupplier, CallbackInfo ci) {
-        updatingTasks();
-    }
-
-    @Inject(
             method = "setTaskList(Lnet/minecraft/entity/ai/brain/Activity;Lcom/google/common/collect/ImmutableList;Ljava/util/Set;Ljava/util/Set;)V",
             at = @At("RETURN")
     )
     private void updateTasks(Activity activity, ImmutableList<? extends Pair<Integer, ? extends Task<?>>> indexedTasks, Set<Pair<MemoryModuleType<?>, MemoryModuleState>> requiredMemories, Set<MemoryModuleType<?>> forgettingMemories, CallbackInfo ci) {
-        updatingTasks();
+        constructTasks();
     }
 
     @Inject(

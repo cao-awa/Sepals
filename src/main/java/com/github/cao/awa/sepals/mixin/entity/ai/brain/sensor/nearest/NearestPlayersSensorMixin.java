@@ -72,7 +72,6 @@ public class NearestPlayersSensorMixin {
 
         // The villager cannot attack to the player, this optional always null.
         brain.remember(MemoryModuleType.NEAREST_VISIBLE_TARGETABLE_PLAYER, Optional.empty());
-
     }
 
     @Unique

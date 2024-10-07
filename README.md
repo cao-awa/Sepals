@@ -67,7 +67,7 @@ required restart the server to apply changes
 Default enabled
 ```
 
-1366 frogs cramming in a 7x7 space:
+800 frogs cramming in a 7x7 space:
 
 |                   Environment                   | keepRunning | Percent(Avg.) |
 |:-----------------------------------------------:|:-----------:|:-------------:|

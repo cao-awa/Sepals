@@ -8,7 +8,8 @@ Currently, sepals are compatible to almost all mods.
 
 ## Performance
 
-A test was done in cao-awa personal computer, CPU: 5950x; Memory: 128G DDR4-3200MHz; OS: Windows 11; Minecraft: 1.21.
+A test was done in server of Mars provided by feimia, CPU: Intel i7-14700K; Game memory: 4G; OS: Ubuntu 24.04.1 LTS;
+Minecraft: 1.21 .
 
 ### Entities cramming
 
@@ -17,16 +18,10 @@ Use index to access element to replaced iterator
 
 -- Status --
 Default disabled, no recommend to use now
+
+-- Warining -- 
+Not tested.
 ```
-
-496 large slime cramming in a 20x20 space:
-
-|               Environment               | tickCramming | Percent |
-|:---------------------------------------:|:------------:|:-------:|
-|                 Vanilla                 |   45.3 ms    |  100 %  |
-|               With Sepals               |    44 ms     |  97 %   |
-|              With Lithium               |   43.1 ms    |  95 %   |
-| With Sepals<br/> and configured Lithium |   40.8 ms    |  90 %   |
 
 The entities cramming optimization of sepals will be auto-disabled when you used lithium and without configurations.
 
@@ -48,14 +43,10 @@ even if the binary search almost close to 0ms
 
 -- Status --
 Default disabled
+
+-- Warining -- 
+Not tested.
 ```
-
-900 frogs cramming in a 3x3 space:
-
-| Environment | Weighting#getRandom | Percent(Avg.) |
-|:-----------:|:-------------------:|:-------------:|
-|   Vanilla   |       8.4 ms        |     100 %     |
-| With Sepals |       9.2 ms        |     109 %     |
 
 ### Biased long jump task
 
@@ -76,17 +67,21 @@ required restart the server to apply changes
 Default enabled
 ```
 
-1366 frogs cramming in a 3x3 space:
+1366 frogs cramming in a 7x7 space:
 
-|                     Environment                     | keepRunning | Percent(Avg.) |
-|:---------------------------------------------------:|:-----------:|:-------------:|
-|      Vanilla <br /> (LongJumpTask#keepRunning)      |   15.6 ms   |     100 %     |
-| With Sepals <br /> (SepalsLongJumpTask#keepRunning) |   0.3 ms    |    0.02 %     |
+|                   Environment                   | keepRunning | Percent(Avg.) |
+|:-----------------------------------------------:|:-----------:|:-------------:|
+|          Vanilla <br /> (LongJumpTask)          |   43.1 ms   |     100 %     |
+|    With Lithium <br /> (SepalsLongJumpTask)     |   7.5 ms    |     17 %      |
+|     With Sepals <br /> (SepalsLongJumpTask)     |   0.2 ms    |    0.004 %    |
+| With Sepals+Lithium <br /> (SepalsLongJumpTask) |   0.05 ms   |    0.001 %    |
 
-|                     Environment                     | getTarget | Percent(Avg.) | Percent(in ```keepRunning```) |
-|:---------------------------------------------------:|:---------:|:-------------:|:-----------------------------:|
-|      Vanilla <br /> (LongJumpTask#keepRunning)      |  13.4 ms  |     100 %     |             85 %              |
-| With Sepals <br /> (SepalsLongJumpTask#keepRunning) |  0.02 ms  |    0.001 %    |            0.06 %             |
+|                   Environment                   | getTarget | Percent(Avg.) | Percent(in ```keepRunning```) |
+|:-----------------------------------------------:|:---------:|:-------------:|:-----------------------------:|
+|          Vanilla <br /> (LongJumpTask)          |  43.1 ms  |     100 %     |             100 %             |
+|     With Sepals <br /> (SepalsLongJumpTask)     |  3.6 ms   |     26 %      |             48 %              |
+|     With Sepals <br /> (SepalsLongJumpTask)     |  N/A ms   |      0 %      |              0 %              |
+| With Sepals+Lithium <br /> (SepalsLongJumpTask) |  N/A ms   |      0 %      |              0 %              |
 
 ### Quick sort in NearestLivingEntitiesSensor
 
@@ -97,12 +92,14 @@ Quick sort supports by fastutil to replace java tim sort
 Default enabled
 ```
 
-900 frogs cramming in a 3x3 space:
+800 frogs cramming in a 7x7 space:
 
-| Environment | sort (NearestLivingEntitiesSensor#sense) | Percent(Avg.) |
-|------------:|:----------------------------------------:|:-------------:|
-|     Vanilla |                  6.5 ms                  |     100 %     |
-| With Sepals |                   3 ms                   |     46 %      |
+|         Environment | sort (NearestLivingEntitiesSensor#sense) | Percent(Avg.) |
+|--------------------:|:----------------------------------------:|:-------------:|
+|             Vanilla |                  3.8 ms                  |     100 %     |
+|        With Lithium |                  3.6 ms                  |     94 %      |
+|         With Sepals |                  2.2 ms                  |     57 %      |
+| With Sepals+Lithium |                  2.2 ms                  |     57 %      |
 
 ### Frog attackable target filter
 
@@ -124,36 +121,34 @@ in this case, 'Sensor#testAttackableTargetPredicate' has calls 'TargetPredicate#
 that cause a very lots raycast calculate when entities too much in the area
 but... minecraft's raycast is absolutely bad, very slow
 
-the 'TargetPredicate#test' in this case (1366 frogs) has make 44.3ms costs in once game tick
-among them, 'BlockView.raycast' contributed 39.7ms
+the 'TargetPredicate#test' in this case (800 frogs) has make 9.8ms costs in once game tick
+among them, 'BlockView.raycast' contributed 7.3ms
 
 then i make it be:
 
-FrogEntity.isValidFrogFood(target) && 
+FrogEntity.isValidFrogFood(target) &&
+ entity.getBrain().hasMemoryModule(MemoryModuleType.HAS_HUNTING_COOLDOWN) && 
  target.isInRange(entity, 10.0) && 
- entity.getBrain().hasMemoryModule(MemoryModuleType.HAS
- isTargetUnreachable(entity, target) && 
- Sensor.testAttackableTargetPredicate(entity, target);
+ Sensor.testAttackableTargetPredicate(entity, target) && 
+ isTargetUnreachable(entity, target);
  
 the 'isValidFrogFood' is simple conditions, check the entity's tag has in 'frog_food'
 and a extra check when entity is slime then skip it when it size not 1
 
-the 'isInRange' also simple, it only a few math calculates
-
-the 'hasMemoryModule' simple but it still can be said that high-cost
-this method getting element from map, but the key type 'MemoryModuleType' are not hash-able or comparable
-it cause getting in this 1366 frogs case make 5ms costs in once game tick
+the 'isInRange' and 'hasMemoryModule' also simple, it only a few math calculates
 
 -- Status --
 Default enabled
 ```
 
-1366 frogs cramming in a 3x3 space:
+800 frogs cramming in a 7x7 space:
 
-| Environment | sort (NearestLivingEntitiesSensor#sense) | Percent(Avg.) |
-|------------:|:----------------------------------------:|:-------------:|
-|     Vanilla |                  6.5 ms                  |     100 %     |
-| With Sepals |                   3 ms                   |     46 %      |
+|                                      Environment |  time  | Percent(Avg.) |
+|-------------------------------------------------:|:------:|:-------------:|
+|          Vanilla (FrogAttackablesSensor#matches) | 10 ms  |     100 %     |
+|     With Lithium (FrogAttackablesSensor#matches) | 5.7 ms |     57 %      |
+|         With Sepals (SepalsFrogBrain#attackable) | 0.1 ms |    0.01 %     |
+| With Sepals+Lithium (SepalsFrogBrain#attackable) | 0.1 ms |    0.01 %     |
 
 ### Frog look-at target filter
 
@@ -163,7 +158,7 @@ Required enable the SepalsLivingTargetCache to apply this feature, otherwise not
 
 -- Notice --
 The raycast is in TargetPredicate test
-at the findFirst in LivingTargetCache when input predicate is success
+at the 'findFirst' in LivingTargetCache when input predicate is success
 
 but if subsequent conditions is failures, then to calculate this anymore is ueless
 because even if the findFirst has found (raycast success)
@@ -173,12 +168,14 @@ but we don't used this result in subsequent contexts
 Default enabled
 ```
 
-1366 frogs cramming in a 3x3 space:
+800 frogs cramming in a 7x7 space:
 
-|                                                                  Environment | findFirst | Percent | The ```raycast``` time | The ```raycast``` percent |
-|-----------------------------------------------------------------------------:|:---------:|:-------:|:----------------------:|:-------------------------:|
-|                 Vanilla <br /> (LookAtMobWithIntervalTask$$Lambda#findFirst) |  26.5 ms  |  100 %  |        25.1 ms         |           94 %            |
-| With Sepals <br /> (SepalsLookAtMobWithIntervalTask$$Lambda#findFirstPlayer) |  3.4 ms   |  13 %   |         3.3 ms         |           97 %            |
+|                                                                          Environment | findFirst | Percent |
+|-------------------------------------------------------------------------------------:|:---------:|:-------:|
+|                         Vanilla <br /> (LookAtMobWithIntervalTask$$Lambda#findFirst) |  2.7 ms   |  100 %  |
+|                    With Lithium <br /> (LookAtMobWithIntervalTask$$Lambda#findFirst) |  2.5 ms   |  92 %   |
+|         With Sepals <br /> (SepalsLookAtMobWithIntervalTask$$Lambda#findFirstPlayer) |  0.1 ms   | 0.03 %  |
+| With Sepals+Lithium <br /> (SepalsLookAtMobWithIntervalTask$$Lambda#findFirstPlayer) |  0.1 ms   | 0.03 %  |
 
 ### Villager miscellaneous optimizations
 
@@ -203,7 +200,7 @@ Listed what sepals to do here:
 Recommend use this feature with lithium and c2me to make best performance
 
 -- Warning --
-Not long-term stability tested
+Not long-term stability tested, only a month running shown it's ok currently
 this feature does not be proved 100% vanilla
 also it does not be proved has not vanilla in statistical significance 
 
@@ -211,12 +208,20 @@ also it does not be proved has not vanilla in statistical significance
 Default enabled
 ```
 
-591 villagers cramming in a 1x1 space:
+800 villagers cramming in a 7x7 space at noon:
 
-|               Environment                | Brain#tick (Total) | Percent | Brain#startTasks | Percent(startTasks) | Brain#tickSensors | Percent(tickSensors) | Brain#updateTasks | Percent(updateTasks) | Brain#tickMemories | Percent(tickMemories) |
-|:----------------------------------------:|:------------------:|:-------:|:----------------:|:-------------------:|:-----------------:|:--------------------:|:-----------------:|:--------------------:|:------------------:|:---------------------:|
-|  Vanilla <br /> (No any sepals feature)  |       33 ms        |  100 %  |      22 ms       |        100 %        |       3 ms        |        100 %         |       7 ms        |        100 %         |       0.8 ms       |         100 %         |
-|   Vanilla <br /> (No sepals villager)    |      32.8 ms       |  99 %   |     22.3 ms      |        101 %        |      3.3 ms       |        110 %         |      6.1 ms       |         87 %         |       1.1 ms       |         137 %         |
-| With lithium <br /> (No sepals villager) |      11.7 ms       |  35 %   |      5.4 ms      |        24 %         |      3.4 ms       |        113 %         |      2.1 ms       |         30 %         |       0.9 ms       |         112 %         |
-|               With Sepals                |       8.3 ms       |  25 %   |      3.7 ms      |        16 %         |      3.6 ms       |        120 %         |      0.3 ms       |        0.04 %        |       0.8 ms       |         100 %         |
-|         With Sepals and lithium          |       7.3 ms       |  22 %   |      2.6 ms      |        11 %         |      3.5 ms       |        116 %         |      0.6 ms       |        0.08 %        |       0.6 ms       |         75 %          |
+|       Environment       | Brain#tick (Total) | Percent | Brain#startTasks | Percent(startTasks) | Brain#tickSensors | Percent(tickSensors) | Brain#updateTasks | Percent(updateTasks) | Brain#tickMemories | Percent(tickMemories) |
+|:-----------------------:|:------------------:|:-------:|:----------------:|:-------------------:|:-----------------:|:--------------------:|:-----------------:|:--------------------:|:------------------:|:---------------------:|
+|         Vanilla         |       18 ms        |  100 %  |      9.3 ms      |        100 %        |      5.2 ms       |        100 %         |       3 ms        |        100 %         |       0.5 ms       |         100 %         |
+|      With lithium       |      12.4 ms       |  35 %   |      4.8 ms      |        24 %         |      5.9 ms       |        113 %         |      1.2 ms       |         30 %         |       0.5 ms       |         112 %         |
+|       With Sepals       |       9.7 ms       |  25 %   |      3.6 ms      |        16 %         |      3.7 ms       |        120 %         |       2 ms        |        0.04 %        |       0.4 ms       |         100 %         |
+| With Sepals and lithium |       10 ms        |  22 %   |      3.4 ms      |        11 %         |      3.7 ms       |        116 %         |      2.5 ms       |        0.08 %        |       0.4 ms       |         75 %          |
+
+800 villagers cramming in a 7x7 space at night:
+
+|       Environment       | Brain#tick (Total) | Percent | Brain#startTasks | Percent(startTasks) | Brain#tickSensors | Percent(tickSensors) | Brain#updateTasks | Percent(updateTasks) | Brain#tickMemories | Percent(tickMemories) |
+|:-----------------------:|:------------------:|:-------:|:----------------:|:-------------------:|:-----------------:|:--------------------:|:-----------------:|:--------------------:|:------------------:|:---------------------:|
+|         Vanilla         |      16.7 ms       |  100 %  |      8.2 ms      |        100 %        |       6 ms        |        100 %         |       2 ms        |        100 %         |       0.5 ms       |         100 %         |
+|      With lithium       |      10.2 ms       |  35 %   |      3.2 ms      |        24 %         |       6 ms        |        113 %         |      0.5 ms       |         30 %         |       0.5 ms       |         112 %         |
+|       With Sepals       |        9 ms        |  25 %   |      3.3 ms      |        16 %         |      4.7 ms       |        120 %         |      0.7 ms       |        0.04 %        |       0.3 ms       |         100 %         |
+| With Sepals and lithium |       8.7 ms       |  22 %   |      2.9 ms      |        11 %         |      4.6 ms       |        116 %         |      0.7 ms       |        0.08 %        |       0.5 ms       |         75 %          |

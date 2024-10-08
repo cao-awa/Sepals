@@ -221,3 +221,24 @@ Default enabled
 |      With lithium       |      10.2 ms       |  35 %   |      3.2 ms      |        24 %         |       6 ms        |        113 %         |      0.5 ms       |         30 %         |       0.5 ms       |         112 %         |
 |       With Sepals       |        9 ms        |  25 %   |      3.3 ms      |        16 %         |      4.7 ms       |        120 %         |      0.7 ms       |        0.04 %        |       0.3 ms       |         100 %         |
 | With Sepals and lithium |       8.7 ms       |  22 %   |      2.9 ms      |        11 %         |      4.6 ms       |        116 %         |      0.7 ms       |        0.08 %        |       0.5 ms       |         75 %          |
+
+### Frog look-at target filter
+
+```
+Use box cache to prevent too much 'getOtherEntities' calls
+
+-- Notice --
+The entities cramming optimization has lossed precision of entities box, may cause no-vanilla behaviors  
+
+-- Status --
+WIP, Default disabled
+```
+
+1390 villagers cramming in a 7x7 space:
+
+|         Environment | tickCramming | Percent(Avg.) |
+|--------------------:|:------------:|:-------------:|
+|             Vanilla |   53.6 ms    |     100 %     |
+|        With Lithium |   54.4 ms    |     101 %     |
+|         With Sepals |   10.2 ms    |     19 %      |
+| With Sepals+Lithium |    8.5 ms    |     15 %      |

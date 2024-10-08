@@ -15,6 +15,7 @@ public class Sepals implements DedicatedServerModInitializer {
     public static boolean enableSepalsVillager = true;
     public static boolean enableSepalsFrogLookAt = true;
     public static boolean enableSepalsFrogAttackableSensor = true;
+    public static int entitiesCrammingAccuracy = 1000;
     public static boolean enableSepalsLivingTargetCache = true;
     public static boolean nearestLivingEntitiesSensorUseQuickSort = true;
     public static boolean enableSepalsBiasedJumpLongTask = true;

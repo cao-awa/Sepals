@@ -69,6 +69,36 @@ public class SepalsConfigCommand {
                                     }
                                     return 0;
                                 })
+                        )).then(CommandManager.literal("entitiesCrammingAccuracy").then(
+                                CommandManager.literal("1").executes(context -> {
+                                    Sepals.entitiesCrammingAccuracy = 1;
+                                    context.getSource().sendFeedback(() -> Text.of("The entities cramming accuracy is " + Sepals.entitiesCrammingAccuracy + " now"), true);
+                                    return 0;
+                                })
+                        ).then(
+                                CommandManager.literal("10").executes(context -> {
+                                    Sepals.entitiesCrammingAccuracy = 10;
+                                    context.getSource().sendFeedback(() -> Text.of("The entities cramming accuracy is " + Sepals.entitiesCrammingAccuracy + " now"), true);
+                                    return 0;
+                                })
+                        ).then(
+                                CommandManager.literal("100").executes(context -> {
+                                    Sepals.entitiesCrammingAccuracy = 100;
+                                    context.getSource().sendFeedback(() -> Text.of("The entities cramming accuracy is " + Sepals.entitiesCrammingAccuracy + " now"), true);
+                                    return 0;
+                                })
+                        ).then(
+                                CommandManager.literal("1000").executes(context -> {
+                                    Sepals.entitiesCrammingAccuracy = 1000;
+                                    context.getSource().sendFeedback(() -> Text.of("The entities cramming accuracy is " + Sepals.entitiesCrammingAccuracy + " now"), true);
+                                    return 0;
+                                })
+                        ).then(
+                                CommandManager.literal("10000").executes(context -> {
+                                    Sepals.entitiesCrammingAccuracy = 10000;
+                                    context.getSource().sendFeedback(() -> Text.of("The entities cramming accuracy is " + Sepals.entitiesCrammingAccuracy + " now"), true);
+                                    return 0;
+                                })
                         ))
                 );
     }

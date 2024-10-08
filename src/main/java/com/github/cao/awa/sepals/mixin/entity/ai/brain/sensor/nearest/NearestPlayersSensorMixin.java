@@ -39,44 +39,28 @@ public class NearestPlayersSensorMixin {
         if (Sepals.enableSepalsVillager) {
             Brain<?> brain = entity.getBrain();
 
-            if (entity instanceof VillagerEntity villager) {
-                senseForVillager(villager.getBrain(), world, villager);
-            } else {
-                boolean canAttackToPlayer = entity instanceof HostileEntity || entity instanceof Angerable;
+            Catheter<PlayerEntity> players = collectBasicNearestPlayers(world, entity, brain);
 
-                collectBasicNearestPlayers(world, entity, brain)
-                        .filter(player -> testTargetPredicate(entity, player))
-                        .firstOrNull(player -> brain.remember(MemoryModuleType.NEAREST_VISIBLE_PLAYER, player))
-                        // If entity are not hostile or anger-able then do not need to test the attackable predicate.
-                        // Because this memory only will be used in the entities that can attack to player, such as piglin.
-                        .ifPresent(catheter -> {
-                            if (!canAttackToPlayer) {
-                                catheter.reset();
-                            }
-                        })
-                        .filter(player -> testAttackableTargetPredicate(entity, player))
+            boolean isVillager = entity instanceof VillagerEntity;
+            boolean canAttackToPlayer = entity instanceof HostileEntity || entity instanceof Angerable;
+
+            // This memory in villager has only used in 'GiveGiftsToHeroTask', it required player is villager hero.
+            // So let it skip when players doesn't is villager hero.
+            if (isVillager) {
+                players.filter(NearestPlayersSensorMixin::isHero);
+            }
+
+            players.filter(player -> testTargetPredicate(entity, player));
+            players.firstOrNull(player -> brain.remember(MemoryModuleType.NEAREST_VISIBLE_PLAYER, player));
+            // If entity are not hostile or anger-able then do not need to test the attackable predicate.
+            // Because this memory only will be used in the entities that can attack to player, such as piglin.
+            if (canAttackToPlayer) {
+                players.filter(player -> testAttackableTargetPredicate(entity, player))
                         .firstOrNull(player -> brain.remember(MemoryModuleType.NEAREST_VISIBLE_TARGETABLE_PLAYER, Optional.ofNullable(player)));
             }
+
             ci.cancel();
         }
-    }
-
-    @Unique
-    private void senseForVillager(Brain<VillagerEntity> brain, World world, VillagerEntity entity) {
-        collectBasicNearestPlayers(world, entity, brain)
-                // This memory in villager has only used in 'GiveGiftsToHeroTask', it required player is villager hero.
-                // So let it skip when players doesn't is villager hero.
-                .filter(NearestPlayersSensorMixin::isHero)
-                .filter(player -> testTargetPredicate(entity, player))
-                .firstOrNull(player -> brain.remember(MemoryModuleType.NEAREST_VISIBLE_PLAYER, player));
-
-        // The villager cannot attack to the player, this optional always null.
-        brain.remember(MemoryModuleType.NEAREST_VISIBLE_TARGETABLE_PLAYER, Optional.empty());
-    }
-
-    @Unique
-    private static boolean isHero(PlayerEntity player) {
-        return player.hasStatusEffect(StatusEffects.HERO_OF_THE_VILLAGE);
     }
 
     @Unique
@@ -93,5 +77,10 @@ public class NearestPlayersSensorMixin {
                     }
                 })
                 .ifPresent(catheter -> brain.remember(MemoryModuleType.NEAREST_PLAYERS, catheter.list()));
+    }
+
+    @Unique
+    private static boolean isHero(PlayerEntity player) {
+        return player.hasStatusEffect(StatusEffects.HERO_OF_THE_VILLAGE);
     }
 }

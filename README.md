@@ -182,16 +182,12 @@ Default enabled
 ```
 Listed what sepals to do here:
 
-1. Used Catheter to replaced java stream
-   The newest version Catheter has more quite stunning performance and scalability than Stream 
+1. Used Catheter to replaced java stream, The newest version Catheter has more quite stunning performance and scalability than Stream 
 2. Cached tasks, activities, running tasks and memories to improves starting and updating task
 3. Use sepals composite task to replaced vanilla composite task
 4. Whenever possible, find opportunities to skips more raycast and useless predicates
-5. Use 'SepalsLivingTargetCache' to replaced vanilla cache
-   At the cost in sensors tick make less cost in finding interaction target or look at mob task
-6. Rearranged predicates and extra lower cost predicate
-   The purpose of this is do higher cost predicate later or best don't do that
-   Skip the remaining high cost predicates in advance
+5. Use 'SepalsLivingTargetCache' to replaced vanilla cache, At the cost in sensors tick make less cost in finding interaction target or look at mob task
+6. Rearranged predicates and extra lower cost predicate, The purpose of this is do higher cost predicate later or best don't do that, Skip the remaining high cost predicates in advance
 7. Copied and modified 'SerializingRegionBasedStorage' optimizations from lithium
 8. With more targeted task, don't use the generics to reduce useless operations
 9. Used binary search list to replaced hashset search

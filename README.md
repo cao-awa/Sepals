@@ -73,13 +73,13 @@ Default enabled
 |:-----------------------------------------------:|:-----------:|:-------------:|
 |          Vanilla <br /> (LongJumpTask)          |   43.1 ms   |     100 %     |
 |       With Lithium <br /> (LongJumpTask)        |   7.5 ms    |     17 %      |
-|     With Sepals <br /> (SepalsLongJumpTask)     |   0.2 ms    |    0.004 %    |
-| With Sepals+Lithium <br /> (SepalsLongJumpTask) |   0.05 ms   |    0.001 %    |
+|     With Sepals <br /> (SepalsLongJumpTask)     |   0.2 ms    |     0.4 %     |
+| With Sepals+Lithium <br /> (SepalsLongJumpTask) |   0.05 ms   |     0.1 %     |
 
 |                   Environment                   | getTarget | Percent(Avg.) | Percent(in ```keepRunning```) |
 |:-----------------------------------------------:|:---------:|:-------------:|:-----------------------------:|
 |          Vanilla <br /> (LongJumpTask)          |  43.1 ms  |     100 %     |             100 %             |
-|       With Lithium <br /> (LongJumpTask)        |  3.6 ms   |     26 %      |             48 %              |
+|       With Lithium <br /> (LongJumpTask)        |  3.6 ms   |      9 %      |             48 %              |
 |     With Sepals <br /> (SepalsLongJumpTask)     |  N/A ms   |      0 %      |              0 %              |
 | With Sepals+Lithium <br /> (SepalsLongJumpTask) |  N/A ms   |      0 %      |              0 %              |
 
@@ -147,8 +147,8 @@ Default enabled
 |-------------------------------------------------:|:------:|:-------------:|
 |          Vanilla (FrogAttackablesSensor#matches) | 10 ms  |     100 %     |
 |     With Lithium (FrogAttackablesSensor#matches) | 5.7 ms |     57 %      |
-|         With Sepals (SepalsFrogBrain#attackable) | 0.1 ms |    0.01 %     |
-| With Sepals+Lithium (SepalsFrogBrain#attackable) | 0.1 ms |    0.01 %     |
+|         With Sepals (SepalsFrogBrain#attackable) | 0.1 ms |      1 %      |
+| With Sepals+Lithium (SepalsFrogBrain#attackable) | 0.1 ms |      1 %      |
 
 ### Frog look-at target filter
 
@@ -174,8 +174,8 @@ Default enabled
 |-------------------------------------------------------------------------------------:|:---------:|:-------:|
 |                         Vanilla <br /> (LookAtMobWithIntervalTask$$Lambda#findFirst) |  2.7 ms   |  100 %  |
 |                    With Lithium <br /> (LookAtMobWithIntervalTask$$Lambda#findFirst) |  2.5 ms   |  92 %   |
-|         With Sepals <br /> (SepalsLookAtMobWithIntervalTask$$Lambda#findFirstPlayer) |  0.1 ms   | 0.03 %  |
-| With Sepals+Lithium <br /> (SepalsLookAtMobWithIntervalTask$$Lambda#findFirstPlayer) |  0.1 ms   | 0.03 %  |
+|         With Sepals <br /> (SepalsLookAtMobWithIntervalTask$$Lambda#findFirstPlayer) |  0.1 ms   |   3 %   |
+| With Sepals+Lithium <br /> (SepalsLookAtMobWithIntervalTask$$Lambda#findFirstPlayer) |  0.1 ms   |   3 %   |
 
 ### Villager miscellaneous optimizations
 
@@ -209,20 +209,20 @@ Default enabled
 |       Environment       | Brain#tick (Total) | Percent | Brain#startTasks | Percent(startTasks) | Brain#tickSensors | Percent(tickSensors) | Brain#updateTasks | Percent(updateTasks) | Brain#tickMemories | Percent(tickMemories) |
 |:-----------------------:|:------------------:|:-------:|:----------------:|:-------------------:|:-----------------:|:--------------------:|:-----------------:|:--------------------:|:------------------:|:---------------------:|
 |         Vanilla         |       18 ms        |  100 %  |      9.3 ms      |        100 %        |      5.2 ms       |        100 %         |       3 ms        |        100 %         |       0.5 ms       |         100 %         |
-|      With lithium       |      12.4 ms       |  35 %   |      4.8 ms      |        24 %         |      5.9 ms       |        113 %         |      1.2 ms       |         30 %         |       0.5 ms       |         112 %         |
-|       With Sepals       |       9.7 ms       |  25 %   |      3.6 ms      |        16 %         |      3.7 ms       |        120 %         |       2 ms        |        0.04 %        |       0.4 ms       |         100 %         |
-| With Sepals and lithium |       10 ms        |  22 %   |      3.4 ms      |        11 %         |      3.7 ms       |        116 %         |      2.5 ms       |        0.08 %        |       0.4 ms       |         75 %          |
+|      With lithium       |      12.4 ms       |  68 %   |      4.8 ms      |        51 %         |      5.9 ms       |        113 %         |      1.2 ms       |         40 %         |       0.5 ms       |         100 %         |
+|       With Sepals       |       9.7 ms       |  53 %   |      3.6 ms      |        38 %         |      3.7 ms       |         71 %         |       2 ms        |         66 %         |       0.4 ms       |         80 %          |
+| With Sepals and lithium |       10 ms        |  55 %   |      3.4 ms      |        36 %         |      3.7 ms       |         71 %         |      2.5 ms       |         83 %         |       0.4 ms       |         80 %          |
 
 800 villagers cramming in a 7x7 space at night:
 
 |       Environment       | Brain#tick (Total) | Percent | Brain#startTasks | Percent(startTasks) | Brain#tickSensors | Percent(tickSensors) | Brain#updateTasks | Percent(updateTasks) | Brain#tickMemories | Percent(tickMemories) |
 |:-----------------------:|:------------------:|:-------:|:----------------:|:-------------------:|:-----------------:|:--------------------:|:-----------------:|:--------------------:|:------------------:|:---------------------:|
 |         Vanilla         |      16.7 ms       |  100 %  |      8.2 ms      |        100 %        |       6 ms        |        100 %         |       2 ms        |        100 %         |       0.5 ms       |         100 %         |
-|      With lithium       |      10.2 ms       |  35 %   |      3.2 ms      |        24 %         |       6 ms        |        113 %         |      0.5 ms       |         30 %         |       0.5 ms       |         112 %         |
-|       With Sepals       |        9 ms        |  25 %   |      3.3 ms      |        16 %         |      4.7 ms       |        120 %         |      0.7 ms       |        0.04 %        |       0.3 ms       |         100 %         |
-| With Sepals and lithium |       8.7 ms       |  22 %   |      2.9 ms      |        11 %         |      4.6 ms       |        116 %         |      0.7 ms       |        0.08 %        |       0.5 ms       |         75 %          |
+|      With lithium       |      10.2 ms       |  61 %   |      3.2 ms      |        24 %         |       6 ms        |        113 %         |      0.5 ms       |         25 %         |       0.5 ms       |         100 %         |
+|       With Sepals       |        9 ms        |  53 %   |      3.3 ms      |        16 %         |      4.7 ms       |         78 %         |      0.7 ms       |         35 %         |       0.3 ms       |         60 %          |
+| With Sepals and lithium |       8.7 ms       |  52 %   |      2.9 ms      |        11 %         |      4.6 ms       |         76 %         |      0.7 ms       |         35 %         |       0.5 ms       |         100 %         |
 
-### Frog look-at target filter
+### Cached 'getOtherEntities'
 
 ```
 Use box cache to prevent too much 'getOtherEntities' calls

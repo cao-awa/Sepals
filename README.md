@@ -72,14 +72,14 @@ Default enabled
 |                   Environment                   | keepRunning | Percent(Avg.) |
 |:-----------------------------------------------:|:-----------:|:-------------:|
 |          Vanilla <br /> (LongJumpTask)          |   43.1 ms   |     100 %     |
-|    With Lithium <br /> (SepalsLongJumpTask)     |   7.5 ms    |     17 %      |
+|       With Lithium <br /> (LongJumpTask)        |   7.5 ms    |     17 %      |
 |     With Sepals <br /> (SepalsLongJumpTask)     |   0.2 ms    |    0.004 %    |
 | With Sepals+Lithium <br /> (SepalsLongJumpTask) |   0.05 ms   |    0.001 %    |
 
 |                   Environment                   | getTarget | Percent(Avg.) | Percent(in ```keepRunning```) |
 |:-----------------------------------------------:|:---------:|:-------------:|:-----------------------------:|
 |          Vanilla <br /> (LongJumpTask)          |  43.1 ms  |     100 %     |             100 %             |
-|     With Sepals <br /> (SepalsLongJumpTask)     |  3.6 ms   |     26 %      |             48 %              |
+|       With Lithium <br /> (LongJumpTask)        |  3.6 ms   |     26 %      |             48 %              |
 |     With Sepals <br /> (SepalsLongJumpTask)     |  N/A ms   |      0 %      |              0 %              |
 | With Sepals+Lithium <br /> (SepalsLongJumpTask) |  N/A ms   |      0 %      |              0 %              |
 

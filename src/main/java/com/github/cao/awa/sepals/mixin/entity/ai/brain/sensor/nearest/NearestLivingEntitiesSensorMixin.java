@@ -44,8 +44,8 @@ public abstract class NearestLivingEntitiesSensorMixin<T extends LivingEntity> {
         List<LivingEntity> list = world.getEntitiesByClass(LivingEntity.class, box, LivingEntity::isAlive);
         list.remove(entity);
 
-        if (!Sepals.enableSepalsLivingTargetCache) {
-            if (Sepals.nearestLivingEntitiesSensorUseQuickSort) {
+        if (Sepals.CONFIG.isEnableSepalsLivingTargetCache()) {
+            if (Sepals.CONFIG.isNearestLivingEntitiesSensorUseQuickSort()) {
                 LivingEntity[] entitiesArray = list.toArray(LivingEntity[]::new);
                 ObjectArrays.quickSort(entitiesArray, comparator);
                 list = Arrays.asList(entitiesArray);
@@ -57,7 +57,7 @@ public abstract class NearestLivingEntitiesSensorMixin<T extends LivingEntity> {
         } else {
             Catheter<LivingEntity> entities = Catheter.of(list, LivingEntity[]::new);
 
-            if (Sepals.nearestLivingEntitiesSensorUseQuickSort) {
+            if (Sepals.CONFIG.isNearestLivingEntitiesSensorUseQuickSort()) {
                 ObjectArrays.quickSort(entities.dArray(), comparator);
             } else {
                 Arrays.sort(entities.dArray(), comparator);
@@ -67,7 +67,7 @@ public abstract class NearestLivingEntitiesSensorMixin<T extends LivingEntity> {
 
             brain.remember(MemoryModuleType.MOBS, ApricotCollectionFactor.arrayList(sources));
 
-            if (Sepals.enableSepalsLivingTargetCache) {
+            if (Sepals.CONFIG.isEnableSepalsLivingTargetCache()) {
                 PlayerEntity[] players = entities.filter(LivingEntity::isPlayer)
                         .varyTo(PlayerEntity.class::cast)
                         .arrayGenerator(PlayerEntity[]::new)

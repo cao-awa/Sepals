@@ -5,15 +5,13 @@
   "compatibilityLevel": "JAVA_21",
   "plugin": "com.github.cao.awa.sepals.mixin.SepalsMixinPlugin",
   "mixins": [
-    "entity.LivingEntityMixin",
-    "world.WorldAccessor"
   ],
   "client": [
   ],
   "server": [
     "block.command.CommandBlockMixin",
     "collection.TypeFilterableListAccessor",
-    "collection.weight.WeightingMixin",
+    "entity.LivingEntityMixin",
     "entity.ai.brain.BrainMixin",
     "entity.ai.brain.frog.FrogBrainMixin",
     "entity.ai.brain.sensor.frog.FrogAttackablesSensorMixin",
@@ -24,6 +22,7 @@
     "entity.track.EntityTrackingSectionMixin",
     "server.MinecraftServerMixin",
     "world.MinecraftServerAccessor",
+    "world.WorldAccessor",
     "world.WorldMixin",
     "world.poi.PointOfInterestAccessor",
     "world.poi.PointOfInterestSetAccessor",

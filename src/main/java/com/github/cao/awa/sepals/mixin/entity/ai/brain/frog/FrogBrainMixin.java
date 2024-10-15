@@ -39,7 +39,7 @@ public abstract class FrogBrainMixin {
             cancellable = true
     )
     private static void addLongJumpActivities(Brain<FrogEntity> brain, CallbackInfo ci) {
-        if (Sepals.enableSepalsBiasedJumpLongTask) {
+        if (Sepals.CONFIG.isEnableSepalsBiasedLongJumpTask()) {
             brain.setTaskList(
                     Activity.LONG_JUMP,
                     ImmutableList.of(
@@ -78,7 +78,7 @@ public abstract class FrogBrainMixin {
             )
     )
     private static Task<LivingEntity> addIdleActivities(EntityType<?> type, float maxDistance, UniformIntProvider interval) {
-        if (Sepals.enableSepalsFrogLookAt) {
+        if (Sepals.CONFIG.isEnableSepalsFrogLookAt()) {
             return SepalsLookAtMobWithIntervalTask.frogFollow(6.0f, UniformIntProvider.create(30, 60));
         }
         return LookAtMobWithIntervalTask.follow(type, maxDistance, interval);
@@ -92,7 +92,7 @@ public abstract class FrogBrainMixin {
             )
     )
     private static Task<LivingEntity> addSwimActivities(EntityType<?> type, float maxDistance, UniformIntProvider interval) {
-        if (Sepals.enableSepalsFrogLookAt) {
+        if (Sepals.CONFIG.isEnableSepalsFrogLookAt()) {
             return SepalsLookAtMobWithIntervalTask.frogFollow(6.0f, UniformIntProvider.create(30, 60));
         }
         return LookAtMobWithIntervalTask.follow(type, maxDistance, interval);
@@ -106,7 +106,7 @@ public abstract class FrogBrainMixin {
             )
     )
     private static Task<LivingEntity> addLaySpawnActivities(EntityType<?> type, float maxDistance, UniformIntProvider interval) {
-        if (Sepals.enableSepalsFrogLookAt) {
+        if (Sepals.CONFIG.isEnableSepalsFrogLookAt()) {
             return SepalsLookAtMobWithIntervalTask.frogFollow(6.0f, UniformIntProvider.create(30, 60));
         }
         return LookAtMobWithIntervalTask.follow(type, maxDistance, interval);

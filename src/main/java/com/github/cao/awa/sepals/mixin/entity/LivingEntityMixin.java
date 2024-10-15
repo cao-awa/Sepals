@@ -26,7 +26,7 @@ public class LivingEntityMixin {
             )
     )
     public List<Entity> getCachedCrammingEntities(World instance, @Nullable Entity except, Box box, Predicate<? super Entity> predicate) {
-        if (Sepals.enableEntitiesCramming) {
+        if (Sepals.CONFIG.isEnableSepalsEntitiesCramming()) {
             String minX = boxPosToString(box.minX);
             String minY = boxPosToString(box.minY);
             String minZ = boxPosToString(box.minZ);
@@ -49,6 +49,6 @@ public class LivingEntityMixin {
 
     @Unique
     private static String boxPosToString(double pos) {
-        return Integer.toString((int) (pos * Sepals.entitiesCrammingAccuracy));
+        return Integer.toString((int) (pos * Sepals.CONFIG.getEntitiesCrammingAccuracy()));
     }
 }

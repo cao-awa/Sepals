@@ -26,6 +26,7 @@
   "depends": {
     "fabricloader": "*",
     "fabric": "*",
+    "fabric-language-kotlin": ">=2.0.21",
     "minecraft": "1.21.x"
   }
 }

@@ -11,7 +11,7 @@ import java.util.Map;
 public class SepalsWorldPoiMixinHandler extends SepalsMixinHandler {
     @Override
     public boolean canApply(Map<String, ModContainer> mods, String mixinGroup, String mixinName, String mixinClassName) {
-        if (Sepals.forceEnableSepalsPoi) {
+        if (Sepals.CONFIG.isForceEnableSepalsPoi()) {
             return true;
         }
 
@@ -34,7 +34,7 @@ public class SepalsWorldPoiMixinHandler extends SepalsMixinHandler {
 
     @Override
     public void postProcess(Map<String, ModContainer> mods, String mixinGroup, String mixinName, String mixinClassName) {
-        if (Sepals.forceEnableSepalsPoi) {
+        if (Sepals.CONFIG.isForceEnableSepalsPoi()) {
             return;
         }
 

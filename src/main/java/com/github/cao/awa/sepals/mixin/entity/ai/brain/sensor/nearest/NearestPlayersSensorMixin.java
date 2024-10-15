@@ -36,7 +36,7 @@ public class NearestPlayersSensorMixin {
             cancellable = true
     )
     public void sense(ServerWorld world, LivingEntity entity, CallbackInfo ci) {
-        if (Sepals.enableSepalsVillager) {
+        if (Sepals.CONFIG.isEnableSepalsVillager()) {
             Brain<?> brain = entity.getBrain();
 
             Catheter<PlayerEntity> players = collectBasicNearestPlayers(world, entity, brain);
@@ -70,7 +70,7 @@ public class NearestPlayersSensorMixin {
                 .filter(EntityPredicates.EXCEPT_SPECTATOR)
                 .filter(player -> entity.isInRange(player, 16.0))
                 .ifPresent(catheter -> {
-                    if (Sepals.nearestLivingEntitiesSensorUseQuickSort) {
+                    if (Sepals.CONFIG.isNearestLivingEntitiesSensorUseQuickSort()) {
                         ObjectArrays.quickSort(catheter.dArray(), Comparator.comparingDouble(entity::squaredDistanceTo));
                     } else {
                         Arrays.sort(catheter.dArray(), Comparator.comparingDouble(entity::squaredDistanceTo));

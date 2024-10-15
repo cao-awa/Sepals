@@ -76,7 +76,7 @@ public abstract class VillagerTaskListProviderMixin {
             cancellable = true
     )
     private static void createCoreTasks(VillagerProfession profession, float speed, CallbackInfoReturnable<ImmutableList<Pair<Integer, ? extends Task<? super VillagerEntity>>>> cir) {
-        if (Sepals.enableSepalsVillager) {
+        if (Sepals.CONFIG.isEnableSepalsVillager()) {
             cir.setReturnValue(ImmutableList.of(
                     Pair.of(0, new StayAboveWaterTask(0.8F)),
                     Pair.of(0, OpenDoorsTask.create()),
@@ -133,7 +133,7 @@ public abstract class VillagerTaskListProviderMixin {
             cancellable = true
     )
     private static void createMeetTasks(VillagerProfession profession, float speed, CallbackInfoReturnable<ImmutableList<Pair<Integer, ? extends Task<? super VillagerEntity>>>> cir) {
-        if (Sepals.enableSepalsVillager) {
+        if (Sepals.CONFIG.isEnableSepalsVillager()) {
             cir.setReturnValue(ImmutableList.of(
                     Pair.of(
                             2,
@@ -164,7 +164,7 @@ public abstract class VillagerTaskListProviderMixin {
             cancellable = true
     )
     private static void createWorkTasks(VillagerProfession profession, float speed, CallbackInfoReturnable<ImmutableList<Pair<Integer, ? extends Task<? super VillagerEntity>>>> cir) {
-        if (Sepals.enableSepalsVillager) {
+        if (Sepals.CONFIG.isEnableSepalsVillager()) {
             VillagerWorkTask villagerWorkTask;
             if (profession == VillagerProfession.FARMER) {
                 villagerWorkTask = new FarmerWorkTask();
@@ -202,7 +202,7 @@ public abstract class VillagerTaskListProviderMixin {
             cancellable = true
     )
     private static void createIdleTasks(VillagerProfession profession, float speed, CallbackInfoReturnable<ImmutableList<Pair<Integer, ? extends Task<? super VillagerEntity>>>> cir) {
-        if (Sepals.enableSepalsVillager) {
+        if (Sepals.CONFIG.isEnableSepalsVillager()) {
             cir.setReturnValue(ImmutableList.of(
                     Pair.of(
                             2,
@@ -251,7 +251,7 @@ public abstract class VillagerTaskListProviderMixin {
             cancellable = true
     )
     private static void createPanicTasks(VillagerProfession profession, float speed, CallbackInfoReturnable<ImmutableList<Pair<Integer, ? extends Task<? super VillagerEntity>>>> cir) {
-        if (Sepals.enableSepalsVillager) {
+        if (Sepals.CONFIG.isEnableSepalsVillager()) {
             float f = speed * 1.5f;
             cir.setReturnValue(
                     ImmutableList.of(
@@ -270,7 +270,7 @@ public abstract class VillagerTaskListProviderMixin {
             cancellable = true
     )
     private static void createPlayTasks(float speed, CallbackInfoReturnable<ImmutableList<Pair<Integer, ? extends Task<? super VillagerEntity>>>> cir) {
-        if (Sepals.enableSepalsVillager) {
+        if (Sepals.CONFIG.isEnableSepalsVillager()) {
             cir.setReturnValue(ImmutableList.of(
                     Pair.of(0, new MoveToTargetTask(80, 120)),
                     createFreeFollowTask(),
@@ -300,7 +300,7 @@ public abstract class VillagerTaskListProviderMixin {
             cancellable = true
     )
     private static void createRestTasks(VillagerProfession profession, float speed, CallbackInfoReturnable<ImmutableList<Pair<Integer, ? extends Task<? super VillagerEntity>>>> cir) {
-        if (Sepals.enableSepalsVillager) {
+        if (Sepals.CONFIG.isEnableSepalsVillager()) {
             cir.setReturnValue(ImmutableList.of(
                     Pair.of(2, VillagerWalkTowardsTask.create(MemoryModuleType.HOME, speed, 1, 150, 1200)),
                     Pair.of(3, ForgetCompletedPointOfInterestTask.create(poiType -> poiType.matchesKey(PointOfInterestTypes.HOME), MemoryModuleType.HOME)),
@@ -329,7 +329,7 @@ public abstract class VillagerTaskListProviderMixin {
             cancellable = true
     )
     private static void createFreeFollowTask(CallbackInfoReturnable<Pair<Integer, Task<LivingEntity>>> cir) {
-        if (Sepals.enableSepalsVillager) {
+        if (Sepals.CONFIG.isEnableSepalsVillager()) {
             cir.setReturnValue(Pair.of(
                     5,
                     new SepalsRandomTask<>(
@@ -356,7 +356,7 @@ public abstract class VillagerTaskListProviderMixin {
             cancellable = true
     )
     private static void createBusyFollowTask(CallbackInfoReturnable<Pair<Integer, Task<LivingEntity>>> cir) {
-        if (Sepals.enableSepalsVillager) {
+        if (Sepals.CONFIG.isEnableSepalsVillager()) {
             cir.setReturnValue(Pair.of(
                     5,
                     new SepalsRandomTask<>(

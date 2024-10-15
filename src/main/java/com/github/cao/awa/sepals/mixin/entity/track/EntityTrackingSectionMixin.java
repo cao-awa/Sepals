@@ -31,7 +31,7 @@ public abstract class EntityTrackingSectionMixin<T extends EntityLike> {
     )
     @SuppressWarnings("unchecked")
     public void forEach(Box box, LazyIterationConsumer<T> consumer, CallbackInfoReturnable<LazyIterationConsumer.NextIteration> cir) {
-        if (Sepals.enableEntitiesCramming) {
+        if (Sepals.CONFIG.isEnableSepalsEntitiesCramming()) {
             // Access and clone the elements to match the vanilla behavior.
             List<T> elements = ApricotCollectionFactor.arrayList(
                     ((TypeFilterableListAccessor<T>) this.collection).getAllElements()
@@ -59,7 +59,7 @@ public abstract class EntityTrackingSectionMixin<T extends EntityLike> {
             cancellable = true
     )
     public <U extends T> void forEach(TypeFilter<T, U> type, Box box, LazyIterationConsumer<? super U> consumer, CallbackInfoReturnable<LazyIterationConsumer.NextIteration> cir) {
-        if (Sepals.enableEntitiesCramming) {
+        if (Sepals.CONFIG.isEnableSepalsEntitiesCramming()) {
             List<? extends T> collection = (List<? extends T>) this.collection.getAllOfType(type.getBaseClass());
             if (collection.isEmpty()) {
                 cir.setReturnValue(LazyIterationConsumer.NextIteration.CONTINUE);

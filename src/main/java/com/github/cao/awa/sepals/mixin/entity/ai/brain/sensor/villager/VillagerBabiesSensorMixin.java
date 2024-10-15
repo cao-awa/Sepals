@@ -28,7 +28,7 @@ public abstract class VillagerBabiesSensorMixin {
             cancellable = true
     )
     protected void sense(ServerWorld world, LivingEntity entity, CallbackInfo ci) {
-        if (Sepals.enableSepalsVillager) {
+        if (Sepals.CONFIG.isEnableSepalsVillager()) {
             entity.getBrain().remember(MemoryModuleType.VISIBLE_VILLAGER_BABIES, getVisibleVillagerBabies(entity));
             ci.cancel();
         }

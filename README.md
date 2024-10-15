@@ -6,6 +6,20 @@ An extremely radical and experimental optimization for Minecraft server performa
 
 Currently, sepals are compatible to almost all mods.
 
+## Config
+
+|               Config name               |          Allowed value           |
+|:---------------------------------------:|:--------------------------------:|
+|          forceEnableSepalsPoi           |            bool value            |   
+|          enableSepalsVillager           |            bool value            |   
+|         enableSepalsFrogLookAt          |            bool value            |   
+|    enableSepalsFrogAttackableSensor     |            bool value            |   
+|      enableSepalsLivingTargetCache      |            bool value            |   
+| nearestLivingEntitiesSensorUseQuickSort |            bool value            |   
+|     enableSepalsBiasedLongJumpTask      |            bool value            |   
+|      enableSepalsEntitiesCramming       |            bool value            |   
+|        entitiesCrammingAccuracy         | any of [1, 10, 100, 1000, 10000] |   
+
 ## Performance
 
 A test was done in server of Mars provided by feimia, CPU: Intel i7-14700K; Game memory: 4G; OS: Ubuntu 24.04.1 LTS;

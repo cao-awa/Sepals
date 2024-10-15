@@ -19,7 +19,6 @@
     "entity.ai.brain.sensor.nearest.NearestPlayersSensorMixin",
     "entity.ai.brain.sensor.villager.VillagerBabiesSensorMixin",
     "entity.ai.brain.villager.VillagerTaskListProviderMixin",
-    "entity.track.EntityTrackingSectionMixin",
     "server.MinecraftServerMixin",
     "world.MinecraftServerAccessor",
     "world.WorldAccessor",

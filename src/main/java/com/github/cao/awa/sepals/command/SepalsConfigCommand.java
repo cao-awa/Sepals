@@ -31,7 +31,6 @@ public class SepalsConfigCommand {
                                 .then(createBoolConfigNode(SepalsConfig.NEAREST_LIVING_ENTITIES_SENSOR_USE_QUICK_SORT))
                                 .then(createBoolConfigNode(SepalsConfig.ENABLE_SEPALS_BIASED_LONG_JUMP_TASK))
                                 .then(createBoolConfigNode(SepalsConfig.ENABLE_SEPALS_ENTITIES_CRAMMING))
-                                .then(createIntConfigNode(SepalsConfig.ENTITIES_CRAMMING_ACCURACY))
                 );
     }
 

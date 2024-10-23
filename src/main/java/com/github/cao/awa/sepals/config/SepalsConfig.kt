@@ -42,10 +42,6 @@ class SepalsConfig {
 
         @JvmField
         val ENABLE_SEPALS_ENTITIES_CRAMMING = SepalsConfigKey.create("enableSepalsEntitiesCramming", true)
-
-        @JvmField
-        val ENTITIES_CRAMMING_ACCURACY =
-            SepalsConfigKey.create("entitiesCrammingAccuracy", 1000).withLimits(1, 10, 1000, 10000)
     }
 
     private val config = JSONObject()
@@ -61,7 +57,6 @@ class SepalsConfig {
         )
     val isEnableSepalsBiasedLongJumpTask: Boolean get() = getConfig(ENABLE_SEPALS_BIASED_LONG_JUMP_TASK)
     val isEnableSepalsEntitiesCramming: Boolean get() = getConfig(ENABLE_SEPALS_ENTITIES_CRAMMING)
-    val entitiesCrammingAccuracy: Int get() = getConfig(ENTITIES_CRAMMING_ACCURACY)
 
     @Throws(IllegalArgumentException::class)
     fun <X> setConfig(configKey: SepalsConfigKey<X>, value: X?) {
@@ -106,7 +101,6 @@ class SepalsConfig {
             setConfig(NEAREST_LIVING_ENTITIES_SENSOR_USE_QUICK_SORT, config)
             setConfig(ENABLE_SEPALS_BIASED_LONG_JUMP_TASK, config)
             setConfig(ENABLE_SEPALS_ENTITIES_CRAMMING, config)
-            setConfig(ENTITIES_CRAMMING_ACCURACY, config)
         }
     }
 
@@ -148,7 +142,6 @@ class SepalsConfig {
             ENABLE_SEPALS_ENTITIES_CRAMMING,
             config.isEnableSepalsEntitiesCramming
         )
-        setConfig(ENTITIES_CRAMMING_ACCURACY, config.entitiesCrammingAccuracy)
     }
 
     fun print() {
@@ -174,10 +167,6 @@ class SepalsConfig {
         LOGGER.info(
             "Sepals 'enableEntitiesCramming' flag is {}",
             isEnableSepalsEntitiesCramming
-        )
-        LOGGER.info(
-            "Sepals 'entitiesCrammingAccuracy' flag is {}",
-            entitiesCrammingAccuracy
         )
     }
 }

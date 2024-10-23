@@ -18,7 +18,6 @@ Currently, sepals are compatible to almost all mods.
 | nearestLivingEntitiesSensorUseQuickSort |            bool value            |   
 |     enableSepalsBiasedLongJumpTask      |            bool value            |   
 |      enableSepalsEntitiesCramming       |            bool value            |   
-|        entitiesCrammingAccuracy         | any of [1, 10, 100, 1000, 10000] |   
 
 ## Performance
 
@@ -28,22 +27,27 @@ Minecraft: 1.21 .
 ### Entities cramming
 
 ```
-Use index to access element to replaced iterator
+Use box cache to prevent too much 'getOtherEntities' calls
+
+-- Notice --
+This feature was ignored scoreboard/team predicates for every sigle entity
+may cause unexpected behaviors
+
+This problem will not affects anything in vanilla(survival and creative)
+it only things to consider when game servers that using command blocks    
 
 -- Status --
-Default disabled, no recommend to use now
-
--- Warining -- 
-Not tested.
+Default enabled
 ```
 
-The entities cramming optimization of sepals will be auto-disabled when you used lithium and without configurations.
+1390 villagers cramming in a 7x7 space:
 
-This feature require disable lithium's cramming to enable:
-
-```properties
-mixin.entity.collisions.unpushable_cramming=false
-```
+|         Environment | tickCramming | Percent(Avg.) |
+|--------------------:|:------------:|:-------------:|
+|             Vanilla |   53.6 ms    |     100 %     |
+|        With Lithium |   54.4 ms    |     101 %     |
+|         With Sepals |   10.2 ms    |     19 %      |
+| With Sepals+Lithium |    8.5 ms    |     15 %      |
 
 ### Weighted random
 
@@ -235,24 +239,3 @@ Default enabled
 |      With lithium       |      10.2 ms       |  61 %   |      3.2 ms      |        24 %         |       6 ms        |        113 %         |      0.5 ms       |         25 %         |       0.5 ms       |         100 %         |
 |       With Sepals       |        9 ms        |  53 %   |      3.3 ms      |        16 %         |      4.7 ms       |         78 %         |      0.7 ms       |         35 %         |       0.3 ms       |         60 %          |
 | With Sepals and lithium |       8.7 ms       |  52 %   |      2.9 ms      |        11 %         |      4.6 ms       |         76 %         |      0.7 ms       |         35 %         |       0.5 ms       |         100 %         |
-
-### Cached 'getOtherEntities'
-
-```
-Use box cache to prevent too much 'getOtherEntities' calls
-
--- Notice --
-The entities cramming optimization has lossed precision of entities box, may cause no-vanilla behaviors  
-
--- Status --
-WIP, Default disabled
-```
-
-1390 villagers cramming in a 7x7 space:
-
-|         Environment | tickCramming | Percent(Avg.) |
-|--------------------:|:------------:|:-------------:|
-|             Vanilla |   53.6 ms    |     100 %     |
-|        With Lithium |   54.4 ms    |     101 %     |
-|         With Sepals |   10.2 ms    |     19 %      |
-| With Sepals+Lithium |    8.5 ms    |     15 %      |

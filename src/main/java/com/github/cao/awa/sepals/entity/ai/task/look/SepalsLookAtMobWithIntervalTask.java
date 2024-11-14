@@ -1,8 +1,6 @@
 package com.github.cao.awa.sepals.entity.ai.task.look;
 
 import com.github.cao.awa.sepals.entity.ai.cache.SepalsLivingTargetCache;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.EntityLookTarget;
 import net.minecraft.entity.ai.brain.LivingTargetCache;
@@ -27,14 +25,14 @@ public class SepalsLookAtMobWithIntervalTask {
 
                                     Optional<? extends LivingEntity> optional;
                                     if (cache instanceof SepalsLivingTargetCache sepalsCache) {
-                                         optional = sepalsCache.findFirstPlayer(e -> e.squaredDistanceTo(entity) <= d);
+                                        optional = sepalsCache.findFirstPlayer(e -> e.squaredDistanceTo(entity) <= d);
                                     } else {
                                         optional = cache.findFirst(e -> e.isPlayer() && e.squaredDistanceTo(entity) <= d);
                                     }
 
                                     if (optional.isEmpty() || !interval2.shouldRun(world.random)) {
                                         return false;
-                                    }  else {
+                                    } else {
                                         lookTarget.remember(new EntityLookTarget(optional.get(), true));
                                         return true;
                                     }

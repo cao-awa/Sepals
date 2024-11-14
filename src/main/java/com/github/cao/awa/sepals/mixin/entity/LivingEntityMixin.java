@@ -14,7 +14,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.Iterator;
 import java.util.List;
 
 @Mixin(LivingEntity.class)
@@ -49,16 +48,16 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Unique
     private void crammingAndPushAway(int maxCramming, List<Entity> list) {
-        int j = 0;
+        int cramming = 0;
 
         for (Entity entity : list) {
             if (!entity.hasVehicle()) {
-                ++j;
+                ++cramming;
             }
             pushAway(entity);
         }
 
-        if (j > maxCramming - 1) {
+        if (cramming > maxCramming - 1) {
             damage(getDamageSources().cramming(), 6.0F);
         }
     }

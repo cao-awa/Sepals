@@ -44,44 +44,32 @@ public abstract class NearestLivingEntitiesSensorMixin<T extends LivingEntity> {
         List<LivingEntity> list = world.getEntitiesByClass(LivingEntity.class, box, LivingEntity::isAlive);
         list.remove(entity);
 
-        if (Sepals.CONFIG.isEnableSepalsLivingTargetCache()) {
-            if (Sepals.CONFIG.isNearestLivingEntitiesSensorUseQuickSort()) {
-                LivingEntity[] entitiesArray = list.toArray(LivingEntity[]::new);
-                ObjectArrays.quickSort(entitiesArray, comparator);
-                list = Arrays.asList(entitiesArray);
-            } else {
-                list.sort(comparator);
-            }
-            brain.remember(MemoryModuleType.MOBS, list);
-            brain.remember(MemoryModuleType.VISIBLE_MOBS, new LivingTargetCache(entity, list));
+        Catheter<LivingEntity> entities = Catheter.of(list, LivingEntity[]::new);
+
+        if (Sepals.CONFIG.isNearestLivingEntitiesSensorUseQuickSort()) {
+            ObjectArrays.quickSort(entities.dArray(), comparator);
         } else {
-            Catheter<LivingEntity> entities = Catheter.of(list, LivingEntity[]::new);
+            Arrays.sort(entities.dArray(), comparator);
+        }
 
-            if (Sepals.CONFIG.isNearestLivingEntitiesSensorUseQuickSort()) {
-                ObjectArrays.quickSort(entities.dArray(), comparator);
-            } else {
-                Arrays.sort(entities.dArray(), comparator);
-            }
+        LivingEntity[] sources = entities.array();
 
-            LivingEntity[] sources = entities.array();
+        brain.remember(MemoryModuleType.MOBS, ApricotCollectionFactor.arrayList(sources));
 
-            brain.remember(MemoryModuleType.MOBS, ApricotCollectionFactor.arrayList(sources));
+        if (Sepals.CONFIG.isEnableSepalsLivingTargetCache()) {
+            PlayerEntity[] players = entities.filter(LivingEntity::isPlayer)
+                    .varyTo(PlayerEntity.class::cast)
+                    .arrayGenerator(PlayerEntity[]::new)
+                    .safeArray();
 
-            if (Sepals.CONFIG.isEnableSepalsLivingTargetCache()) {
-                PlayerEntity[] players = entities.filter(LivingEntity::isPlayer)
-                        .varyTo(PlayerEntity.class::cast)
-                        .arrayGenerator(PlayerEntity[]::new)
-                        .safeArray();
-
-                brain.remember(MemoryModuleType.VISIBLE_MOBS, new SepalsLivingTargetCache(
-                                entity,
-                                sources,
-                                players
-                        )
-                );
-            } else {
-                brain.remember(MemoryModuleType.VISIBLE_MOBS, new LivingTargetCache(entity, entities.list()));
-            }
+            brain.remember(MemoryModuleType.VISIBLE_MOBS, new SepalsLivingTargetCache(
+                            entity,
+                            sources,
+                            players
+                    )
+            );
+        } else {
+            brain.remember(MemoryModuleType.VISIBLE_MOBS, new LivingTargetCache(entity, entities.list()));
         }
 
         ci.cancel();

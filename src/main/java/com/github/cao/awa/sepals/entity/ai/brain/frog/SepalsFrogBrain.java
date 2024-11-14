@@ -69,11 +69,7 @@ public class SepalsFrogBrain {
             return false;
         }
 
-        if (Sensor.testAttackableTargetPredicate(entity, target)) {
-            return !isTargetUnreachable(entity, target);
-        }
-
-        return false;
+        return !isTargetUnreachable(entity, target) && Sensor.testAttackableTargetPredicate(entity, target);
     }
 
     private static boolean isHuntingCooldown(LivingEntity entity) {

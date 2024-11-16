@@ -6,18 +6,32 @@ An extremely radical and experimental optimization for Minecraft server performa
 
 Currently, sepals are compatible to almost all mods.
 
+Here is verified mod list:
+
+|  Target mod |  Target mod version  | Recommend target version | Sepals version | Recommend sepals version |
+|------------:|:--------------------:|:------------------------:|:--------------:|:------------------------:|
+| ferritecore |         all          |           all            |      all       |          latest          |
+|      sodium |         all          |           all            |      all       |          latest          |
+|        iris |         all          |           all            |      all       |          latest          |
+|     krypton |         all          |           all            |      all       |          latest          |
+|     lithium |       >=0.14.1       |          latest          |      all       |          latest          |
+|        c2me | \>=0.3.0+alpha.0.295 |          latest          |    \>=1.0.5    |          latest          |
+|    moonrise |    \>=0.1.0-beta8    |         unknown          |    \>=1.0.6    |          latest          |
+
+If you don't know which version to choose, please use the latest version of all the optimization mods, Sepals will ensure compatibility with them.
+
 ## Config
 
-|               Config name               |          Allowed value           |
-|:---------------------------------------:|:--------------------------------:|
-|          forceEnableSepalsPoi           |            bool value            |   
-|          enableSepalsVillager           |            bool value            |   
-|         enableSepalsFrogLookAt          |            bool value            |   
-|    enableSepalsFrogAttackableSensor     |            bool value            |   
-|      enableSepalsLivingTargetCache      |            bool value            |   
-| nearestLivingEntitiesSensorUseQuickSort |            bool value            |   
-|     enableSepalsBiasedLongJumpTask      |            bool value            |   
-|      enableSepalsEntitiesCramming       |            bool value            |   
+|               Config name               | Allowed value |
+|:---------------------------------------:|:-------------:|
+|          forceEnableSepalsPoi           |  bool value   |   
+|          enableSepalsVillager           |  bool value   |   
+|         enableSepalsFrogLookAt          |  bool value   |   
+|    enableSepalsFrogAttackableSensor     |  bool value   |   
+|      enableSepalsLivingTargetCache      |  bool value   |   
+| nearestLivingEntitiesSensorUseQuickSort |  bool value   |   
+|     enableSepalsBiasedLongJumpTask      |  bool value   |   
+|      enableSepalsEntitiesCramming       |  bool value   |   
 
 ## Performance
 

@@ -11,9 +11,11 @@ import org.apache.logging.log4j.Logger;
 
 public class Sepals implements ModInitializer {
     public static final Logger LOGGER = LogManager.getLogger("Sepals");
-    public static final String VERSION = "1.0.5";
+    public static final String VERSION = "1.0.6";
     public static final SepalsConfig CONFIG = new SepalsConfig();
     public static final SepalsConfig PERSISTENT_CONFIG = new SepalsConfig();
+    public static boolean isLithiumLoaded;
+    public static boolean isMoonriseLoaded;
 
     @Override
     public void onInitialize() {

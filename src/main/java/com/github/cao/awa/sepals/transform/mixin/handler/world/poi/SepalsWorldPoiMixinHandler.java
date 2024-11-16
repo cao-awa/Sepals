@@ -45,11 +45,18 @@ public class SepalsWorldPoiMixinHandler extends SepalsMixinHandler {
         switch (mixinName) {
             case "region_based_storage" -> {
                 boolean isLithiumLoaded = mods.containsKey(SepalsModCompatibles.LITHIUM_MOD_NAME);
+                boolean isMoonriseLoaded = mods.containsKey(SepalsModCompatibles.MOONRISE_MOD_NAME);
 
                 if (isLithiumLoaded) {
                     LOGGER.info("Lithium is loaded, auto-disabling sepals mixin: {}({})", "region_based_storage", mixinClassName);
 
                     SepalsPointOfInterestStorage.onLithiumLoaded();
+                }
+
+                if (isMoonriseLoaded) {
+                    LOGGER.info("Moonrise is loaded, sepals won't intervention chunk loading in 'getInChunk' of POI");
+
+                    SepalsPointOfInterestStorage.onMoonriseLoaded();
                 }
             }
         }

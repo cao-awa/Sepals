@@ -1,5 +1,6 @@
 package com.github.cao.awa.sepals.mixin.world.storage;
 
+import com.github.cao.awa.sepals.Sepals;
 import com.github.cao.awa.sepals.world.poi.SepalsPointOfInterestStorage;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -59,7 +60,7 @@ public class PointOfInterestStorageMixin {
             PointOfInterestStorage.OccupationStatus occupationStatus,
             CallbackInfoReturnable<Stream<PointOfInterest>> cir
     ) {
-        if (!SepalsPointOfInterestStorage.isLithiumLoaded()) {
+        if (!Sepals.isLithiumLoaded && !Sepals.isMoonriseLoaded) {
             cir.setReturnValue(
                     SepalsPointOfInterestStorage.getInChunk(
                             instance(),

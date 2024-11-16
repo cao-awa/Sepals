@@ -1,6 +1,7 @@
 package com.github.cao.awa.sepals.world.poi;
 
 import com.github.cao.awa.catheter.Catheter;
+import com.github.cao.awa.sepals.Sepals;
 import com.github.cao.awa.sepals.mixin.world.poi.*;
 import com.github.cao.awa.sepals.mixin.world.storage.SerializingRegionBasedStorageAccessor;
 import com.mojang.datafixers.util.Function4;
@@ -38,19 +39,25 @@ public class SepalsPointOfInterestStorage {
             > getInChunkFunction = (storage, typePredicate, chunkPos, occupationStatus) -> ((RegionBasedStorageSectionExtended<PointOfInterestSet>) storage)
             .sepals$getWithinChunkColumn(chunkPos.x, chunkPos.z)
             .flatTo(set -> get(set, typePredicate, occupationStatus));
-    private static boolean lithiumLoaded = false;
 
     public static void onLithiumLoaded() {
+        onRequiredVanillaGetInChunk();
+
+        Sepals.isLithiumLoaded = true;
+    }
+
+    public static void onMoonriseLoaded() {
+        onRequiredVanillaGetInChunk();
+
+        Sepals.isMoonriseLoaded = true;
+    }
+
+    public static void onRequiredVanillaGetInChunk() {
         getInChunkFunction = (storage, typePredicate, chunkPos, occupationStatus) -> Catheter.of(storage.getInChunk(
                 typePredicate,
                 chunkPos,
                 occupationStatus
         ).toArray(PointOfInterest[]::new));
-        lithiumLoaded = true;
-    }
-
-    public static boolean isLithiumLoaded() {
-        return lithiumLoaded;
     }
 
     public static Catheter<PointOfInterest> getInSquare(

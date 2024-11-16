@@ -27,8 +27,10 @@
   ],
   "depends": {
     "fabricloader": "*",
-    "fabric": "*",
     "fabric-language-kotlin": "*",
     "minecraft": "1.21.x"
+  },
+  "suggests": {
+    "fabric": "*"
   }
 }

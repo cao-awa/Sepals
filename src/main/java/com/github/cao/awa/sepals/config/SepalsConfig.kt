@@ -19,7 +19,7 @@ class SepalsConfig {
         val CONFIG_FILE: File = File("config/sepals.json")
 
         @JvmField
-        val FORCE_ENABLE_SEPALS_POI = SepalsConfigKey.create("forceEnableSepalsPoi", true)
+        val FORCE_ENABLE_SEPALS_POI = SepalsConfigKey.create("forceEnableSepalsPoi", false)
 
         @JvmField
         val ENABLE_SEPALS_VILLAGER = SepalsConfigKey.create("enableSepalsVillager", true)
@@ -47,7 +47,7 @@ class SepalsConfig {
     private val config = JSONObject()
 
     val isForceEnableSepalsPoi: Boolean get() = getConfig(FORCE_ENABLE_SEPALS_POI)
-    val isEnableSepalsVillager: Boolean get() = getConfig(FORCE_ENABLE_SEPALS_POI)
+    val isEnableSepalsVillager: Boolean get() = getConfig(ENABLE_SEPALS_VILLAGER)
     val isEnableSepalsFrogLookAt: Boolean get() = getConfig(ENABLE_SEPALS_FROG_LOOK_AT)
     val isEnableSepalsFrogAttackableSensor: Boolean get() = getConfig(ENABLE_SEPALS_FROG_ATTACKABLE_SENSOR)
     val isEnableSepalsLivingTargetCache: Boolean get() = getConfig(ENABLE_SEPALS_LIVING_TARGET_CACHE)

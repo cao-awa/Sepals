@@ -4,9 +4,8 @@ import com.alibaba.fastjson2.JSONObject;
 import com.github.cao.awa.apricot.util.collection.ApricotCollectionFactor;
 import com.github.cao.awa.apricot.util.io.IOUtil;
 import com.github.cao.awa.sepals.transform.mixin.config.SepalsMixinConfig;
-import com.github.cao.awa.sepals.transform.mixin.config.handler.SepalsMixinHandlerConfig;
 import com.github.cao.awa.sepals.transform.mixin.handler.SepalsMixinHandler;
-import com.github.cao.awa.sinuatum.manipulate.Manipulate;
+import com.github.cao.awa.sinuatum.manipulate.ManipulateBuilder;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import org.objectweb.asm.tree.ClassNode;
@@ -34,7 +33,7 @@ public class SepalsMixinPlugin implements IMixinConfigPlugin {
     public void onLoad(String mixinPackage) {
         if (config == null) {
             SepalsMixinHandler.registerDefaultHandlers();
-            config = Manipulate.make((x) -> {
+            config = ManipulateBuilder.make((x) -> {
                 IMixinService service = MixinService.getService();
                 InputStream resource = service.getResourceAsStream("sepals.mixin-handlers.json");
                 if (resource == null) {

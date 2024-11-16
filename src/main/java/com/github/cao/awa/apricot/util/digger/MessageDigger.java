@@ -2,7 +2,7 @@ package com.github.cao.awa.apricot.util.digger;
 
 import com.github.cao.awa.apricot.annotations.Stable;
 import com.github.cao.awa.lilium.mathematic.Mathematics;
-import com.github.cao.awa.sinuatum.manipulate.Manipulate;
+import com.github.cao.awa.sinuatum.manipulate.ManipulateBuilder;
 
 import java.io.File;
 import java.io.RandomAccessFile;
@@ -33,7 +33,7 @@ public class MessageDigger {
     }
 
     public static byte[] digestBytes(byte[] message, DigestAlgorithm algorithm) {
-        MessageDigest digest = Manipulate.supply(() -> MessageDigest.getInstance(algorithm.instanceName())).get();
+        MessageDigest digest = ManipulateBuilder.supply(() -> MessageDigest.getInstance(algorithm.instanceName())).get();
         if (digest == null) {
             return null;
         }
@@ -120,7 +120,7 @@ public class MessageDigger {
 
         Sha1(String instance) {
             this.instance = instance;
-            this.digestInstance = Manipulate.supply(() -> MessageDigest.getInstance(instance)).get();
+            this.digestInstance = ManipulateBuilder.supply(() -> MessageDigest.getInstance(instance)).get();
         }
 
         @Override
@@ -142,7 +142,7 @@ public class MessageDigger {
 
         Sha3(String instance) {
             this.instance = instance;
-            this.digestInstance = Manipulate.supply(() -> MessageDigest.getInstance(instance)).get();
+            this.digestInstance = ManipulateBuilder.supply(() -> MessageDigest.getInstance(instance)).get();
         }
 
         @Override

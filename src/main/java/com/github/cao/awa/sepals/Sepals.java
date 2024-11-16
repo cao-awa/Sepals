@@ -4,19 +4,19 @@ import com.github.cao.awa.sepals.command.SepalsConfigCommand;
 import com.github.cao.awa.sepals.command.SepalsDebugCommand;
 import com.github.cao.awa.sepals.config.SepalsConfig;
 import com.github.cao.awa.sepals.transform.mixin.handler.SepalsMixinHandler;
-import net.fabricmc.api.DedicatedServerModInitializer;
+import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class Sepals implements DedicatedServerModInitializer {
+public class Sepals implements ModInitializer {
     public static final Logger LOGGER = LogManager.getLogger("Sepals");
-    public static final String VERSION = "1.0.4";
+    public static final String VERSION = "1.0.5";
     public static final SepalsConfig CONFIG = new SepalsConfig();
     public static final SepalsConfig PERSISTENT_CONFIG = new SepalsConfig();
 
     @Override
-    public void onInitializeServer() {
+    public void onInitialize() {
         SepalsMixinHandler.startPostProcess();
 
         LOGGER.info("Sepals {} loading", VERSION);

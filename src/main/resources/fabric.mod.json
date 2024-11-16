@@ -14,10 +14,12 @@
   "icon": "assets/sepals/icon.png",
   "environment": "*",
   "entrypoints": {
+    "main": [
+      "com.github.cao.awa.sepals.Sepals"
+    ],
     "client": [
     ],
     "server": [
-      "com.github.cao.awa.sepals.Sepals"
     ]
   },
   "mixins": [

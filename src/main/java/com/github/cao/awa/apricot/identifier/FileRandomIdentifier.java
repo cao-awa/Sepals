@@ -2,6 +2,7 @@ package com.github.cao.awa.apricot.identifier;
 
 import com.github.cao.awa.apricot.annotations.Stable;
 import com.github.cao.awa.sinuatum.manipulate.Manipulate;
+import com.github.cao.awa.sinuatum.manipulate.QuickManipulate;
 
 import java.util.Random;
 
@@ -15,7 +16,7 @@ public class FileRandomIdentifier {
     }
 
     public static String create(int size) {
-        return new String(Manipulate.operation(
+        return new String(QuickManipulate.operation(
                 new char[size],
                 result -> {
                     for (int i = 0; i < size; i++) {

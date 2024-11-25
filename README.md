@@ -2,6 +2,9 @@
 
 An extremely radical and experimental optimization for Minecraft server performances.
 
+
+![](https://count.getloli.com/@@cao-awa.sepals?name=%40cao-awa.sepals&theme=rule34&padding=7&offset=0&align=top&scale=1&pixelated=1&darkmode=auto)
+
 ## Compatibility
 
 Currently, sepals are compatible to almost all mods.

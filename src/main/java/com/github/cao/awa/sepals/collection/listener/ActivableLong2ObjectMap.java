@@ -1,7 +1,5 @@
 package com.github.cao.awa.sepals.collection.listener;
 
-import com.github.cao.awa.sinuatum.manipulate.QuickManipulate;
-import com.github.cao.awa.sinuatum.util.collection.CollectionFactor;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.objects.ObjectCollection;
@@ -13,12 +11,7 @@ import java.util.Map;
 
 @SuppressWarnings("unchecked")
 public class ActivableLong2ObjectMap<V> implements Long2ObjectMap<V> {
-    private final Map<ActiveTriggerType, ActiveTrigger<V>> triggers = QuickManipulate.operation(CollectionFactor.hashMap(), map -> {
-        map.put(ActiveTriggerType.PUT, (m, k, v) -> {});
-        map.put(ActiveTriggerType.REMOVE, (m, k, v) -> {});
-        map.put(ActiveTriggerType.REMOVED, (m, k, v) -> {});
-        map.put(ActiveTriggerType.CLEAR, (m, k, v) -> {});
-    });
+    private final ActiveTrigger<V>[] triggers = new ActiveTrigger[ActivableLong2ObjectMap.ActiveTriggerType.values().length];
     private final Long2ObjectMap<V> delegate;
 
     public ActivableLong2ObjectMap(Long2ObjectMap<V> delegate) {
@@ -26,34 +19,34 @@ public class ActivableLong2ObjectMap<V> implements Long2ObjectMap<V> {
     }
 
     public ActivableLong2ObjectMap<V> triggerPut(MapPutTrigger<V> putTrigger) {
-        this.triggers.put(ActiveTriggerType.PUT, putTrigger);
+        this.triggers[ActiveTriggerType.PUT.ordinal()] = putTrigger;
         return this;
     }
 
     public ActivableLong2ObjectMap<V> triggerRemove(MapRemoveTrigger<V> removeTrigger) {
-        this.triggers.put(ActiveTriggerType.REMOVE, removeTrigger);
+        this.triggers[ActiveTriggerType.REMOVE.ordinal()] = removeTrigger;
         return this;
     }
 
-    public ActivableLong2ObjectMap<V> triggerPutAndRemoved(MapRemovedTrigger<V> removedTrigger) {
-        this.triggers.put(ActiveTriggerType.REMOVED, removedTrigger);
+    public ActivableLong2ObjectMap<V> triggerPutAndRemoved(MapRemovedTrigger<V> removeTrigger) {
+        this.triggers[ActiveTriggerType.REMOVED.ordinal()] = removeTrigger;
         return this;
     }
 
     public ActivableLong2ObjectMap<V> triggerPutAndRemove(MapPutTrigger<V> putTrigger, MapRemoveTrigger<V> removeTrigger) {
-        this.triggers.put(ActiveTriggerType.PUT, putTrigger);
-        this.triggers.put(ActiveTriggerType.REMOVE, removeTrigger);
+        this.triggers[ActiveTriggerType.PUT.ordinal()] = putTrigger;
+        this.triggers[ActiveTriggerType.REMOVE.ordinal()] = removeTrigger;
         return this;
     }
 
     public ActivableLong2ObjectMap<V> triggerPutAndRemoved(MapPutTrigger<V> putTrigger, MapRemovedTrigger<V> removeTrigger) {
-        this.triggers.put(ActiveTriggerType.PUT, putTrigger);
-        this.triggers.put(ActiveTriggerType.REMOVED, putTrigger);
+        this.triggers[ActiveTriggerType.PUT.ordinal()] = putTrigger;
+        this.triggers[ActiveTriggerType.REMOVED.ordinal()] = removeTrigger;
         return this;
     }
 
     public ActivableLong2ObjectMap<V> triggerClear(MapClearTrigger<V> clearTrigger) {
-        this.triggers.put(ActiveTriggerType.CLEAR, clearTrigger);
+        this.triggers[ActiveTriggerType.CLEAR.ordinal()] = clearTrigger;
         return this;
     }
 
@@ -85,7 +78,10 @@ public class ActivableLong2ObjectMap<V> implements Long2ObjectMap<V> {
     @Nullable
     @Override
     public V put(long key, V value) {
-        trigger(ActiveTriggerType.PUT).trigger(key, value, this);
+        ActiveTrigger<V> trigger = trigger(ActiveTriggerType.PUT);
+        if (trigger != null) {
+            trigger.trigger(key, value, this);
+        }
         return this.delegate.put(key, value);
     }
 
@@ -97,21 +93,33 @@ public class ActivableLong2ObjectMap<V> implements Long2ObjectMap<V> {
     @Override
     public V remove(long key) {
         V previousValue = this.delegate.remove(key);
-        trigger(ActiveTriggerType.REMOVE).trigger(key, null, this);
-        trigger(ActiveTriggerType.REMOVED).trigger(key, previousValue, this);
+        ActiveTrigger<V> removeTrigger = trigger(ActiveTriggerType.REMOVE);
+        if (removeTrigger != null) {
+            removeTrigger.trigger(key, null, this);
+        }
+        ActiveTrigger<V> removedTrigger = trigger(ActiveTriggerType.REMOVED);
+        if (removedTrigger != null) {
+            removedTrigger.trigger(key, previousValue, this);
+        }
         return previousValue;
     }
 
     @Override
     public void putAll(@NotNull Map<? extends Long, ? extends V> m) {
-        ActiveTrigger< V> trigger = trigger(ActiveTriggerType.PUT);
-        m.forEach((k, v) -> trigger.trigger(k, v, this));
+        ActiveTrigger<V> trigger = trigger(ActiveTriggerType.PUT);
+        if (trigger != null) {
+            m.forEach((k, v) -> trigger.trigger(k, v, this));
+        }
         this.delegate.putAll(m);
     }
 
     @Override
     public void clear() {
-        trigger(ActiveTriggerType.CLEAR).trigger(-1, null, this);
+        ActiveTrigger<V> trigger = trigger(ActiveTriggerType.CLEAR);
+
+        if (trigger != null) {
+            trigger.trigger(-1, null, this);
+        }
         this.delegate.clear();
     }
 
@@ -152,7 +160,7 @@ public class ActivableLong2ObjectMap<V> implements Long2ObjectMap<V> {
     }
 
     public ActiveTrigger<V> trigger(ActiveTriggerType type) {
-        return this.triggers.get(type);
+        return this.triggers[type.ordinal()];
     }
 
     public enum ActiveTriggerType {

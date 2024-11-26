@@ -21,14 +21,14 @@ public class MessageDigger {
         digest.update(message);
         StringBuilder result = new StringBuilder();
         digest(digest,
-               result
+                result
         );
         return result.toString();
     }
 
     public static String digest(String message, DigestAlgorithm sha) {
         return digest(message.getBytes(StandardCharsets.UTF_8),
-                      sha
+                sha
         );
     }
 
@@ -43,20 +43,20 @@ public class MessageDigger {
 
     public static byte[] digestToBytes(byte[] message, DigestAlgorithm sha) {
         return digestBytes(message,
-                                          sha
-                                   )
-        ;
+                sha
+        );
     }
 
     public static byte[] digestFileToBytes(File file, DigestAlgorithm sha) throws Exception {
         return Mathematics.toBytes(digestFile(file,
-                                              sha
-                                   ),
-                                   16
+                        sha
+                ),
+                16
         );
     }
+
     public static String digestFile(File file, DigestAlgorithm sha) throws Exception {
-        if (! file.isFile()) {
+        if (!file.isFile()) {
             return "0";
         }
 
@@ -95,7 +95,7 @@ public class MessageDigger {
         StringBuilder result = new StringBuilder();
 
         digest(digest,
-               result
+                result
         );
 
         return result.toString();
@@ -158,6 +158,7 @@ public class MessageDigger {
 
     public interface DigestAlgorithm {
         String instanceName();
+
         MessageDigest instance();
     }
 

@@ -5,12 +5,12 @@
   "compatibilityLevel": "JAVA_21",
   "plugin": "com.github.cao.awa.sepals.mixin.SepalsMixinPlugin",
   "mixins": [
+    "entity.item.ItemEntityMixin"
   ],
   "client": [
   ],
   "server": [
     "block.command.CommandBlockMixin",
-    "collection.TypeFilterableListAccessor",
     "entity.LivingEntityMixin",
     "entity.ai.brain.BrainMixin",
     "entity.ai.brain.frog.FrogBrainMixin",

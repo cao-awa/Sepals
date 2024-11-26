@@ -1,19 +1,21 @@
 package com.github.cao.awa.sepals.mixin.world;
 
+import com.github.cao.awa.catheter.Catheter;
 import com.github.cao.awa.sepals.Sepals;
 import com.github.cao.awa.sepals.entity.cramming.SepalsEntityCrammingStorage;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.util.TypeFilter;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 
 @Mixin(World.class)
@@ -67,6 +69,48 @@ public abstract class WorldMixin {
     public void cacheOtherEntities(Entity except, Box box, Predicate<? super Entity> predicate, CallbackInfoReturnable<List<Entity>> cir) {
         if (Sepals.CONFIG.isEnableSepalsEntitiesCramming()) {
             SepalsEntityCrammingStorage.cache(boxToString(box), cir.getReturnValue());
+        }
+    }
+
+    @Inject(
+            method = "getEntitiesByType",
+            at = @At("HEAD"),
+            cancellable = true
+    )
+    @SuppressWarnings("unchecked")
+    public <T extends Entity> void getEntitiesByType(TypeFilter<T, ? extends T> filter, Box box, Predicate<? super T> predicate, CallbackInfoReturnable<List<T>> cir) {
+        if (Sepals.CONFIG.isEnableSepalsEntitiesCramming()) {
+            String cacheKey = boxToString(box);
+
+            Set<Entity> cached = SepalsEntityCrammingStorage.cachedGetByType(cacheKey);
+
+            if (cached == null) {
+                return;
+            }
+
+            Catheter<T> catheter = Catheter.of(
+                    (Set<T>) cached
+            );
+
+            List<T> result = (List<T>) catheter
+                    .filter(predicate)
+                    .varyTo(filter::downcast)
+                    .exists()
+                    .list();
+
+            if (!result.isEmpty()) {
+                cir.setReturnValue(result);
+            }
+        }
+    }
+
+    @Inject(
+            method = "getEntitiesByType",
+            at = @At("RETURN")
+    )
+    public void cacheEntitiesByType(TypeFilter<Entity, ? extends Entity> filter, Box box, Predicate<? super Entity> predicate, CallbackInfoReturnable<List<Entity>> cir) {
+        if (Sepals.CONFIG.isEnableSepalsEntitiesCramming()) {
+            SepalsEntityCrammingStorage.cacheGetByType(boxToString(box), cir.getReturnValue());
         }
     }
 

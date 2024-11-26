@@ -41,22 +41,31 @@ public abstract class NearestLivingEntitiesSensorMixin<T extends LivingEntity> {
         Comparator<LivingEntity> comparator = Comparator.comparingDouble(entity::squaredDistanceTo);
         Brain<?> brain = entity.getBrain();
 
-        List<LivingEntity> list = world.getEntitiesByClass(LivingEntity.class, box, LivingEntity::isAlive);
-        list.remove(entity);
-
-        Catheter<LivingEntity> entities = Catheter.of(list, LivingEntity[]::new);
-
-        if (Sepals.CONFIG.isNearestLivingEntitiesSensorUseQuickSort()) {
-            ObjectArrays.quickSort(entities.dArray(), comparator);
-        } else {
-            Arrays.sort(entities.dArray(), comparator);
-        }
-
-        LivingEntity[] sources = entities.array();
-
-        brain.remember(MemoryModuleType.MOBS, ApricotCollectionFactor.arrayList(sources));
+        List<LivingEntity> list = world.getEntitiesByClass(LivingEntity.class, box, livingEntity -> livingEntity != entity && livingEntity.isAlive());
 
         if (Sepals.CONFIG.isEnableSepalsLivingTargetCache()) {
+            if (Sepals.CONFIG.isNearestLivingEntitiesSensorUseQuickSort()) {
+                LivingEntity[] entitiesArray = list.toArray(LivingEntity[]::new);
+                ObjectArrays.quickSort(entitiesArray, comparator);
+                list = Arrays.asList(entitiesArray);
+            } else {
+                list.sort(comparator);
+            }
+            brain.remember(MemoryModuleType.MOBS, list);
+            brain.remember(MemoryModuleType.VISIBLE_MOBS, new LivingTargetCache(entity, list));
+        } else {
+            Catheter<LivingEntity> entities = Catheter.of(list, LivingEntity[]::new);
+
+            if (Sepals.CONFIG.isNearestLivingEntitiesSensorUseQuickSort()) {
+                ObjectArrays.quickSort(entities.dArray(), comparator);
+            } else {
+                Arrays.sort(entities.dArray(), comparator);
+            }
+
+            LivingEntity[] sources = entities.array();
+
+            brain.remember(MemoryModuleType.MOBS, ApricotCollectionFactor.arrayList(sources));
+
             PlayerEntity[] players = entities.filter(LivingEntity::isPlayer)
                     .varyTo(PlayerEntity.class::cast)
                     .arrayGenerator(PlayerEntity[]::new)
@@ -68,8 +77,6 @@ public abstract class NearestLivingEntitiesSensorMixin<T extends LivingEntity> {
                             players
                     )
             );
-        } else {
-            brain.remember(MemoryModuleType.VISIBLE_MOBS, new LivingTargetCache(entity, entities.list()));
         }
 
         ci.cancel();

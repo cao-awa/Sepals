@@ -146,9 +146,12 @@ public abstract class BrainMixin<E extends LivingEntity> implements TaskDelegate
     private void startTasks(Brain<E> instance, ServerWorld world, E entity) {
         long time = entity.getWorld().getTime();
 
-        Catheter<Task<? super E>> running = getTasks().filterTo(
-                task -> SepalsTaskStatus.isStopped(task.getStatus()) || task.tryStarting(world, entity, time)
-        );
+        Catheter<Task<? super E>> running = getTasks().filterTo(task -> {
+            if (SepalsTaskStatus.isStopped(task.getStatus())) {
+                return task.tryStarting(world, entity, time);
+            }
+            return true;
+        });
 
         if (this.runningTasks != null) {
             this.runningTasks.merge(running);

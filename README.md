@@ -7,6 +7,13 @@ An extremely radical and experimental optimization for Minecraft server performa
 
 ## Compatibility
 
+## NeoForge port 
+This branch is the port or compatibility branch to NeoForge. try to run Sepals on NeoForge and Fabric simultaneous.
+
+Not main force branch and not stable yet.
+
+## Mod compatibility 
+
 Currently, sepals are compatible to almost all mods.
 
 Here is verified mod list:

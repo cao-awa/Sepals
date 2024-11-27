@@ -5,7 +5,14 @@
   "compatibilityLevel": "JAVA_21",
   "plugin": "com.github.cao.awa.sepals.mixin.SepalsMixinPlugin",
   "mixins": [
-    "entity.item.ItemEntityMixin"
+    "item.stack.ItemStackMixin",
+    "block.BlockMixin",
+    "entity.EntityMixin",
+    "entity.EntityViewMixin",
+    "entity.item.ItemEntityAccessor",
+    "entity.item.ItemEntityMixin",
+    "world.ServerWorldMixin",
+    "world.block.BlockViewMixin"
   ],
   "client": [
   ],

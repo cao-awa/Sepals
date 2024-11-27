@@ -1,10 +1,14 @@
 package com.github.cao.awa.sepals.mixin.world;
 
+import com.github.cao.awa.apricot.util.collection.ApricotCollectionFactor;
 import com.github.cao.awa.catheter.Catheter;
 import com.github.cao.awa.sepals.Sepals;
-import com.github.cao.awa.sepals.entity.cramming.SepalsEntityCrammingStorage;
+import com.github.cao.awa.sepals.item.BoxedEntitiesCache;
+import com.github.cao.awa.sepals.mixin.world.block.BlockViewMixin;
+import com.github.cao.awa.sepals.world.BlockViewAccessor;
+import com.github.cao.awa.sinuatum.manipulate.QuickManipulate;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.ItemEntity;
 import net.minecraft.util.TypeFilter;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
@@ -15,11 +19,53 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 import java.util.function.Predicate;
 
 @Mixin(World.class)
-public abstract class WorldMixin {
+public abstract class WorldMixin implements BoxedEntitiesCache {
+    @Unique
+    private Map<String, List<Entity>> entities = ApricotCollectionFactor.hashMap();
+    @Unique
+    private Map<String, List<Entity>> getByTypeEntities = ApricotCollectionFactor.hashMap();
+
+    @Unique
+    public List<Entity> cachedGetByType(String box) {
+        if (this.getByTypeEntities == null) {
+            this.getByTypeEntities = ApricotCollectionFactor.hashMap();
+        }
+        return this.getByTypeEntities.get(box);
+    }
+
+    @Unique
+    public void cacheGetByType(String box, List<Entity> entities) {
+        if (this.getByTypeEntities == null) {
+            this.getByTypeEntities = ApricotCollectionFactor.hashMap();
+        }
+        this.getByTypeEntities.put(box, entities);
+    }
+
+    @Unique
+    public void sepals$cache(Box box, List<Entity> entities) {
+        if (this.entities == null) {
+            this.entities = ApricotCollectionFactor.hashMap();
+        }
+        this.entities.put(boxToString(box), entities);
+    }
+
+    @Unique
+    public List<Entity> sepals$cached(Box box) {
+        if (this.entities == null) {
+            this.entities = ApricotCollectionFactor.hashMap();
+        }
+        return this.entities.get(boxToString(box));
+    }
+
+    @Unique
+    public void sepals$clearCache() {
+        QuickManipulate.notNull(this.entities, Map::clear);
+        QuickManipulate.notNull(this.getByTypeEntities, Map::clear);
+    }
 //    @Shadow protected abstract Explosion.DestructionType getDestructionType(GameRules.Key<GameRules.BooleanRule> gameRuleKey);
 //
 //    @Shadow public abstract GameRules getGameRules();
@@ -53,9 +99,7 @@ public abstract class WorldMixin {
     )
     public void getOtherEntities(Entity except, Box box, Predicate<? super Entity> predicate, CallbackInfoReturnable<List<Entity>> cir) {
         if (Sepals.CONFIG.isEnableSepalsEntitiesCramming()) {
-            String cacheKey = boxToString(box);
-
-            List<Entity> result = SepalsEntityCrammingStorage.cached(cacheKey);
+            List<Entity> result = cached(box);
             if (result != null) {
                 cir.setReturnValue(result);
             }
@@ -68,7 +112,7 @@ public abstract class WorldMixin {
     )
     public void cacheOtherEntities(Entity except, Box box, Predicate<? super Entity> predicate, CallbackInfoReturnable<List<Entity>> cir) {
         if (Sepals.CONFIG.isEnableSepalsEntitiesCramming()) {
-            SepalsEntityCrammingStorage.cache(boxToString(box), cir.getReturnValue());
+            cache(box, cir.getReturnValue());
         }
     }
 
@@ -82,14 +126,14 @@ public abstract class WorldMixin {
         if (Sepals.CONFIG.isEnableSepalsEntitiesCramming()) {
             String cacheKey = boxToString(box);
 
-            Set<Entity> cached = SepalsEntityCrammingStorage.cachedGetByType(cacheKey);
+            List<Entity> cached = cachedGetByType(cacheKey);
 
             if (cached == null) {
                 return;
             }
 
             Catheter<T> catheter = Catheter.of(
-                    (Set<T>) cached
+                    (List<T>) cached
             );
 
             List<T> result = (List<T>) catheter
@@ -110,7 +154,7 @@ public abstract class WorldMixin {
     )
     public void cacheEntitiesByType(TypeFilter<Entity, ? extends Entity> filter, Box box, Predicate<? super Entity> predicate, CallbackInfoReturnable<List<Entity>> cir) {
         if (Sepals.CONFIG.isEnableSepalsEntitiesCramming()) {
-            SepalsEntityCrammingStorage.cacheGetByType(boxToString(box), cir.getReturnValue());
+            cacheGetByType(boxToString(box), cir.getReturnValue());
         }
     }
 

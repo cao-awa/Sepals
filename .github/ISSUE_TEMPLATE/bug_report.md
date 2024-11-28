@@ -18,7 +18,7 @@ A clear and concise description of what you expected to happen.
 
 ## Environment
 1. Your Java version
-2. Your Conium version
+2. Your Sepals version
 3. Your other mods
 4. Your Minecraft version
 

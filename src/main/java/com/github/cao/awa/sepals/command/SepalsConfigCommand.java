@@ -47,13 +47,13 @@ public class SepalsConfigCommand {
         Sepals.CONFIG.setConfig(key, value);
         if (temporary) {
             context.getSource().sendFeedback(
-                    () -> Text.of("Config '" + SepalsConfig.ENABLE_SEPALS_ENTITIES_CRAMMING.name() + "' is '" + value + "' temporarily"),
+                    () -> Text.of("Config '" + key.name() + "' is '" + value + "' temporarily"),
                     true
             );
         } else {
             Sepals.PERSISTENT_CONFIG.setConfig(key, value);
             context.getSource().sendFeedback(
-                    () -> Text.of("Config '" + SepalsConfig.ENABLE_SEPALS_ENTITIES_CRAMMING.name() + "' is '" + value + "' now"),
+                    () -> Text.of("Config '" + key.name() + "' is '" + value + "' now"),
                     true
             );
 

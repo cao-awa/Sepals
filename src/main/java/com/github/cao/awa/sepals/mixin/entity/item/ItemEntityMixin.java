@@ -30,58 +30,58 @@ public abstract class ItemEntityMixin extends Entity {
         super(type, world);
     }
 
-    @Shadow
-    protected abstract boolean canMerge();
-
-    @Shadow
-    protected abstract void tryMerge(ItemEntity other);
-
-    @Inject(
-            method = "tryMerge()V",
-            at = @At(value = "HEAD"),
-            cancellable = true
-    )
-    private void tryMerge(CallbackInfo ci) {
-        if (canMerge()) {
-            getBoxedEntities(
-                    getWorld(),
-                    getBoundingBox().expand(0.5, 0.0, 0.5),
-                    itemEntity -> {
-                        tryMerge(itemEntity);
-                        return isRemoved();
-                    }
-            );
-        }
-        ci.cancel();
-    }
-
-    @Unique
-    public void getBoxedEntities(World world, Box box, Predicate<ItemEntity> invalidate) {
-        if (world instanceof BoxedItemEntities entities) {
-            if (entities.canSetEntities()) {
-                entities.setEntities(world.getEntitiesByType(TypeFilter.instanceOf(ItemEntity.class), box, entity -> entity != (Object) this && ((ItemEntityAccessor) entity).invokeCanMerge()));
-            }
-
-            for (ItemEntity entity : entities.entities()) {
-                ItemStack stack = entity.getStack();
-
-                if (stack.getMaxCount() == stack.getCount()) {
-                    entities.invalidate(entity);
-                    continue;
-                }
-
-                if (!entity.getBoundingBox().intersects(box)) {
-                    continue;
-                }
-
-                if (invalidate.test(entity)) {
-                    // Invalidate this item, because it no longer can be to other items.
-                    entities.invalidate((ItemEntity) (Object) this);
-                    break;
-                }
-            }
-        }
-    }
+//    @Shadow
+//    protected abstract boolean canMerge();
+//
+//    @Shadow
+//    protected abstract void tryMerge(ItemEntity other);
+//
+//    @Inject(
+//            method = "tryMerge()V",
+//            at = @At(value = "HEAD"),
+//            cancellable = true
+//    )
+//    private void tryMerge(CallbackInfo ci) {
+//        if (canMerge()) {
+//            getBoxedEntities(
+//                    getWorld(),
+//                    getBoundingBox().expand(0.5, 0.0, 0.5),
+//                    itemEntity -> {
+//                        tryMerge(itemEntity);
+//                        return isRemoved();
+//                    }
+//            );
+//        }
+//        ci.cancel();
+//    }
+//
+//    @Unique
+//    public void getBoxedEntities(World world, Box box, Predicate<ItemEntity> invalidate) {
+//        if (world instanceof BoxedItemEntities entities) {
+//            if (entities.canSetEntities()) {
+//                entities.setEntities(world.getEntitiesByType(TypeFilter.instanceOf(ItemEntity.class), box, entity -> entity != (Object) this && ((ItemEntityAccessor) entity).invokeCanMerge()));
+//            }
+//
+//            for (ItemEntity entity : entities.entities()) {
+//                ItemStack stack = entity.getStack();
+//
+//                if (stack.getMaxCount() == stack.getCount()) {
+//                    entities.invalidate(entity);
+//                    continue;
+//                }
+//
+//                if (!entity.getBoundingBox().intersects(box)) {
+//                    continue;
+//                }
+//
+//                if (invalidate.test(entity)) {
+//                    // Invalidate this item, because it no longer can be to other items.
+//                    entities.invalidate((ItemEntity) (Object) this);
+//                    break;
+//                }
+//            }
+//        }
+//    }
 
     @Inject(
             method = "isFireImmune",

@@ -1,7 +1,6 @@
 plugins {
     id 'fabric-loom' version '1.8.1'
     id 'maven-publish'
-    id 'org.jetbrains.kotlin.jvm'
 }
 
 version = project.mod_version
@@ -125,7 +124,4 @@ publishing {
         // The repositories here will be used for publishing your artifact, not for
         // retrieving dependencies.
     }
-}
-kotlin {
-    jvmToolchain(21)
 }

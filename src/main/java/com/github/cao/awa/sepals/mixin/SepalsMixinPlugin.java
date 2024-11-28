@@ -2,10 +2,10 @@ package com.github.cao.awa.sepals.mixin;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.github.cao.awa.apricot.util.collection.ApricotCollectionFactor;
-import com.github.cao.awa.apricot.util.io.IOUtil;
 import com.github.cao.awa.sepals.transform.mixin.config.SepalsMixinConfig;
 import com.github.cao.awa.sepals.transform.mixin.handler.SepalsMixinHandler;
 import com.github.cao.awa.sinuatum.manipulate.ManipulateBuilder;
+import com.github.cao.awa.sinuatum.util.io.IOUtil;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import org.objectweb.asm.tree.ClassNode;

@@ -4,6 +4,7 @@ import com.github.cao.awa.sepals.Sepals;
 import com.github.cao.awa.sepals.entity.ai.brain.frog.SepalsFrogBrain;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.sensor.FrogAttackablesSensor;
+import net.minecraft.server.world.ServerWorld;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -16,9 +17,9 @@ public class FrogAttackablesSensorMixin {
             at = @At("HEAD"),
             cancellable = true
     )
-    protected void matches(LivingEntity entity, LivingEntity target, CallbackInfoReturnable<Boolean> cir) {
+    protected void matches(ServerWorld world, LivingEntity entity, LivingEntity target, CallbackInfoReturnable<Boolean> cir) {
         if (Sepals.CONFIG.isEnableSepalsFrogAttackableSensor()) {
-            cir.setReturnValue(SepalsFrogBrain.attackable(entity, target));
+            cir.setReturnValue(SepalsFrogBrain.attackable(world, entity, target));
         }
     }
 }

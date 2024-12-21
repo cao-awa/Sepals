@@ -9,6 +9,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.LivingTargetCache;
 import net.minecraft.entity.ai.brain.sensor.Sensor;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -24,12 +25,12 @@ public class SepalsLivingTargetCache extends LivingTargetCache {
     private final Predicate<LivingEntity> compute;
 
     @SuppressWarnings("unchecked")
-    public SepalsLivingTargetCache(LivingEntity owner, LivingEntity[] entities, PlayerEntity[] players) {
-        super(owner, Collections.EMPTY_LIST);
+    public SepalsLivingTargetCache(ServerWorld world, LivingEntity owner, LivingEntity[] entities, PlayerEntity[] players) {
+        super(world, owner, Collections.EMPTY_LIST);
         this.entities = entities;
         this.players = players;
         this.directSuccess = new Object2BooleanOpenHashMap<>(entities.length);
-        Predicate<LivingEntity> predicate = entity -> Sensor.testTargetPredicate(owner, entity);
+        Predicate<LivingEntity> predicate = entity -> Sensor.testTargetPredicate(world, owner, entity);
         this.compute = entity -> this.directSuccess.computeIfAbsent(entity, predicate);
     }
 

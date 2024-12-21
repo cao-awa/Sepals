@@ -4,8 +4,6 @@ import com.github.cao.awa.apricot.util.collection.ApricotCollectionFactor;
 import com.github.cao.awa.catheter.Catheter;
 import com.github.cao.awa.sepals.Sepals;
 import com.github.cao.awa.sepals.item.BoxedEntitiesCache;
-import com.github.cao.awa.sepals.mixin.world.block.BlockViewMixin;
-import com.github.cao.awa.sepals.world.BlockViewAccessor;
 import com.github.cao.awa.sinuatum.manipulate.QuickManipulate;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;

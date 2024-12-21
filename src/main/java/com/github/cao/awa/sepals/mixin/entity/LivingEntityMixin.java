@@ -5,6 +5,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.predicate.entity.EntityPredicates;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -31,12 +32,12 @@ public abstract class LivingEntityMixin extends Entity {
             cancellable = true
     )
     protected void sepalsForceCramming(CallbackInfo ci) {
-        if (!getWorld().isClient() && Sepals.CONFIG.isEnableSepalsEntitiesCramming()) {
+        if (getWorld() instanceof ServerWorld serverWorld && Sepals.CONFIG.isEnableSepalsEntitiesCramming()) {
             List<Entity> list = getWorld().getOtherEntities(this, getBoundingBox(), EntityPredicates.canBePushedBy(this));
             if (!list.isEmpty()) {
-                int maxCramming = getWorld().getGameRules().getInt(GameRules.MAX_ENTITY_CRAMMING);
+                int maxCramming = serverWorld.getGameRules().getInt(GameRules.MAX_ENTITY_CRAMMING);
                 if (maxCramming > 0 && list.size() > maxCramming - 1 && this.random.nextInt(4) == 0) {
-                    crammingAndPushAway(maxCramming, list);
+                    crammingAndPushAway(serverWorld, maxCramming, list);
                 } else {
                     onlyPushAway(list);
                 }
@@ -47,7 +48,7 @@ public abstract class LivingEntityMixin extends Entity {
     }
 
     @Unique
-    private void crammingAndPushAway(int maxCramming, List<Entity> list) {
+    private void crammingAndPushAway(ServerWorld world, int maxCramming, List<Entity> list) {
         int cramming = 0;
 
         for (Entity entity : list) {
@@ -58,7 +59,7 @@ public abstract class LivingEntityMixin extends Entity {
         }
 
         if (cramming > maxCramming - 1) {
-            damage(getDamageSources().cramming(), 6.0F);
+            damage(world, getDamageSources().cramming(), 6.0F);
         }
     }
 

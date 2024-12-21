@@ -11,12 +11,11 @@ import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.passive.FrogEntity;
 import net.minecraft.registry.tag.BlockTags;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 public class SepalsFrogBrain {
     public static <E extends MobEntity> boolean shouldJumpTo(E frog, BlockPos pos) {
@@ -47,7 +46,7 @@ public class SepalsFrogBrain {
         );
 
         if (SepalsLongJumpTask.shouldJumpTo(
-                world, frog, posDown, posDownState, nodeType
+                frog, posDownState, nodeType
         )) {
             return true;
         }
@@ -60,7 +59,7 @@ public class SepalsFrogBrain {
                 ) == PathNodeType.TRAPDOOR;
     }
 
-    public static boolean attackable(LivingEntity entity, LivingEntity target) {
+    public static boolean attackable(ServerWorld world, LivingEntity entity, LivingEntity target) {
         if (isHuntingCooldown(entity) || !FrogEntity.isValidFrogFood(target)) {
             return false;
         }
@@ -69,7 +68,7 @@ public class SepalsFrogBrain {
             return false;
         }
 
-        return !isTargetUnreachable(entity, target) && Sensor.testAttackableTargetPredicate(entity, target);
+        return !isTargetUnreachable(entity, target) && Sensor.testAttackableTargetPredicate(world, entity, target);
     }
 
     private static boolean isHuntingCooldown(LivingEntity entity) {

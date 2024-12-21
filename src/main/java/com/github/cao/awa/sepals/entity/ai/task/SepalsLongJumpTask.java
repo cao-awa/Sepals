@@ -57,8 +57,8 @@ public class SepalsLongJumpTask<E extends MobEntity> extends MultiTickTask<E> {
         this(cooldownRange, verticalRange, horizontalRange, maxRange, entityToSound, LongJumpTask::shouldJumpTo);
     }
 
-    public static <E extends MobEntity> boolean shouldJumpTo(World world, E entity, BlockPos posDown, BlockState posDownState, PathNodeType pathNodeType) {
-        return posDownState.isOpaqueFullCube(world, posDown) && entity.getPathfindingPenalty(pathNodeType) == 0.0F;
+    public static <E extends MobEntity> boolean shouldJumpTo(E entity, BlockState posDownState, PathNodeType pathNodeType) {
+        return posDownState.isOpaqueFullCube() && entity.getPathfindingPenalty(pathNodeType) == 0.0F;
     }
 
     public SepalsLongJumpTask(
@@ -239,7 +239,7 @@ public class SepalsLongJumpTask<E extends MobEntity> extends MultiTickTask<E> {
 
     @Nullable
     protected Vec3d getJumpingVelocity(World world, MobEntity entity, Vec3d targetPos) {
-        float f = (float) (entity.getAttributeValue(EntityAttributes.GENERIC_JUMP_STRENGTH) * (double) this.maxRange);
+        float f = (float) (entity.getAttributeValue(EntityAttributes.JUMP_STRENGTH) * (double) this.maxRange);
 
         shuffle(RAM_RANGES, world.random);
 

@@ -50,12 +50,12 @@ public class NearestPlayersSensorMixin {
                 players.filter(NearestPlayersSensorMixin::isHero);
             }
 
-            players.filter(player -> testTargetPredicate(entity, player));
+            players.filter(player -> testTargetPredicate(world, entity, player));
             players.firstOrNull(player -> brain.remember(MemoryModuleType.NEAREST_VISIBLE_PLAYER, player));
             // If entity are not hostile or anger-able then do not need to test the attackable predicate.
             // Because this memory only will be used in the entities that can attack to player, such as piglin.
             if (canAttackToPlayer) {
-                players.filter(player -> testAttackableTargetPredicate(entity, player))
+                players.filter(player -> testAttackableTargetPredicate(world, entity, player))
                         .firstOrNull(player -> brain.remember(MemoryModuleType.NEAREST_VISIBLE_TARGETABLE_PLAYER, Optional.ofNullable(player)));
             }
 

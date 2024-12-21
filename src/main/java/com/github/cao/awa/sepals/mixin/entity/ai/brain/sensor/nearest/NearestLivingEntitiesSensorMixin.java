@@ -10,6 +10,7 @@ import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.LivingTargetCache;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.sensor.NearestLivingEntitiesSensor;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Box;
@@ -25,19 +26,15 @@ import java.util.List;
 
 @Mixin(NearestLivingEntitiesSensor.class)
 public abstract class NearestLivingEntitiesSensorMixin<T extends LivingEntity> {
-    @Shadow
-    protected abstract int getHorizontalExpansion();
-
-    @Shadow
-    protected abstract int getHeightExpansion();
-
     @Inject(
             method = "sense",
             at = @At(value = "HEAD"),
             cancellable = true
     )
     private void sense(ServerWorld world, T entity, CallbackInfo ci) {
-        Box box = entity.getBoundingBox().expand(getHorizontalExpansion(), getHeightExpansion(), getHorizontalExpansion());
+        double d = entity.getAttributeValue(EntityAttributes.FOLLOW_RANGE);
+        Box box = entity.getBoundingBox().expand(d, d, d);
+
         Comparator<LivingEntity> comparator = Comparator.comparingDouble(entity::squaredDistanceTo);
         Brain<?> brain = entity.getBrain();
 
@@ -52,7 +49,7 @@ public abstract class NearestLivingEntitiesSensorMixin<T extends LivingEntity> {
                 list.sort(comparator);
             }
             brain.remember(MemoryModuleType.MOBS, list);
-            brain.remember(MemoryModuleType.VISIBLE_MOBS, new LivingTargetCache(entity, list));
+            brain.remember(MemoryModuleType.VISIBLE_MOBS, new LivingTargetCache(world, entity, list));
         } else {
             Catheter<LivingEntity> entities = Catheter.of(list, LivingEntity[]::new);
 
@@ -72,6 +69,7 @@ public abstract class NearestLivingEntitiesSensorMixin<T extends LivingEntity> {
                     .safeArray();
 
             brain.remember(MemoryModuleType.VISIBLE_MOBS, new SepalsLivingTargetCache(
+                            world,
                             entity,
                             sources,
                             players

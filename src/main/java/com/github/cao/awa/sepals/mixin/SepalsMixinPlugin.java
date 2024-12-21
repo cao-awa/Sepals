@@ -8,6 +8,8 @@ import com.github.cao.awa.sinuatum.manipulate.ManipulateBuilder;
 import com.github.cao.awa.sinuatum.util.io.IOUtil;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -20,6 +22,7 @@ import java.io.InputStreamReader;
 import java.util.*;
 
 public class SepalsMixinPlugin implements IMixinConfigPlugin {
+    private static final Logger LOGGER = LogManager.getLogger("SepalsMixinPlugin");
     private static final Map<String, ModContainer> MODS = Optional.of(FabricLoader.getInstance().getAllMods()).map(mods -> {
         Map<String, ModContainer> modsMap = ApricotCollectionFactor.hashMap();
         for (ModContainer mod : mods) {
@@ -42,7 +45,7 @@ public class SepalsMixinPlugin implements IMixinConfigPlugin {
                 try {
                     return SepalsMixinConfig.create(JSONObject.parse(IOUtil.read(new InputStreamReader(resource))));
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    LOGGER.warn(e);
                 }
 
                 return null;

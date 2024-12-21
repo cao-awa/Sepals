@@ -4,7 +4,6 @@ import com.github.cao.awa.sepals.item.BoxedItemEntities;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.TypeFilter;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
@@ -30,12 +29,12 @@ public abstract class ItemEntityMixin extends Entity {
         super(type, world);
     }
 
-//    @Shadow
-//    protected abstract boolean canMerge();
-//
-//    @Shadow
-//    protected abstract void tryMerge(ItemEntity other);
-//
+    @Shadow
+    protected abstract boolean canMerge();
+
+    @Shadow
+    protected abstract void tryMerge(ItemEntity other);
+
 //    @Inject(
 //            method = "tryMerge()V",
 //            at = @At(value = "HEAD"),
@@ -58,25 +57,36 @@ public abstract class ItemEntityMixin extends Entity {
 //    @Unique
 //    public void getBoxedEntities(World world, Box box, Predicate<ItemEntity> invalidate) {
 //        if (world instanceof BoxedItemEntities entities) {
-//            if (entities.canSetEntities()) {
-//                entities.setEntities(world.getEntitiesByType(TypeFilter.instanceOf(ItemEntity.class), box, entity -> entity != (Object) this && ((ItemEntityAccessor) entity).invokeCanMerge()));
-//            }
+//            entities.setEntities(world.getEntitiesByType(
+//                            TypeFilter.instanceOf(ItemEntity.class),
+//                            box,
+//                            entity -> entity != (Object) this && ((ItemEntityAccessor) entity).invokeCanMerge()
+//                    )
+//            );
 //
 //            for (ItemEntity entity : entities.entities()) {
-//                ItemStack stack = entity.getStack();
-//
-//                if (stack.getMaxCount() == stack.getCount()) {
-//                    entities.invalidate(entity);
+//                if (entity == (Object) this) {
 //                    continue;
+//                }
+////                ItemStack stack = entity.getStack();
+////
+////                if (stack.getMaxCount() == stack.getCount()) {
+////                    entities.invalidate(entity);
+////                    continue;
+////                }
+//
+//                if (!((ItemEntityAccessor) entity).invokeCanMerge()) {
+//                    entities.invalidate(entity);
 //                }
 //
 //                if (!entity.getBoundingBox().intersects(box)) {
 //                    continue;
 //                }
 //
+//                entities.invalidate((ItemEntity) (Object) this);
+//
 //                if (invalidate.test(entity)) {
 //                    // Invalidate this item, because it no longer can be to other items.
-//                    entities.invalidate((ItemEntity) (Object) this);
 //                    break;
 //                }
 //            }

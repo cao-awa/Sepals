@@ -11,8 +11,7 @@
     "entity.EntityViewMixin",
     "entity.item.ItemEntityAccessor",
     "entity.item.ItemEntityMixin",
-    "world.ServerWorldMixin",
-    "world.block.BlockViewMixin"
+    "world.ServerWorldMixin"
   ],
   "client": [
   ],

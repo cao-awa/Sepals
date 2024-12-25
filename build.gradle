@@ -1,127 +1,80 @@
 plugins {
-    id 'fabric-loom' version '1.8.1'
-    id 'maven-publish'
+    id 'java-library'
+    id 'idea'
+    id 'dev.architectury.loom' version '1.9-SNAPSHOT' apply false
+    id 'architectury-plugin' version '3.4-SNAPSHOT'
+    id 'com.github.johnrengelman.shadow' version '8.1.1' apply false
+    id 'fabric-loom' version '1.8.1' apply false
 }
 
-version = project.mod_version
-group = project.maven_group
-
-base {
-    archivesName = project.archives_base_name
+architectury {
+    minecraft = project.minecraft_version
 }
 
-repositories {
-    // Add repositories to retrieve artifacts from in here.
-    // You should only use this when depending on other mods because
-    // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-    // See https://docs.gradle.org/current/userguide/declaring_repositories.html
-    // for more information about repositories.
-    maven {
-        name = "GitHubPackages"
-        url = "https://maven.pkg.github.com/cao-awa/Catheter"
-        credentials {
-            username = "cao-awa"
-            password = "ghp_UgALm1Ta2ONYeNh" + "S2m0XoWSc27BcE22v4Umn"
-        }
-    }
-    maven {
-        name = "GitHubPackages"
-        url = "https://maven.pkg.github.com/cao-awa/Sinuatum"
-        credentials {
-            username = "cao-awa"
-            password = "ghp_UgALm1Ta2ONYeNh" + "S2m0XoWSc27BcE22v4Umn"
-        }
-    }
-    mavenCentral()
+allprojects {
+    group = rootProject.maven_group
+    version = rootProject.mod_version
 }
 
+subprojects {
+    apply plugin: 'dev.architectury.loom'
+    apply plugin: 'architectury-plugin'
+    apply plugin: 'fabric-loom'
 
-configurations {
-    create("shadow")
-    implementation.extendsFrom(shadow)
-}
-
-dependencies {
-    // To change the versions see the gradle.properties file
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-
-    // Fabric API. This is technically optional, but you probably want it anyway.
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-
-    shadow 'com.alibaba.fastjson2:fastjson2:2.0.50'
-
-    shadow 'com.github.cao.awa:catheter:1.0.42'
-    shadow 'com.github.cao.awa:sinuatum:1.0.11'
-
-}
-
-processResources {
-    inputs.property "version", project.version
-    inputs.property "minecraft_version", project.minecraft_version
-    inputs.property "loader_version", project.loader_version
-    filteringCharset "UTF-8"
-
-    filesMatching("fabric.mod.json") {
-        expand "version": project.version,
-                "minecraft_version": project.minecraft_version,
-                "loader_version": project.loader_version
-    }
-}
-
-def targetJavaVersion = 21
-tasks.withType(JavaCompile).configureEach {
-    // ensure that the encoding is set to UTF-8, no matter what the system default is
-    // this fixes some edge cases with special characters not displaying correctly
-    // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
-    // If Javadoc is generated, this must be specified in that task too.
-    it.options.encoding = "UTF-8"
-    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
-        it.options.release.set(targetJavaVersion)
-    }
-}
-
-java {
-    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
-    if (JavaVersion.current() < javaVersion) {
-        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
-    }
-    // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-    // if it is present.
-    // If you remove this line, sources will not be generated.
-    withSourcesJar()
-}
-
-
-jar {
-    from("LICENSE") {
-        rename { "${it}" }
+    base {
+        // Set up a suffixed format for the mod jar names, e.g. `example-fabric`.
+        archivesName = "Sepals-$project.name"
     }
 
-    with copySpec({
-        from(configurations.shadow.collect {
-            it.isDirectory() ? it : zipTree(it)
-        })
-
-        duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
-    })
-}
-
-// configure the maven publication
-publishing {
-    publications {
-        create("mavenJava", MavenPublication) {
-            artifactId = project.archives_base_name
-            from components.java
-        }
-    }
-
-    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
     repositories {
-        // Add repositories to publish to here.
-        // Notice: This block does NOT have the same function as the block in the top level.
-        // The repositories here will be used for publishing your artifact, not for
-        // retrieving dependencies.
+        // Add repositories to retrieve artifacts from in here.
+        // You should only use this when depending on other mods because
+        // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
+        // See https://docs.gradle.org/current/userguide/declaring_repositories.html
+        // for more information about repositories.
+        maven {
+            name = "GitHubPackages"
+            url = "https://maven.pkg.github.com/cao-awa/Catheter"
+            credentials {
+                username = "cao-awa"
+                password = "ghp_UgALm1Ta2ONYeNh" + "S2m0XoWSc27BcE22v4Umn"
+            }
+        }
+        maven {
+            name = "GitHubPackages"
+            url = "https://maven.pkg.github.com/cao-awa/Sinuatum"
+            credentials {
+                username = "cao-awa"
+                password = "ghp_UgALm1Ta2ONYeNh" + "S2m0XoWSc27BcE22v4Umn"
+            }
+        }
+        mavenCentral()
+    }
+
+    dependencies {
+        minecraft "net.minecraft:minecraft:$rootProject.minecraft_version"
+        mappings loom.layered {
+            it.mappings("net.fabricmc:yarn:$rootProject.yarn_mappings:v2")
+            it.mappings("dev.architectury:yarn-mappings-patch-neoforge:$rootProject.yarn_mappings_patch_neoforge_version")
+        }
+
+        implementation 'com.alibaba.fastjson2:fastjson2:2.0.50'
+
+        implementation 'com.github.cao.awa:catheter:1.0.42'
+        implementation 'com.github.cao.awa:sinuatum:1.0.13'
+    }
+
+    java {
+        // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+        // if it is present.
+        // If you remove this line, sources will not be generated.
+        withSourcesJar()
+
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        it.options.release = 21
     }
 }

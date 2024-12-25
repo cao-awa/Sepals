@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "id": "sepals",
+  "version": "${version}",
+  "name": "fapals",
+  "description": "Sepals is an extremely radical and experimental optimization for Minecraft server performances.",
+  "authors": [
+    "cao_awa"
+  ],
+  "contact": {
+    "repo": "https://github.com/cao-awa/sepals",
+    "issues": "https://github.com/cao-awa/sepals/issues"
+  },
+  "license": "GPL-3.0",
+  "icon": "assets/sepals/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.github.cao.awa.fapals.Fapals"
+    ],
+    "client": [
+    ],
+    "server": [
+    ]
+  },
+  "mixins": [
+    "sepals.mixins.json",
+    "fapals.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": "*",
+    "minecraft": "1.21.4",
+    "fabric": "*"
+  },
+  "jars": [
+    {
+      "file": "META-INF/jars/sepals-common-1.0.10.jar"
+    }
+  ]
+}

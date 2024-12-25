@@ -11,18 +11,16 @@ import java.util.Set;
 
 public class SepalsWorldPoiMixinHandler extends SepalsMixinHandler {
     @Override
-    public boolean canApply(Set<String> mods, String mixinGroup, String mixinName, String mixinClassName) {
+    public boolean canApply(String mixinGroup, String mixinName, String mixinClassName) {
         if (Sepals.CONFIG.isForceEnableSepalsPoi()) {
             return true;
         }
-
-        LOGGER.info("Handling: {} in group {} / {}", mixinName, mixinGroup, mixinClassName);
 
         if (!mixinGroup.equals("poi")) {
             return false;
         }
 
-        boolean lithiumLoaded = mods.contains(SepalsModCompatibles.LITHIUM_MOD_NAME);
+        boolean lithiumLoaded = Sepals.LOADED_MODS.contains(SepalsModCompatibles.LITHIUM_MOD_NAME);
 
         switch (mixinName) {
             case "region_based_storage", "poi_set" -> {
@@ -34,7 +32,7 @@ public class SepalsWorldPoiMixinHandler extends SepalsMixinHandler {
     }
 
     @Override
-    public void postProcess(Set<String> mods, String mixinGroup, String mixinName, String mixinClassName) {
+    public void postProcess(String mixinGroup, String mixinName, String mixinClassName) {
         if (Sepals.CONFIG.isForceEnableSepalsPoi()) {
             return;
         }
@@ -43,22 +41,27 @@ public class SepalsWorldPoiMixinHandler extends SepalsMixinHandler {
             return;
         }
 
-        switch (mixinName) {
-            case "region_based_storage" -> {
-                boolean isLithiumLoaded = mods.contains(SepalsModCompatibles.LITHIUM_MOD_NAME);
-                boolean isMoonriseLoaded = mods.contains(SepalsModCompatibles.MOONRISE_MOD_NAME);
+        if (mixinName.equals("region_based_storage")) {
+            boolean isLithiumLoaded = Sepals.LOADED_MODS.contains(SepalsModCompatibles.LITHIUM_MOD_NAME);
+            boolean isMoonriseLoaded = Sepals.LOADED_MODS.contains(SepalsModCompatibles.MOONRISE_MOD_NAME);
+            boolean isAsyncLoaded = Sepals.LOADED_MODS.contains(SepalsModCompatibles.ASYNC_MOD_NAME);
 
-                if (isLithiumLoaded) {
-                    LOGGER.info("Lithium is loaded, auto-disabling sepals mixin: {}({})", "region_based_storage", mixinClassName);
+            if (isLithiumLoaded) {
+                LOGGER.info("Lithium is loaded, auto-disabling sepals mixin: {}({})", "region_based_storage", mixinClassName);
 
-                    SepalsPointOfInterestStorage.onLithiumLoaded();
-                }
+                SepalsPointOfInterestStorage.onLithiumLoaded();
+            }
 
-                if (isMoonriseLoaded) {
-                    LOGGER.info("Moonrise is loaded, sepals won't intervention chunk loading in 'getInChunk' of POI");
+            if (isMoonriseLoaded) {
+                LOGGER.info("Moonrise is loaded, sepals won't intervention chunk loading in 'getInChunk' of POI");
 
-                    SepalsPointOfInterestStorage.onMoonriseLoaded();
-                }
+                SepalsPointOfInterestStorage.onMoonriseLoaded();
+            }
+
+            if (isAsyncLoaded) {
+                LOGGER.info("Async is loaded, sepals will switch something features to synchronized impl");
+
+                Sepals.isAsyncLoaded = true;
             }
         }
     }

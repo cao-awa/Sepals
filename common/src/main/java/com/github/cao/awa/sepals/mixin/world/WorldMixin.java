@@ -4,6 +4,7 @@ import com.github.cao.awa.apricot.util.collection.ApricotCollectionFactor;
 import com.github.cao.awa.catheter.Catheter;
 import com.github.cao.awa.sepals.Sepals;
 import com.github.cao.awa.sepals.item.BoxedEntitiesCache;
+import com.github.cao.awa.sinuatum.manipulate.Manipulate;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.TypeFilter;
 import net.minecraft.util.math.Box;
@@ -21,9 +22,19 @@ import java.util.function.Predicate;
 @Mixin(World.class)
 public abstract class WorldMixin implements BoxedEntitiesCache {
     @Unique
-    private Map<String, List<Entity>> entities = ApricotCollectionFactor.hashMap();
+    private Map<String, List<Entity>> entities = Manipulate.supply(() -> {
+        if (Sepals.isAsyncLoaded) {
+            return ApricotCollectionFactor.concurrentHashMap();
+        }
+        return ApricotCollectionFactor.hashMap();
+    });
     @Unique
-    private Map<String, List<Entity>> getByTypeEntities = ApricotCollectionFactor.hashMap();
+    private Map<String, List<Entity>> getByTypeEntities = Manipulate.supply(() -> {
+        if (Sepals.isAsyncLoaded) {
+            return ApricotCollectionFactor.concurrentHashMap();
+        }
+        return ApricotCollectionFactor.hashMap();
+    });
 
     @Unique
     public List<Entity> cachedGetByType(String box) {

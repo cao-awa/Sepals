@@ -60,13 +60,12 @@ public class SepalsMixinPlugin implements IMixinConfigPlugin {
                 mixinClassName,
                 handlerConfig -> {
                     SepalsMixinHandler.appendPostProcesses(() -> handlerConfig.handler().postProcess(
-                            Sepals.LOADED_MODS,
                             handlerConfig.group(),
                             handlerConfig.name(),
                             handlerConfig.className()
                     ));
+                    LOGGER.info("Handling: {} in group {} / {}", handlerConfig.group(), handlerConfig.name(), handlerConfig.className());
                     return handlerConfig.handler().canApply(
-                            Sepals.LOADED_MODS,
                             handlerConfig.group(),
                             handlerConfig.name(),
                             handlerConfig.className()

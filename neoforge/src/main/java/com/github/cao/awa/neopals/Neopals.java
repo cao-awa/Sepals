@@ -21,10 +21,6 @@ import java.util.Set;
 @Mod("neopals")
 public final class Neopals {
     public Neopals(IEventBus modEventBus) {
-        Sepals.init();
-
-        Sepals.loadingPlatform = "neoforge";
-
         Sepals.LOADED_MODS = Optional.of(ModList.get().getSortedMods()).map(mods -> {
             Set<String> modsSet = ApricotCollectionFactor.hashSet();
             for (ModContainer mod : mods) {
@@ -32,6 +28,10 @@ public final class Neopals {
             }
             return modsSet;
         }).orElseGet(ApricotCollectionFactor::hashSet);
+
+        Sepals.loadingPlatform = "neoforge";
+
+        Sepals.init();
 
         NeoForge.EVENT_BUS.register(this);
     }

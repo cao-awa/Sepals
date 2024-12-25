@@ -4,6 +4,10 @@
     "world.poi.SerializingRegionBasedStorageMixin": {
       "group": "poi",
       "name": "region_based_storage"
+    },
+    "world.WorldMixin": {
+      "group": "entities",
+      "name": "world_entities_cache"
     }
   }
 }

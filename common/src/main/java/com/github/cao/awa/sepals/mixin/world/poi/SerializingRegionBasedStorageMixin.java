@@ -4,6 +4,7 @@ import com.github.cao.awa.apricot.util.collection.ApricotCollectionFactor;
 import com.github.cao.awa.catheter.Catheter;
 import com.github.cao.awa.sepals.collection.listener.ActivableLong2ObjectMap;
 import com.github.cao.awa.sepals.world.poi.RegionBasedStorageSectionExtended;
+import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.minecraft.registry.DynamicRegistryManager;
@@ -19,6 +20,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 // Modified from lithium common.
@@ -46,12 +48,13 @@ public abstract class SerializingRegionBasedStorageMixin<R> implements RegionBas
      * Create the activable map used to response the storage element changes
      *
      * @param storageAccess
-     * @param codecFactory
+     * @param codec
+     * @param serializer
+     * @param deserializer
      * @param factory
      * @param registryManager
      * @param errorHandler
      * @param world
-     * @param ci
      */
     @SuppressWarnings("rawtypes")
     @Inject(
@@ -60,7 +63,15 @@ public abstract class SerializingRegionBasedStorageMixin<R> implements RegionBas
             order = Integer.MAX_VALUE
     )
     private void init(
-            ChunkPosKeyedStorage storageAccess, Function codecFactory, Function factory, DynamicRegistryManager registryManager, ChunkErrorHandler errorHandler, HeightLimitView world, CallbackInfo ci
+            ChunkPosKeyedStorage storageAccess,
+            Codec codec,
+            Function serializer,
+            BiFunction deserializer,
+            Function factory,
+            DynamicRegistryManager registryManager,
+            ChunkErrorHandler errorHandler,
+            HeightLimitView world,
+            CallbackInfo ci
     ) {
         this.columns = new Long2ObjectOpenHashMap<>();
         this.loadedElements = new ActivableLong2ObjectMap<>(this.loadedElements).triggerPutAndRemoved(this::handlePut, this::handleRemoved);

@@ -16,16 +16,6 @@ import java.util.Set;
 public class Fapals implements ModInitializer {
     @Override
     public void onInitialize() {
-        SepalsMixinHandler.startPostProcess();
-
-        Sepals.init();
-
-        ServerLifecycleEvents.SERVER_STARTING.register(server -> {
-            Sepals.LOGGER.info("Registering commands");
-            SepalsDebugCommand.register(server);
-            SepalsConfigCommand.register(server);
-        });
-
         Sepals.loadingPlatform = "fabric";
 
         Sepals.LOADED_MODS = Optional.of(FabricLoader.getInstance().getAllMods()).map(mods -> {
@@ -35,5 +25,15 @@ public class Fapals implements ModInitializer {
             }
             return modsSet;
         }).orElseGet(ApricotCollectionFactor::hashSet);
+
+        SepalsMixinHandler.startPostProcess();
+
+        Sepals.init();
+
+        ServerLifecycleEvents.SERVER_STARTING.register(server -> {
+            Sepals.LOGGER.info("Registering commands");
+            SepalsDebugCommand.register(server);
+            SepalsConfigCommand.register(server);
+        });
     }
 }

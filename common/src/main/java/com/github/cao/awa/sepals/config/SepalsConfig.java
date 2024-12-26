@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.nio.charset.StandardCharsets;
@@ -92,7 +93,7 @@ public class SepalsConfig {
 
     public void load() {
         try {
-            final JSONObject config = JSONObject.parse(IOUtil.read(new FileReader("config/sepals.json", StandardCharsets.UTF_8)));
+            final JSONObject config = JSONObject.parse(IOUtil.read(new FileReader(CONFIG_FILE, StandardCharsets.UTF_8)));
 
             setConfig(FORCE_ENABLE_SEPALS_POI, config);
             setConfig(ENABLE_SEPALS_VILLAGER, config);
@@ -104,6 +105,7 @@ public class SepalsConfig {
             setConfig(ENABLE_SEPALS_ENTITIES_CRAMMING, config);
         } catch (Exception e) {
             LOGGER.warn("Config not found, use default values", e);
+            write();
         }
     }
 

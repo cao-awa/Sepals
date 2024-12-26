@@ -1,10 +1,10 @@
 package com.github.cao.awa.sepals.mixin.world;
 
-import com.github.cao.awa.apricot.util.collection.ApricotCollectionFactor;
 import com.github.cao.awa.catheter.Catheter;
 import com.github.cao.awa.sepals.Sepals;
 import com.github.cao.awa.sepals.item.BoxedEntitiesCache;
 import com.github.cao.awa.sinuatum.manipulate.Manipulate;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.TypeFilter;
 import net.minecraft.util.math.Box;
@@ -15,57 +15,58 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 @Mixin(World.class)
 public abstract class WorldMixin implements BoxedEntitiesCache {
     @Unique
-    private Map<String, List<Entity>> entities = Manipulate.supply(() -> {
+    private static final Supplier<Map<Long, List<Entity>>> mapSupplier = () -> {
         if (Sepals.isAsyncLoaded) {
-            return ApricotCollectionFactor.concurrentHashMap();
+            return Collections.synchronizedMap(new Long2ObjectOpenHashMap<>());
         }
-        return ApricotCollectionFactor.hashMap();
-    });
-    @Unique
-    private Map<String, List<Entity>> getByTypeEntities = Manipulate.supply(() -> {
-        if (Sepals.isAsyncLoaded) {
-            return ApricotCollectionFactor.concurrentHashMap();
-        }
-        return ApricotCollectionFactor.hashMap();
-    });
+        return new Long2ObjectOpenHashMap<>();
+    };
 
     @Unique
-    public List<Entity> cachedGetByType(String box) {
+    private Map<Long, List<Entity>> entities = Manipulate.supply(mapSupplier::get);
+    @Unique
+    private Map<Long, List<Entity>> getByTypeEntities = Manipulate.supply(mapSupplier::get);
+
+    @Unique
+    public List<Entity> cachedGetByType(long hashCode) {
         if (this.getByTypeEntities == null) {
-            this.getByTypeEntities = ApricotCollectionFactor.hashMap();
+            this.getByTypeEntities = mapSupplier.get();
         }
-        return this.getByTypeEntities.get(box);
+        return this.getByTypeEntities.get(hashCode);
     }
 
     @Unique
-    public void cacheGetByType(String box, List<Entity> entities) {
+    public void cacheGetByType(long hashCode, List<Entity> entities) {
         if (this.getByTypeEntities == null) {
-            this.getByTypeEntities = ApricotCollectionFactor.hashMap();
+            this.getByTypeEntities = mapSupplier.get();
         }
-        this.getByTypeEntities.put(box, entities);
+        this.getByTypeEntities.put(hashCode, entities);
     }
 
     @Unique
     public void sepals$cache(Box box, List<Entity> entities) {
         if (this.entities == null) {
-            this.entities = ApricotCollectionFactor.hashMap();
+            this.entities = mapSupplier.get();
         }
-        this.entities.put(boxToString(box), entities);
+        this.entities.put(boxHashCode(box), entities);
     }
 
     @Unique
     public List<Entity> sepals$cached(Box box) {
         if (this.entities == null) {
-            this.entities = ApricotCollectionFactor.hashMap();
+            this.entities = mapSupplier.get();
         }
-        return this.entities.get(boxToString(box));
+        return this.entities.get(boxHashCode(box));
     }
 
     @Unique
@@ -135,7 +136,7 @@ public abstract class WorldMixin implements BoxedEntitiesCache {
     @SuppressWarnings("unchecked")
     public <T extends Entity> void getEntitiesByType(TypeFilter<T, ? extends T> filter, Box box, Predicate<? super T> predicate, CallbackInfoReturnable<List<T>> cir) {
         if (Sepals.CONFIG.isEnableSepalsEntitiesCramming()) {
-            String cacheKey = boxToString(box);
+            long cacheKey = boxHashCode(box);
 
             List<Entity> cached = cachedGetByType(cacheKey);
 
@@ -165,24 +166,33 @@ public abstract class WorldMixin implements BoxedEntitiesCache {
     )
     public void cacheEntitiesByType(TypeFilter<Entity, ? extends Entity> filter, Box box, Predicate<? super Entity> predicate, CallbackInfoReturnable<List<Entity>> cir) {
         if (Sepals.CONFIG.isEnableSepalsEntitiesCramming()) {
-            cacheGetByType(boxToString(box), cir.getReturnValue());
+            cacheGetByType(boxHashCode(box), cir.getReturnValue());
         }
     }
 
     @Unique
-    private static String boxToString(Box box) {
-        String minX = boxPosToString(box.minX);
-        String minY = boxPosToString(box.minY);
-        String minZ = boxPosToString(box.minZ);
-        String maxX = boxPosToString(box.maxX);
-        String maxY = boxPosToString(box.maxY);
-        String maxZ = boxPosToString(box.maxZ);
+    private static long boxHashCode(Box box) {
+        int minHash = Arrays.hashCode(new double[]{box.minX, box.minY, box.minZ});
+        int maxHash = Arrays.hashCode(new double[]{box.maxX, box.maxY, box.maxZ});
 
-        return minX + minY + minZ + maxX + maxY + maxZ;
+        return (((long) minHash & 0xFFFFFFFFL) | ((long) maxHash << 32) & 0xFFFFFFFF00000000L);
     }
 
     @Unique
-    private static String boxPosToString(double pos) {
-        return Double.toString(pos);
+    private static long directBoxHashCode(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
+        long result = 1;
+        long bitsMinX = Double.doubleToLongBits(maxX);
+        long bitsMinY = Double.doubleToLongBits(maxY);
+        long bitsMinZ = Double.doubleToLongBits(maxZ);
+        long bitsMaxX = Double.doubleToLongBits(minX);
+        long bitsMaxY = Double.doubleToLongBits(minY);
+        long bitsMaxZ = Double.doubleToLongBits(minZ);
+        result = 31 * result + (bitsMinX ^ (bitsMinX >>> 32));
+        result = 31 * result + (bitsMinY ^ (bitsMinY >>> 32));
+        result = 31 * result + (bitsMinZ ^ (bitsMinZ >>> 32));
+        result = 31 * result + (bitsMaxX ^ (bitsMaxX >>> 32));
+        result = 31 * result + (bitsMaxY ^ (bitsMaxY >>> 32));
+        result = 31 * result + (bitsMaxZ ^ (bitsMaxZ >>> 32));
+        return result;
     }
 }

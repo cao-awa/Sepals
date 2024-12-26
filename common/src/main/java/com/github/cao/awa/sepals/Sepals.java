@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class Sepals {
     public static final Logger LOGGER = LogManager.getLogger("Sepals");
-    public static final String VERSION = "1.0.10";
+    public static final String VERSION = "1.0.11";
     public static final SepalsConfig CONFIG = new SepalsConfig();
     public static final SepalsConfig PERSISTENT_CONFIG = new SepalsConfig();
     public static Set<String> LOADED_MODS = CollectionFactor.hashSet();

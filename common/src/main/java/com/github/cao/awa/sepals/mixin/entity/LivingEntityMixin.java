@@ -36,8 +36,9 @@ public abstract class LivingEntityMixin extends Entity {
             List<Entity> list = getWorld().getOtherEntities(this, getBoundingBox(), EntityPredicates.canBePushedBy(this));
             if (!list.isEmpty()) {
                 int maxCramming = serverWorld.getGameRules().getInt(GameRules.MAX_ENTITY_CRAMMING);
-                if (maxCramming > 0 && list.size() > maxCramming - 1 && this.random.nextInt(4) == 0) {
-                    crammingAndPushAway(serverWorld, maxCramming, list);
+                int crammingLimit = maxCramming - 1;
+                if (maxCramming > 0 && list.size() > crammingLimit && this.random.nextInt(4) == 0) {
+                    crammingAndPushAway(serverWorld, crammingLimit, list);
                 } else {
                     onlyPushAway(list);
                 }
@@ -48,7 +49,7 @@ public abstract class LivingEntityMixin extends Entity {
     }
 
     @Unique
-    private void crammingAndPushAway(ServerWorld world, int maxCramming, List<Entity> list) {
+    private void crammingAndPushAway(ServerWorld world, int crammingLimit, List<Entity> list) {
         int cramming = 0;
 
         for (Entity entity : list) {
@@ -58,7 +59,7 @@ public abstract class LivingEntityMixin extends Entity {
             pushAway(entity);
         }
 
-        if (cramming > maxCramming - 1) {
+        if (cramming > crammingLimit) {
             damage(world, getDamageSources().cramming(), 6.0F);
         }
     }

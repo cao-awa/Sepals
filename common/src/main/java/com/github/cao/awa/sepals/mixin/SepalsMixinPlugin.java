@@ -28,6 +28,8 @@ public class SepalsMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public void onLoad(String mixinPackage) {
+        LOGGER.info("Sepals plugin for version '{}' is loading", Sepals.VERSION);
+
         if (config == null) {
             SepalsMixinHandler.registerDefaultHandlers();
             config = Manipulate.supplyLater(() -> {

@@ -19,8 +19,6 @@ import java.util.function.BooleanSupplier;
 public class ServerWorldMixin implements BoxedItemEntities {
     @Unique
     private final Map<Integer, ItemEntity> entities = new Int2ObjectRBTreeMap<>();
-    @Unique
-    private boolean canSetEntity = true;
 
     @Unique
     public void sepals$addEntity(ItemEntity entity) {
@@ -32,23 +30,16 @@ public class ServerWorldMixin implements BoxedItemEntities {
         return this.entities.isEmpty();
     }
 
-    @Override
-    public boolean sepals$canSetEntities() {
-        return isEmpty() && this.canSetEntity;
-    }
-
     @Unique
     public void sepals$setEntities(List<ItemEntity> entities) {
         for (ItemEntity entity : entities) {
             this.entities.put(entity.getId(), entity);
         }
-        this.canSetEntity = false;
     }
 
     @Unique
     public void sepals$clearItemBoxed() {
         this.entities.clear();
-        this.canSetEntity = true;
     }
 
     @Unique

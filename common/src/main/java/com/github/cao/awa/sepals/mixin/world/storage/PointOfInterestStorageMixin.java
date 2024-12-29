@@ -67,7 +67,8 @@ public class PointOfInterestStorageMixin {
                             typePredicate,
                             chunkPos,
                             occupationStatus
-                    ).stream());
+                    ).stream()
+            );
         }
     }
 

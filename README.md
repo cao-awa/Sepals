@@ -11,17 +11,24 @@ Currently, sepals are compatible to almost all mods.
 
 Here is verified mod list:
 
-|                                            Target mod |  Target mod version  | Recommend target version | Sepals version | Recommend sepals version |
-|------------------------------------------------------:|:--------------------:|:------------------------:|:--------------:|:------------------------:|
-|             [sodium](https://modrinth.com/mod/sodium) |         all          |           all            |      all       |          latest          |
-|                 [iris](https://modrinth.com/mod/iris) |         all          |           all            |      all       |          latest          |
-|  [ferritecore](https://modrinth.com/mod/ferrite-core) |         all          |           all            |      all       |          latest          |
-|           [krypton](https://modrinth.com/mod/krypton) |         all          |           all            |      all       |          latest          |
-|           [lithium](https://modrinth.com/mod/lithium) |       >=0.14.1       |          latest          |    \>=1.0.4    |          latest          |
-|   [c2me-fabric](https://modrinth.com/mod/c2me-fabric) | \>=0.3.0+alpha.0.295 |          latest          |    \>=1.0.5    |          latest          |
-| [moonrise-opt](https://modrinth.com/mod/moonrise-opt) |    \>=0.1.0-beta8    |         unknown          |    \>=1.0.6    |          latest          |
+|                                            Target mod |   Target mod version    | Recommend target version | Sepals version | Recommend sepals version |
+|------------------------------------------------------:|:-----------------------:|:------------------------:|:--------------:|:------------------------:|
+|             [sodium](https://modrinth.com/mod/sodium) |           all           |           all            |      all       |          latest          |
+|                 [iris](https://modrinth.com/mod/iris) |           all           |           all            |      all       |          latest          |
+|  [ferritecore](https://modrinth.com/mod/ferrite-core) |           all           |           all            |      all       |          latest          |
+|           [krypton](https://modrinth.com/mod/krypton) |           all           |           all            |      all       |          latest          |
+|           [lithium](https://modrinth.com/mod/lithium) |        >=0.14.1         |          latest          |    \>=1.0.4    |          latest          |
+|   [c2me-fabric](https://modrinth.com/mod/c2me-fabric) |  \>=0.3.0+alpha.0.295   |          latest          |    \>=1.0.5    |          latest          |
+| [moonrise-opt](https://modrinth.com/mod/moonrise-opt) |     \>=0.1.0-beta8      |         unknown          |    \>=1.0.6    |          latest          |
+|               [async](https://modrinth.com/mod/async) | \>=0.1.5+alpha.8-1.21.4 |         unknown          |   \>=1.0.11    |          latest          |
 
 If you don't know which version to choose, please use the latest version of all the optimization mods, Sepals will ensure compatibility with them.
+
+### Specially
+When Sepals work with mod [Async](https://modrinth.com/mod/async)
+testing on different platforms has different results, please use configurations to disable Sepals features or Async features to test which is more worthwhile if you want use both together.
+
+Sepals feature related: ```enableSepalsEntitiesCramming```.
 
 ## Config
 

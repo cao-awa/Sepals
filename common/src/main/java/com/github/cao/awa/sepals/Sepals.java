@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class Sepals {
     public static final Logger LOGGER = LogManager.getLogger("Sepals");
-    public static final String VERSION = "1.0.11";
+    public static final String VERSION = "1.0.12";
     public static final SepalsConfig CONFIG = new SepalsConfig();
     public static final SepalsConfig PERSISTENT_CONFIG = new SepalsConfig();
     public static Set<String> LOADED_MODS = CollectionFactor.hashSet();
@@ -19,7 +19,7 @@ public class Sepals {
     public static boolean isAsyncLoaded;
 
     public static void init() {
-        LOGGER.info("Sepals {} loading", VERSION);
+        LOGGER.info("Sepals '{}' loading on platform '{}'", VERSION, loadingPlatform);
         CONFIG.load();
         PERSISTENT_CONFIG.copyFrom(CONFIG);
         CONFIG.print();

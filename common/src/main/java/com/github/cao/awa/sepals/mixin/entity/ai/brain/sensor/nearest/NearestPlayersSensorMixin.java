@@ -7,6 +7,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.sensor.NearestPlayersSensor;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.Angerable;
 import net.minecraft.entity.mob.HostileEntity;
@@ -16,6 +17,7 @@ import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -29,7 +31,7 @@ import static net.minecraft.entity.ai.brain.sensor.Sensor.testAttackableTargetPr
 import static net.minecraft.entity.ai.brain.sensor.Sensor.testTargetPredicate;
 
 @Mixin(NearestPlayersSensor.class)
-public class NearestPlayersSensorMixin {
+public abstract class NearestPlayersSensorMixin {
     @Inject(
             method = "sense",
             at = @At("HEAD"),
@@ -64,11 +66,11 @@ public class NearestPlayersSensorMixin {
     }
 
     @Unique
-    private static Catheter<PlayerEntity> collectBasicNearestPlayers(World world, LivingEntity entity, Brain<?> brain) {
+    private Catheter<PlayerEntity> collectBasicNearestPlayers(World world, LivingEntity entity, Brain<?> brain) {
         return Catheter.of(world.getPlayers().toArray(PlayerEntity[]::new))
                 .arrayGenerator(PlayerEntity[]::new)
                 .filter(EntityPredicates.EXCEPT_SPECTATOR)
-                .filter(player -> entity.isInRange(player, 16.0))
+                .filter(player -> entity.isInRange(player, getFollowRange(entity)))
                 .ifPresent(catheter -> {
                     if (Sepals.CONFIG.isNearestLivingEntitiesSensorUseQuickSort()) {
                         ObjectArrays.quickSort(catheter.dArray(), Comparator.comparingDouble(entity::squaredDistanceTo));
@@ -77,6 +79,11 @@ public class NearestPlayersSensorMixin {
                     }
                 })
                 .ifPresent(catheter -> brain.remember(MemoryModuleType.NEAREST_PLAYERS, catheter.list()));
+    }
+
+    @Unique
+    private static double getFollowRange(LivingEntity entity) {
+        return entity.getAttributeValue(EntityAttributes.FOLLOW_RANGE);
     }
 
     @Unique

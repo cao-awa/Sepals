@@ -10,10 +10,6 @@ public interface BoxedItemEntities {
         sepals$addEntity(entity);
     }
 
-    default boolean canSetEntities() {
-        return sepals$canSetEntities();
-    }
-
     default void setEntities(List<ItemEntity> entities) {
         sepals$setEntities(entities);
     }
@@ -39,8 +35,6 @@ public interface BoxedItemEntities {
     }
 
     void sepals$addEntity(ItemEntity entity);
-
-    boolean sepals$canSetEntities();
 
     void sepals$setEntities(List<ItemEntity> entities);
 

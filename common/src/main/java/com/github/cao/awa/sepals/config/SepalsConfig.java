@@ -29,6 +29,7 @@ public class SepalsConfig {
     public static final SepalsConfigKey<Boolean> NEAREST_LIVING_ENTITIES_SENSOR_USE_QUICK_SORT = SepalsConfigKey.create("nearestLivingEntitiesSensorUseQuickSort", true);
     public static final SepalsConfigKey<Boolean> ENABLE_SEPALS_BIASED_LONG_JUMP_TASK = SepalsConfigKey.create("enableSepalsBiasedLongJumpTask", true);
     public static final SepalsConfigKey<Boolean> ENABLE_SEPALS_ENTITIES_CRAMMING = SepalsConfigKey.create("enableSepalsEntitiesCramming", true);
+    public static final SepalsConfigKey<Boolean> ENABLE_SEPALS_ITEM_MERGE = SepalsConfigKey.create("enableSepalsItemMerge", true);
 
     private final JSONObject config = new JSONObject();
 
@@ -62,6 +63,10 @@ public class SepalsConfig {
 
     public boolean isEnableSepalsEntitiesCramming() {
         return getConfig(ENABLE_SEPALS_ENTITIES_CRAMMING);
+    }
+
+    public boolean isEnableSepalsItemMerge() {
+        return getConfig(ENABLE_SEPALS_ITEM_MERGE);
     }
 
     public <X> void setConfig(SepalsConfigKey<X> configKey, X value) {
@@ -103,6 +108,7 @@ public class SepalsConfig {
             setConfig(NEAREST_LIVING_ENTITIES_SENSOR_USE_QUICK_SORT, config);
             setConfig(ENABLE_SEPALS_BIASED_LONG_JUMP_TASK, config);
             setConfig(ENABLE_SEPALS_ENTITIES_CRAMMING, config);
+            setConfig(ENABLE_SEPALS_ITEM_MERGE, config);
         } catch (Exception e) {
             LOGGER.warn("Config not found, use default values", e);
             write();
@@ -132,6 +138,7 @@ public class SepalsConfig {
         setConfig(NEAREST_LIVING_ENTITIES_SENSOR_USE_QUICK_SORT, config.isNearestLivingEntitiesSensorUseQuickSort());
         setConfig(ENABLE_SEPALS_BIASED_LONG_JUMP_TASK, config.isEnableSepalsBiasedLongJumpTask());
         setConfig(ENABLE_SEPALS_ENTITIES_CRAMMING, config.isEnableSepalsEntitiesCramming());
+        setConfig(ENABLE_SEPALS_ITEM_MERGE, config.isEnableSepalsItemMerge());
     }
 
     public void print() {
@@ -142,7 +149,8 @@ public class SepalsConfig {
         LOGGER.info("Sepals 'enableSepalsLivingTargetCache' flag is {}", isEnableSepalsLivingTargetCache());
         LOGGER.info("Sepals 'nearestLivingEntitiesSensorUseQuickSort' flag is {}", isNearestLivingEntitiesSensorUseQuickSort());
         LOGGER.info("Sepals 'enableSepalsBiasedJumpLongTask' flag is {}", isEnableSepalsBiasedLongJumpTask());
-        LOGGER.info("Sepals 'enableEntitiesCramming' flag is {}", isEnableSepalsEntitiesCramming());
+        LOGGER.info("Sepals 'enableSepalsEntitiesCramming' flag is {}", isEnableSepalsEntitiesCramming());
+        LOGGER.info("Sepals 'enableSepalsItemMerge' flag is {}", isEnableSepalsItemMerge());
     }
 
     public Set<SepalsConfigKey<?>> collectEnabled() {
@@ -178,6 +186,10 @@ public class SepalsConfig {
 
         if (isEnableSepalsEntitiesCramming()) {
             enabled.add(ENABLE_SEPALS_ENTITIES_CRAMMING);
+        }
+
+        if (isEnableSepalsItemMerge()) {
+            enabled.add(ENABLE_SEPALS_ITEM_MERGE);
         }
 
         return enabled;

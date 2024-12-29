@@ -54,13 +54,11 @@ public class ServerWorldMixin implements BoxedItemEntities {
 
     @Unique
     public Collection<ItemEntity> sepals$entitiesAndInvalidate(ItemEntity entity) {
-        Collection<ItemEntity> items = this.entities.values();
-
-        if (!items.contains(entity)) {
+        if (!this.entities.containsKey(entity.getId())) {
             this.entities.remove(entity.getId());
         }
 
-        return items;
+        return this.entities.values();
     }
 
     @Inject(

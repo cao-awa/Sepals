@@ -1,15 +1,22 @@
 package com.github.cao.awa.sepals.mixin.entity.item;
 
+import com.github.cao.awa.sepals.Sepals;
+import com.github.cao.awa.sepals.item.BoxedItemEntities;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
+import net.minecraft.util.TypeFilter;
+import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.function.Predicate;
 
 // TODO preparing to optimization items.
 @Mixin(ItemEntity.class)
@@ -29,63 +36,66 @@ public abstract class ItemEntityMixin extends Entity {
     @Shadow
     protected abstract void tryMerge(ItemEntity other);
 
-//    @Inject(
-//            method = "tryMerge()V",
-//            at = @At(value = "HEAD"),
-//            cancellable = true
-//    )
-//    private void tryMerge(CallbackInfo ci) {
-//        if (canMerge()) {
-//            getBoxedEntities(
-//                    getWorld(),
-//                    getBoundingBox().expand(0.5, 0.0, 0.5),
-//                    itemEntity -> {
-//                        tryMerge(itemEntity);
-//                        return isRemoved();
-//                    }
-//            );
-//        }
-//        ci.cancel();
-//    }
+    @Inject(
+            method = "tryMerge()V",
+            at = @At(value = "HEAD"),
+            cancellable = true
+    )
+    private void tryMerge(CallbackInfo ci) {
+        if (Sepals.CONFIG.isEnableSepalsItemMerge()) {
+            if (canMerge()) {
+                getBoxedEntities(
+                        getWorld(),
+                        getBoundingBox().expand(0.5, 0.0, 0.5),
+                        itemEntity -> {
+                            tryMerge(itemEntity);
+                            return isRemoved();
+                        }
+                );
+            }
+            ci.cancel();
+        }
+    }
+
+    @Unique
+    public void getBoxedEntities(World world, Box box, Predicate<ItemEntity> invalidate) {
+        if (world instanceof BoxedItemEntities entities) {
+            entities.setEntities(world.getEntitiesByType(
+                            TypeFilter.instanceOf(ItemEntity.class),
+                            box,
+                            entity -> entity != (Object) this && ((ItemEntityAccessor) entity).invokeCanMerge()
+                    )
+            );
+
+            for (ItemEntity entity : entities.entities()) {
+                if (entity == (Object) this) {
+                    continue;
+                }
+//                ItemStack stack = entity.getStack();
 //
-//    @Unique
-//    public void getBoxedEntities(World world, Box box, Predicate<ItemEntity> invalidate) {
-//        if (world instanceof BoxedItemEntities entities) {
-//            entities.setEntities(world.getEntitiesByType(
-//                            TypeFilter.instanceOf(ItemEntity.class),
-//                            box,
-//                            entity -> entity != (Object) this && ((ItemEntityAccessor) entity).invokeCanMerge()
-//                    )
-//            );
-//
-//            for (ItemEntity entity : entities.entities()) {
-//                if (entity == (Object) this) {
-//                    continue;
-//                }
-////                ItemStack stack = entity.getStack();
-////
-////                if (stack.getMaxCount() == stack.getCount()) {
-////                    entities.invalidate(entity);
-////                    continue;
-////                }
-//
-//                if (!((ItemEntityAccessor) entity).invokeCanMerge()) {
+//                if (stack.getMaxCount() == stack.getCount()) {
 //                    entities.invalidate(entity);
-//                }
-//
-//                if (!entity.getBoundingBox().intersects(box)) {
 //                    continue;
 //                }
-//
-//                entities.invalidate((ItemEntity) (Object) this);
-//
-//                if (invalidate.test(entity)) {
-//                    // Invalidate this item, because it no longer can be to other items.
-//                    break;
-//                }
-//            }
-//        }
-//    }
+
+                if (!((ItemEntityAccessor) entity).invokeCanMerge()) {
+                    entities.invalidate(entity);
+                    continue;
+                }
+
+                if (!entity.getBoundingBox().intersects(box)) {
+                    continue;
+                }
+
+                entities.invalidate((ItemEntity) (Object) this);
+
+                if (invalidate.test(entity)) {
+                    // Invalidate this item, because it no longer can be to other items.
+                    break;
+                }
+            }
+        }
+    }
 
     @Inject(
             method = "isFireImmune",

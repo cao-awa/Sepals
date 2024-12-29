@@ -1,7 +1,7 @@
 package com.github.cao.awa.sepals.mixin.world;
 
 import com.github.cao.awa.sepals.item.BoxedItemEntities;
-import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.server.world.ServerWorld;
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,7 +18,7 @@ import java.util.function.BooleanSupplier;
 @Mixin(ServerWorld.class)
 public class ServerWorldMixin implements BoxedItemEntities {
     @Unique
-    private final Map<Integer, ItemEntity> entities = new Int2ObjectRBTreeMap<>();
+    private final Map<Integer, ItemEntity> entities = new Int2ObjectOpenHashMap<>();
 
     @Unique
     public void sepals$addEntity(ItemEntity entity) {

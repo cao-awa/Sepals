@@ -97,6 +97,8 @@ public class SepalsConfig {
     }
 
     public void load() {
+        loadAsDefault();
+
         try {
             final JSONObject config = JSONObject.parse(IOUtil.read(new FileReader(CONFIG_FILE, StandardCharsets.UTF_8)));
 
@@ -111,8 +113,9 @@ public class SepalsConfig {
             setConfig(ENABLE_SEPALS_ITEM_MERGE, config);
         } catch (Exception e) {
             LOGGER.warn("Config not found, use default values", e);
-            write();
         }
+
+        write();
     }
 
     public void write() {
@@ -127,6 +130,18 @@ public class SepalsConfig {
         } catch (Exception e) {
             LOGGER.warn("Failed to save config", e);
         }
+    }
+
+    public void loadAsDefault() {
+        setConfig(FORCE_ENABLE_SEPALS_POI, FORCE_ENABLE_SEPALS_POI.defaultValue());
+        setConfig(ENABLE_SEPALS_VILLAGER, ENABLE_SEPALS_VILLAGER.defaultValue());
+        setConfig(ENABLE_SEPALS_FROG_LOOK_AT, ENABLE_SEPALS_FROG_LOOK_AT.defaultValue());
+        setConfig(ENABLE_SEPALS_FROG_ATTACKABLE_SENSOR, ENABLE_SEPALS_FROG_ATTACKABLE_SENSOR.defaultValue());
+        setConfig(ENABLE_SEPALS_LIVING_TARGET_CACHE, ENABLE_SEPALS_LIVING_TARGET_CACHE.defaultValue());
+        setConfig(NEAREST_LIVING_ENTITIES_SENSOR_USE_QUICK_SORT, NEAREST_LIVING_ENTITIES_SENSOR_USE_QUICK_SORT.defaultValue());
+        setConfig(ENABLE_SEPALS_BIASED_LONG_JUMP_TASK, ENABLE_SEPALS_BIASED_LONG_JUMP_TASK.defaultValue());
+        setConfig(ENABLE_SEPALS_ENTITIES_CRAMMING, ENABLE_SEPALS_ENTITIES_CRAMMING.defaultValue());
+        setConfig(ENABLE_SEPALS_ITEM_MERGE, ENABLE_SEPALS_ITEM_MERGE.defaultValue());
     }
 
     public void copyFrom(@NotNull SepalsConfig config) {

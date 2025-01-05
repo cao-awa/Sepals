@@ -1,6 +1,7 @@
 package com.github.cao.awa.sepals.mixin.world;
 
 import com.github.cao.awa.sepals.item.BoxedItemEntities;
+import com.github.cao.awa.sinuatum.util.collection.CollectionFactor;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -49,7 +50,7 @@ public class ServerWorldMixin implements BoxedItemEntities {
 
     @Unique
     public Collection<ItemEntity> sepals$entities() {
-        return this.entities.values();
+        return CollectionFactor.hashSet(this.entities.values());
     }
 
     @Unique

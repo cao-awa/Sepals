@@ -2,7 +2,6 @@
 
 An extremely radical and experimental optimization for Minecraft server performances.
 
-
 ![](https://count.getloli.com/@@cao-awa.sepals?name=%40cao-awa.sepals&theme=rule34&padding=7&offset=0&align=top&scale=1&pixelated=1&darkmode=auto)
 
 ## Compatibility
@@ -22,11 +21,14 @@ Here is verified mod list:
 | [moonrise-opt](https://modrinth.com/mod/moonrise-opt) |     \>=0.1.0-beta8      |         unknown          |    \>=1.0.6    |          latest          |
 |               [async](https://modrinth.com/mod/async) | \>=0.1.5+alpha.8-1.21.4 |         unknown          |   \>=1.0.11    |          latest          |
 
-If you don't know which version to choose, please use the latest version of all the optimization mods, Sepals will ensure compatibility with them.
+If you don't know which version to choose, please use the latest version of all the optimization mods, Sepals will
+ensure compatibility with them.
 
 ### Specially
+
 When Sepals work with mod [Async](https://modrinth.com/mod/async)
-testing on different platforms has different results, please use configurations to disable Sepals features or Async features to test which is more worthwhile if you want use both together.
+testing on different platforms has different results, please use configurations to disable Sepals features or Async
+features to test which is more worthwhile if you want to use both together.
 
 Sepals feature related: ```enableSepalsEntitiesCramming```.
 
@@ -42,11 +44,12 @@ Sepals feature related: ```enableSepalsEntitiesCramming```.
 | nearestLivingEntitiesSensorUseQuickSort |  bool value   |   
 |     enableSepalsBiasedLongJumpTask      |  bool value   |   
 |      enableSepalsEntitiesCramming       |  bool value   |   
+|          enableSepalsItemMerge          |  bool value   |
 
 ## Performance
 
 A test was done in server of Mars provided by feimia, CPU: Intel i7-14700K; Game memory: 4G; OS: Ubuntu 24.04.1 LTS;
-Minecraft: 1.21 .
+Minecraft: 1.21.
 
 ### Entities cramming
 

@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "sepals",
   "version": "${version}",
-  "name": "fapals",
+  "name": "sepals",
   "description": "Sepals is an extremely radical and experimental optimization for Minecraft server performances.",
   "authors": [
     "cao_awa"

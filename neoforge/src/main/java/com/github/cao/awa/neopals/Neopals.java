@@ -18,7 +18,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.Optional;
 import java.util.Set;
 
-@Mod("neopals")
+@Mod("sepals")
 public final class Neopals {
     public Neopals(IEventBus modEventBus) {
         Sepals.LOADED_MODS = Optional.of(ModList.get().getSortedMods()).map(mods -> {

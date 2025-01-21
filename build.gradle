@@ -78,3 +78,7 @@ subprojects {
         it.options.release = 21
     }
 }
+
+tasks.register('idePostSync') {
+
+}

@@ -4,7 +4,7 @@ issueTrackerURL = "https://github.com/cao-awa/sepals/issues"
 license = "GPLv3"
 
 [[mods]]
-modId = "neopals"
+modId = "sepals"
 version = "${version}"
 displayName = "Sepals"
 authors = "cao_awa"
@@ -13,21 +13,21 @@ Sepals is an extremely radical and experimental optimization for Minecraft serve
 '''
 #logoFile = ""
 
-[[dependencies.neopals]]
+[[dependencies.sepals]]
 modId = "neoforge"
 type = "required"
 versionRange = "[21.4.0-beta,)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.neopals]]
+[[dependencies.sepals]]
 modId = "minecraft"
 type = "required"
 versionRange = "[1.21.4,)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.neopals]]
+[[dependencies.sepals]]
 modId = "architectury"
 type = "required"
 versionRange = "[15.0.1,)"

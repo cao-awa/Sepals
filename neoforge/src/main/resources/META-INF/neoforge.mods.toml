@@ -23,15 +23,8 @@ side = "BOTH"
 [[dependencies.sepals]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.21.4,)"
+versionRange = "[1.21.1]"
 ordering = "NONE"
-side = "BOTH"
-
-[[dependencies.sepals]]
-modId = "architectury"
-type = "required"
-versionRange = "[15.0.1,)"
-ordering = "AFTER"
 side = "BOTH"
 
 [[mixins]]

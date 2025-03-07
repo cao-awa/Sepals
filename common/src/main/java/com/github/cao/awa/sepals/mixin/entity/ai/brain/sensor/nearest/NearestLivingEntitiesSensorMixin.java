@@ -31,8 +31,7 @@ public abstract class NearestLivingEntitiesSensorMixin<T extends LivingEntity> {
             cancellable = true
     )
     private void sense(ServerWorld world, T entity, CallbackInfo ci) {
-        double followRange = entity.getAttributeValue(EntityAttributes.FOLLOW_RANGE);
-        Box box = entity.getBoundingBox().expand(followRange, followRange, followRange);
+        Box box = entity.getBoundingBox().expand(16.0D, 16.0D, 16.0D);
 
         Comparator<LivingEntity> comparator = Comparator.comparingDouble(entity::squaredDistanceTo);
         Brain<?> brain = entity.getBrain();
@@ -62,7 +61,6 @@ public abstract class NearestLivingEntitiesSensorMixin<T extends LivingEntity> {
                     .safeArray();
 
             cache = new SepalsLivingTargetCache(
-                    world,
                     entity,
                     sources,
                     players
@@ -75,7 +73,7 @@ public abstract class NearestLivingEntitiesSensorMixin<T extends LivingEntity> {
             } else {
                 mobs.sort(comparator);
             }
-            cache = new LivingTargetCache(world, entity, mobs);
+            cache = new LivingTargetCache(entity, mobs);
         }
 
         brain.remember(MemoryModuleType.MOBS, mobs);

@@ -20,12 +20,12 @@ public class SepalsLivingTargetCache extends LivingTargetCache {
     private final Predicate<LivingEntity> compute;
 
     @SuppressWarnings("unchecked")
-    public SepalsLivingTargetCache(ServerWorld world, LivingEntity owner, LivingEntity[] entities, PlayerEntity[] players) {
-        super(world, owner, Collections.EMPTY_LIST);
+    public SepalsLivingTargetCache(LivingEntity owner, LivingEntity[] entities, PlayerEntity[] players) {
+        super(owner, Collections.EMPTY_LIST);
         this.entities = entities;
         this.players = players;
         this.directSuccess = new Object2BooleanOpenHashMap<>(entities.length);
-        Predicate<LivingEntity> predicate = entity -> Sensor.testTargetPredicate(world, owner, entity);
+        Predicate<LivingEntity> predicate = entity -> Sensor.testTargetPredicate(owner, entity);
         this.compute = entity -> this.directSuccess.computeIfAbsent(entity, predicate);
     }
 

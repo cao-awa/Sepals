@@ -52,12 +52,12 @@ public abstract class NearestPlayersSensorMixin {
                 players.filter(NearestPlayersSensorMixin::isHero);
             }
 
-            players.filter(player -> testTargetPredicate(world, entity, player));
+            players.filter(player -> testTargetPredicate(entity, player));
             players.firstOrNull(player -> brain.remember(MemoryModuleType.NEAREST_VISIBLE_PLAYER, player));
             // If entity are not hostile or anger-able then do not need to test the attackable predicate.
             // Because this memory only will be used in the entities that can attack to player, such as piglin.
             if (canAttackToPlayer) {
-                players.filter(player -> testAttackableTargetPredicate(world, entity, player))
+                players.filter(player -> testAttackableTargetPredicate(entity, player))
                         .firstOrNull(player -> brain.remember(MemoryModuleType.NEAREST_VISIBLE_TARGETABLE_PLAYER, Optional.ofNullable(player)));
             }
 
@@ -70,7 +70,7 @@ public abstract class NearestPlayersSensorMixin {
         return Catheter.of(world.getPlayers().toArray(PlayerEntity[]::new))
                 .arrayGenerator(PlayerEntity[]::new)
                 .filter(EntityPredicates.EXCEPT_SPECTATOR)
-                .filter(player -> entity.isInRange(player, getFollowRange(entity)))
+                .filter(player -> entity.isInRange(player, 16.0D))
                 .ifPresent(catheter -> {
                     if (Sepals.CONFIG.isNearestLivingEntitiesSensorUseQuickSort()) {
                         ObjectArrays.quickSort(catheter.dArray(), Comparator.comparingDouble(entity::squaredDistanceTo));
@@ -79,11 +79,6 @@ public abstract class NearestPlayersSensorMixin {
                     }
                 })
                 .ifPresent(catheter -> brain.remember(MemoryModuleType.NEAREST_PLAYERS, catheter.list()));
-    }
-
-    @Unique
-    private static double getFollowRange(LivingEntity entity) {
-        return entity.getAttributeValue(EntityAttributes.FOLLOW_RANGE);
     }
 
     @Unique

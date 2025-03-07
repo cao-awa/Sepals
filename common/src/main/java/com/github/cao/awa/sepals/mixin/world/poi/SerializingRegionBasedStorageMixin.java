@@ -35,7 +35,7 @@ public abstract class SerializingRegionBasedStorageMixin<R> implements RegionBas
     protected abstract Optional<R> get(long pos);
 
     @Shadow
-    protected abstract void loadAndWait(ChunkPos pos);
+    protected abstract void loadDataAt(ChunkPos pos);
 
     @Shadow
     @Final
@@ -144,7 +144,7 @@ public abstract class SerializingRegionBasedStorageMixin<R> implements RegionBas
         BitSet flags = getNonEmptySections(pos, false);
 
         if (flags == null) {
-            loadAndWait(new ChunkPos(pos));
+            loadDataAt(new ChunkPos(pos));
 
             return getNonEmptySections(pos, true);
         } else {

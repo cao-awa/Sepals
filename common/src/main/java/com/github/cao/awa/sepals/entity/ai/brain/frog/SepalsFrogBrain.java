@@ -46,7 +46,7 @@ public class SepalsFrogBrain {
         );
 
         if (SepalsLongJumpTask.shouldJumpTo(
-                frog, posDownState, nodeType
+                frog, posDown, posDownState, nodeType
         )) {
             return true;
         }
@@ -68,7 +68,7 @@ public class SepalsFrogBrain {
             return false;
         }
 
-        return !isTargetUnreachable(entity, target) && Sensor.testAttackableTargetPredicate(world, entity, target);
+        return !isTargetUnreachable(entity, target) && Sensor.testAttackableTargetPredicate(entity, target);
     }
 
     private static boolean isHuntingCooldown(LivingEntity entity) {

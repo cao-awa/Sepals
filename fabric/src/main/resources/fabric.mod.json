@@ -29,12 +29,7 @@
   ],
   "depends": {
     "fabricloader": "*",
-    "minecraft": "1.21.4",
+    "minecraft": "<1.21.4",
     "fabric": "*"
-  },
-  "jars": [
-    {
-      "file": "META-INF/jars/sepals-common-1.0.10.jar"
-    }
-  ]
+  }
 }

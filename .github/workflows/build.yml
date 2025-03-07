@@ -37,11 +37,11 @@ jobs:
         # Upload all artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: Artifacts
+          name: Artifacts-fabric
           path: fabric/build/libs/
       - name: capture neoforge build artifacts
         # Upload all artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: Artifacts
+          name: Artifacts-neoforge
           path: neoforge/build/libs/

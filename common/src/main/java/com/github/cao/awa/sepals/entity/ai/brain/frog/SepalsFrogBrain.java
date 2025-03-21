@@ -59,7 +59,7 @@ public class SepalsFrogBrain {
                 ) == PathNodeType.TRAPDOOR;
     }
 
-    public static boolean attackable(ServerWorld world, LivingEntity entity, LivingEntity target) {
+    public static boolean attackable(LivingEntity entity, LivingEntity target) {
         if (isHuntingCooldown(entity) || !FrogEntity.isValidFrogFood(target)) {
             return false;
         }

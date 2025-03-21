@@ -17,9 +17,9 @@ public class FrogAttackablesSensorMixin {
             at = @At("HEAD"),
             cancellable = true
     )
-    protected void matches(ServerWorld world, LivingEntity entity, LivingEntity target, CallbackInfoReturnable<Boolean> cir) {
+    protected void matches(LivingEntity entity, LivingEntity target, CallbackInfoReturnable<Boolean> cir) {
         if (Sepals.CONFIG.isEnableSepalsFrogAttackableSensor()) {
-            cir.setReturnValue(SepalsFrogBrain.attackable(world, entity, target));
+            cir.setReturnValue(SepalsFrogBrain.attackable(entity, target));
         }
     }
 }

@@ -64,9 +64,7 @@ public abstract class SerializingRegionBasedStorageMixin<R> implements RegionBas
     )
     private void init(
             ChunkPosKeyedStorage storageAccess,
-            Codec codec,
-            Function serializer,
-            BiFunction deserializer,
+            Function codecFactory,
             Function factory,
             DynamicRegistryManager registryManager,
             ChunkErrorHandler errorHandler,

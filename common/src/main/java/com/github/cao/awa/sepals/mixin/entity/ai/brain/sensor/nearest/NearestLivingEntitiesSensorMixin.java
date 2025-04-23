@@ -56,7 +56,7 @@ public abstract class NearestLivingEntitiesSensorMixin<T extends LivingEntity> {
 
             mobs = ApricotCollectionFactor.arrayList(sources);
 
-            PlayerEntity[] players = entities.filter(LivingEntity::isPlayer)
+            PlayerEntity[] players = entities.filter(e -> e instanceof PlayerEntity)
                     .varyTo(PlayerEntity.class::cast)
                     .arrayGenerator(PlayerEntity[]::new)
                     .safeArray();

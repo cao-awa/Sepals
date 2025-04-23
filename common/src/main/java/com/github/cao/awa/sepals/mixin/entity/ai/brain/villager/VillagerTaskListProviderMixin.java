@@ -25,6 +25,7 @@ import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.task.*;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.passive.VillagerEntity;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.village.VillagerProfession;
 import net.minecraft.world.poi.PointOfInterestTypes;
 import org.spongepowered.asm.mixin.Mixin;
@@ -75,8 +76,10 @@ public abstract class VillagerTaskListProviderMixin {
             at = @At("HEAD"),
             cancellable = true
     )
-    private static void createCoreTasks(VillagerProfession profession, float speed, CallbackInfoReturnable<ImmutableList<Pair<Integer, ? extends Task<? super VillagerEntity>>>> cir) {
+    private static void createCoreTasks(RegistryEntry<VillagerProfession> professionEntry, float speed, CallbackInfoReturnable<ImmutableList<Pair<Integer, ? extends Task<? super VillagerEntity>>>> cir) {
         if (Sepals.CONFIG.isEnableSepalsVillager()) {
+            VillagerProfession profession = professionEntry.value();
+
             cir.setReturnValue(ImmutableList.of(
                     Pair.of(0, new StayAboveWaterTask<>(0.8F)),
                     Pair.of(0, OpenDoorsTask.create()),
@@ -132,7 +135,7 @@ public abstract class VillagerTaskListProviderMixin {
             at = @At("HEAD"),
             cancellable = true
     )
-    private static void createMeetTasks(VillagerProfession profession, float speed, CallbackInfoReturnable<ImmutableList<Pair<Integer, ? extends Task<? super VillagerEntity>>>> cir) {
+    private static void createMeetTasks(RegistryEntry<VillagerProfession> registryEntry, float speed, CallbackInfoReturnable<ImmutableList<Pair<Integer, ? extends Task<? super VillagerEntity>>>> cir) {
         if (Sepals.CONFIG.isEnableSepalsVillager()) {
             cir.setReturnValue(ImmutableList.of(
                     Pair.of(
@@ -163,10 +166,10 @@ public abstract class VillagerTaskListProviderMixin {
             at = @At("HEAD"),
             cancellable = true
     )
-    private static void createWorkTasks(VillagerProfession profession, float speed, CallbackInfoReturnable<ImmutableList<Pair<Integer, ? extends Task<? super VillagerEntity>>>> cir) {
+    private static void createWorkTasks(RegistryEntry<VillagerProfession> professionEntry, float speed, CallbackInfoReturnable<ImmutableList<Pair<Integer, ? extends Task<? super VillagerEntity>>>> cir) {
         if (Sepals.CONFIG.isEnableSepalsVillager()) {
             VillagerWorkTask villagerWorkTask;
-            if (profession == VillagerProfession.FARMER) {
+            if (professionEntry == VillagerProfession.FARMER) {
                 villagerWorkTask = new FarmerWorkTask();
             } else {
                 villagerWorkTask = new VillagerWorkTask();
@@ -182,8 +185,8 @@ public abstract class VillagerTaskListProviderMixin {
                                             Pair.of(GoAroundTask.create(MemoryModuleType.JOB_SITE, 0.4F, 4), 2),
                                             Pair.of(GoToPosTask.create(MemoryModuleType.JOB_SITE, 0.4F, 1, 10), 5),
                                             Pair.of(GoToSecondaryPositionTask.create(MemoryModuleType.SECONDARY_JOB_SITE, speed, 1, 6, MemoryModuleType.JOB_SITE), 5),
-                                            Pair.of(new FarmerVillagerTask(), profession == VillagerProfession.FARMER ? 2 : 5),
-                                            Pair.of(new BoneMealTask(), profession == VillagerProfession.FARMER ? 4 : 7)
+                                            Pair.of(new FarmerVillagerTask(), professionEntry == VillagerProfession.FARMER ? 2 : 5),
+                                            Pair.of(new BoneMealTask(), professionEntry == VillagerProfession.FARMER ? 4 : 7)
                                     )
                             )
                     ),
@@ -201,7 +204,7 @@ public abstract class VillagerTaskListProviderMixin {
             at = @At("HEAD"),
             cancellable = true
     )
-    private static void createIdleTasks(VillagerProfession profession, float speed, CallbackInfoReturnable<ImmutableList<Pair<Integer, ? extends Task<? super VillagerEntity>>>> cir) {
+    private static void createIdleTasks(RegistryEntry<VillagerProfession> professionEntry, float speed, CallbackInfoReturnable<ImmutableList<Pair<Integer, ? extends Task<? super VillagerEntity>>>> cir) {
         if (Sepals.CONFIG.isEnableSepalsVillager()) {
             cir.setReturnValue(ImmutableList.of(
                     Pair.of(
@@ -250,7 +253,7 @@ public abstract class VillagerTaskListProviderMixin {
             at = @At("HEAD"),
             cancellable = true
     )
-    private static void createPanicTasks(VillagerProfession profession, float speed, CallbackInfoReturnable<ImmutableList<Pair<Integer, ? extends Task<? super VillagerEntity>>>> cir) {
+    private static void createPanicTasks(RegistryEntry<VillagerProfession> professionEntry, float speed, CallbackInfoReturnable<ImmutableList<Pair<Integer, ? extends Task<? super VillagerEntity>>>> cir) {
         if (Sepals.CONFIG.isEnableSepalsVillager()) {
             float f = speed * 1.5f;
             cir.setReturnValue(
@@ -299,7 +302,7 @@ public abstract class VillagerTaskListProviderMixin {
             at = @At("HEAD"),
             cancellable = true
     )
-    private static void createRestTasks(VillagerProfession profession, float speed, CallbackInfoReturnable<ImmutableList<Pair<Integer, ? extends Task<? super VillagerEntity>>>> cir) {
+    private static void createRestTasks(RegistryEntry<VillagerProfession> professionEntry, float speed, CallbackInfoReturnable<ImmutableList<Pair<Integer, ? extends Task<? super VillagerEntity>>>> cir) {
         if (Sepals.CONFIG.isEnableSepalsVillager()) {
             cir.setReturnValue(ImmutableList.of(
                     Pair.of(2, VillagerWalkTowardsTask.create(MemoryModuleType.HOME, speed, 1, 150, 1200)),

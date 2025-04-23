@@ -63,7 +63,7 @@ public class SepalsBiasedLongJumpTask<E extends MobEntity> extends SepalsLongJum
     }
 
     private boolean addUnfavored(ServerWorld world, BlockPos.Mutable mutable, Target target) {
-        if (world.getBlockState(mutable.set(target.getPos(), Direction.DOWN)).isIn(this.favoredBlocks)) {
+        if (world.getBlockState(mutable.set(target.pos(), Direction.DOWN)).isIn(this.favoredBlocks)) {
             return true;
         }
 

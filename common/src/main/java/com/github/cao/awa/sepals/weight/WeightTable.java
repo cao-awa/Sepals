@@ -1,9 +1,7 @@
 package com.github.cao.awa.sepals.weight;
 
-import com.github.cao.awa.catheter.Catheter;
 import com.github.cao.awa.sepals.weight.result.WeightingResult;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.util.collection.Weighted;
 import net.minecraft.util.math.random.Random;
 
 import java.util.*;
@@ -12,29 +10,6 @@ import java.util.function.ToIntFunction;
 public class WeightTable<T> {
     private Ranged<T>[] weighted;
     private int range;
-
-    @SuppressWarnings("unchecked")
-    public static <X extends Weighted> WeightTable<X> initWeight(Catheter<X> pool) {
-        int size = pool.count();
-        Ranged<X>[] ranges = new Range[size];
-        int range = 0;
-        int i = 0;
-        while (i < size) {
-            X weighted = pool.fetch(i);
-            int nextRange = range + weighted.getWeight().getValue();
-            ranges[i] = new Range<>(range, nextRange, weighted);
-            range = nextRange;
-            i++;
-        }
-        return new WeightTable<X>().initWeightWithPrecalculate(ranges, Math.max(range, 1));
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <X extends Weighted> WeightTable<X> initWeight(List<X> pool) {
-        X[] elements = (X[]) new Weighted[pool.size()];
-        pool.toArray(elements);
-        return initWeight(elements, weighted -> weighted.getWeight().getValue());
-    }
 
     @SuppressWarnings("unchecked")
     public static <X> WeightTable<X> initWeight(Collection<X> pool, ToIntFunction<X> weightGenerator) {

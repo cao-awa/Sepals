@@ -104,7 +104,7 @@ public class SepalsLongJumpTask<E extends MobEntity> extends MultiTickTask<E> {
         boolean bl = this.lastPos != null
                 && this.lastPos.equals(mobEntity.getPos())
                 && this.cooldown > 0
-                && !mobEntity.isInsideWaterOrBubbleColumn()
+                && !mobEntity.isTouchingWater()
                 && (this.lastTarget != null || this.targets.isPresent());
         if (!bl && mobEntity.getBrain().getOptionalRegisteredMemory(MemoryModuleType.LONG_JUMP_MID_JUMP).isEmpty()) {
             mobEntity.getBrain().remember(MemoryModuleType.LONG_JUMP_COOLING_DOWN, this.cooldownRange.get(serverWorld.random) / 2);
@@ -149,7 +149,7 @@ public class SepalsLongJumpTask<E extends MobEntity> extends MultiTickTask<E> {
                 }, precalculatedRange -> this.precalculatedRange = precalculatedRange);
 
         if (this.targets.isPresent()) {
-            if (this.precalculatedRange / this.precalculatedTargets.fetch(0).weightValue() == this.precalculatedTargets.count()) {
+            if (this.precalculatedRange / this.precalculatedTargets.fetch(0).weight() == this.precalculatedTargets.count()) {
                 this.isNoRange = true;
             }
         }
@@ -185,7 +185,7 @@ public class SepalsLongJumpTask<E extends MobEntity> extends MultiTickTask<E> {
             if (target == null) {
                 continue;
             }
-            BlockPos blockPos = target.getPos();
+            BlockPos blockPos = target.pos();
 
             if (canJumpTo(entity, blockPos)) {
                 Vec3d vec3d2 = getJumpingVelocity(world, entity, Vec3d.ofCenter(blockPos));
@@ -220,7 +220,7 @@ public class SepalsLongJumpTask<E extends MobEntity> extends MultiTickTask<E> {
 
                 Target value = target.value();
                 if (value != null) {
-                    this.precalculatedRange -= value.weightValue();
+                    this.precalculatedRange -= value.weight();
 
                     return value;
                 }
@@ -289,26 +289,24 @@ public class SepalsLongJumpTask<E extends MobEntity> extends MultiTickTask<E> {
         }
     }
 
-
-    public static class Target extends Weighted.Absent implements WeightTable.Ranged<Target> {
+    public static class Target implements WeightTable.Ranged<Target> {
         private final BlockPos pos;
         private final int weight;
         private final int min;
         private final int max;
 
         public Target(BlockPos pos, int weight, int min, int max) {
-            super(weight);
             this.pos = pos;
             this.weight = weight;
             this.min = min;
             this.max = max;
         }
 
-        public int weightValue() {
+        public int weight() {
             return this.weight;
         }
 
-        public BlockPos getPos() {
+        public BlockPos pos() {
             return this.pos;
         }
 

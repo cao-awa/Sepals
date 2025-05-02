@@ -150,7 +150,7 @@ public abstract class WorldMixin implements BoxedEntitiesCache {
 
             List<T> result = (List<T>) catheter
                     .filter(predicate)
-                    .varyTo(filter::downcast)
+                    .varyTo(e -> Manipulate.supply(() -> filter.downcast(e)))
                     .exists()
                     .list();
 

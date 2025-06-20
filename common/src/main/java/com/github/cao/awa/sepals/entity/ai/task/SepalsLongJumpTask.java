@@ -39,7 +39,7 @@ public class SepalsLongJumpTask<E extends MobEntity> extends MultiTickTask<E> {
     private final UniformIntProvider cooldownRange;
     protected final int verticalRange;
     protected final int horizontalRange;
-    protected final float maxRange;
+    protected final double maxRange;
     protected Catheter<BlockPos> targets = null;
     protected Catheter<Target> precalculatedTargets = null;
     protected int precalculatedRange = 0;
@@ -57,8 +57,8 @@ public class SepalsLongJumpTask<E extends MobEntity> extends MultiTickTask<E> {
         this(cooldownRange, verticalRange, horizontalRange, maxRange, entityToSound, LongJumpTask::shouldJumpTo);
     }
 
-    public static <E extends MobEntity> boolean shouldJumpTo(E entity, BlockPos posDown, BlockState posDownState, PathNodeType pathNodeType) {
-        return posDownState.isOpaqueFullCube(entity.getWorld(), posDown) && entity.getPathfindingPenalty(pathNodeType) == 0.0F;
+    public static <E extends MobEntity> boolean shouldJumpTo(E entity, BlockState posDownState, PathNodeType pathNodeType) {
+        return posDownState.isOpaqueFullCube() && entity.getPathfindingPenalty(pathNodeType) == 0.0F;
     }
 
     public SepalsLongJumpTask(
@@ -104,7 +104,7 @@ public class SepalsLongJumpTask<E extends MobEntity> extends MultiTickTask<E> {
         boolean bl = this.lastPos != null
                 && this.lastPos.equals(mobEntity.getPos())
                 && this.cooldown > 0
-                && !mobEntity.isInsideWaterOrBubbleColumn()
+                && !mobEntity.isTouchingWater()
                 && (this.lastTarget != null || this.targets.isPresent());
         if (!bl && mobEntity.getBrain().getOptionalRegisteredMemory(MemoryModuleType.LONG_JUMP_MID_JUMP).isEmpty()) {
             mobEntity.getBrain().remember(MemoryModuleType.LONG_JUMP_COOLING_DOWN, this.cooldownRange.get(serverWorld.random) / 2);
@@ -211,7 +211,7 @@ public class SepalsLongJumpTask<E extends MobEntity> extends MultiTickTask<E> {
                 int index = world.random.nextInt(this.precalculatedTargets.count());
                 target = new WeightingResult<>(this.precalculatedTargets.fetch(index), index);
             } else {
-                target = SepalsWeighting.getRandom(world.random, this.precalculatedTargets.dArray(), this.precalculatedRange);
+                target = SepalsWeighting.getRandom(world.random, this.precalculatedTargets, t -> this.precalculatedRange);
             }
 
             if (target != null) {
@@ -239,7 +239,7 @@ public class SepalsLongJumpTask<E extends MobEntity> extends MultiTickTask<E> {
 
     @Nullable
     protected Vec3d getJumpingVelocity(World world, MobEntity entity, Vec3d targetPos) {
-        float f = (float) (entity.getAttributeValue(EntityAttributes.GENERIC_JUMP_STRENGTH) * (double) this.maxRange);
+        float f = (float) (entity.getAttributeValue(EntityAttributes.JUMP_STRENGTH) * (double) this.maxRange);
 
         shuffle(RAM_RANGES, world.random);
 
@@ -290,14 +290,13 @@ public class SepalsLongJumpTask<E extends MobEntity> extends MultiTickTask<E> {
     }
 
 
-    public static class Target extends Weighted.Absent implements WeightTable.Ranged<Target> {
+    public static class Target implements WeightTable.Ranged<Target> {
         private final BlockPos pos;
         private final int weight;
         private final int min;
         private final int max;
 
         public Target(BlockPos pos, int weight, int min, int max) {
-            super(weight);
             this.pos = pos;
             this.weight = weight;
             this.min = min;

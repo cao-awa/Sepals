@@ -60,7 +60,7 @@ public abstract class LivingEntityMixin extends Entity {
         }
 
         if (cramming > crammingLimit) {
-            damage(getDamageSources().cramming(), 6.0F);
+            damage(world, getDamageSources().cramming(), 6.0F);
         }
     }
 

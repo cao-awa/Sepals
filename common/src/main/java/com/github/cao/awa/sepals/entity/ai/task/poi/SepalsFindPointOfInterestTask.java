@@ -11,6 +11,7 @@ import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.DebugInfoSender;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
 import net.minecraft.util.math.random.Random;
@@ -21,16 +22,18 @@ import org.apache.commons.lang3.mutable.MutableLong;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
 public class SepalsFindPointOfInterestTask {
-    public static final int POI_SORTING_RADIUS = 48;
+    public static Task<PathAwareEntity> create(Predicate<RegistryEntry<PointOfInterestType>> poiPredicate, MemoryModuleType<GlobalPos> poiPosModule, boolean onlyRunIfChild, Optional<Byte> entityStatus, BiPredicate<ServerWorld, BlockPos> worldPosBiPredicate) {
+        return create(poiPredicate, poiPosModule, poiPosModule, onlyRunIfChild, entityStatus, worldPosBiPredicate);
+    }
 
-    public static Task<PathAwareEntity> create(
-            Predicate<RegistryEntry<PointOfInterestType>> poiPredicate, MemoryModuleType<GlobalPos> poiPosModule, boolean onlyRunIfChild, Byte entityStatus
-    ) {
-        return create(poiPredicate, poiPosModule, poiPosModule, onlyRunIfChild, entityStatus);
+    public static Task<PathAwareEntity> create(Predicate<RegistryEntry<PointOfInterestType>> poiPredicate, MemoryModuleType<GlobalPos> poiPosModule, boolean onlyRunIfChild, Optional<Byte> entityStatus) {
+        return create(poiPredicate, poiPosModule, poiPosModule, onlyRunIfChild, entityStatus, (world, pos) -> true);
     }
 
     public static Task<PathAwareEntity> create(
@@ -38,7 +41,7 @@ public class SepalsFindPointOfInterestTask {
             MemoryModuleType<GlobalPos> poiPosModule,
             MemoryModuleType<GlobalPos> potentialPoiPosModule,
             boolean onlyRunIfChild,
-            Byte entityStatus
+            Optional<Byte> entityStatus, BiPredicate<ServerWorld, BlockPos> worldPosBiPredicate
     ) {
         MutableLong mutableLong = new MutableLong(0L);
         Long2ObjectMap<RetryMarker> long2ObjectMap = new Long2ObjectOpenHashMap<>();
@@ -96,9 +99,7 @@ public class SepalsFindPointOfInterestTask {
                                                         1
                                                 );
                                                 queryResult.remember(GlobalPos.create(world.getRegistryKey(), blockPos));
-                                                if (entityStatus != null) {
-                                                    world.sendEntityStatus(entity, entityStatus);
-                                                }
+                                                entityStatus.ifPresent(status -> world.sendEntityStatus(entity, status));
                                                 long2ObjectMap.clear();
                                                 DebugInfoSender.sendPointOfInterest(world, blockPos);
                                             });

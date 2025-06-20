@@ -61,6 +61,7 @@ public abstract class NearestLivingEntitiesSensorMixin<T extends LivingEntity> {
                     .safeArray();
 
             cache = new SepalsLivingTargetCache(
+                    world,
                     entity,
                     sources,
                     players
@@ -73,7 +74,7 @@ public abstract class NearestLivingEntitiesSensorMixin<T extends LivingEntity> {
             } else {
                 mobs.sort(comparator);
             }
-            cache = new LivingTargetCache(entity, mobs);
+            cache = new LivingTargetCache(world, entity, mobs);
         }
 
         brain.remember(MemoryModuleType.MOBS, mobs);

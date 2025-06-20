@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class Sepals {
     public static final Logger LOGGER = LogManager.getLogger("Sepals");
-    public static final String VERSION = "1.0.16";
+    public static final String VERSION = "1.0.17-SNAPSHOT";
     public static final SepalsConfig CONFIG = new SepalsConfig();
     public static final SepalsConfig PERSISTENT_CONFIG = new SepalsConfig();
     public static Set<String> LOADED_MODS = CollectionFactor.hashSet();
@@ -20,6 +20,9 @@ public class Sepals {
 
     public static void init() {
         LOGGER.info("Sepals '{}' loading on platform '{}'", VERSION, loadingPlatform);
+        if (VERSION.endsWith("-SNAPSHOT")) {
+            LOGGER.warn("The sepals SNAPSHOT version is more unstable, please do attentions");
+        }
         CONFIG.load();
         PERSISTENT_CONFIG.copyFrom(CONFIG);
         CONFIG.print();

@@ -46,18 +46,18 @@ public abstract class NearestPlayersSensorMixin {
             boolean isVillager = entity instanceof VillagerEntity;
             boolean canAttackToPlayer = entity instanceof HostileEntity || entity instanceof Angerable;
 
-            // This memory in villager has only used in 'GiveGiftsToHeroTask', it required player is villager hero.
-            // So let it skip when players doesn't is villager hero.
+            // This memory in villager has only used in the 'GiveGiftsToHeroTask', It required player is villager hero.
+            // So let it skip when players don't be the villager hero.
             if (isVillager) {
                 players.filter(NearestPlayersSensorMixin::isHero);
             }
 
-            players.filter(player -> testTargetPredicate(entity, player));
+            players.filter(player -> testTargetPredicate(world, entity, player));
             players.firstOrNull(player -> brain.remember(MemoryModuleType.NEAREST_VISIBLE_PLAYER, player));
-            // If entity are not hostile or anger-able then do not need to test the attackable predicate.
+            // If the entity is not hostile or anger-able, then do not need to test the attack-able predicate.
             // Because this memory only will be used in the entities that can attack to player, such as piglin.
             if (canAttackToPlayer) {
-                players.filter(player -> testAttackableTargetPredicate(entity, player))
+                players.filter(player -> testAttackableTargetPredicate(world, entity, player))
                         .firstOrNull(player -> brain.remember(MemoryModuleType.NEAREST_VISIBLE_TARGETABLE_PLAYER, Optional.ofNullable(player)));
             }
 

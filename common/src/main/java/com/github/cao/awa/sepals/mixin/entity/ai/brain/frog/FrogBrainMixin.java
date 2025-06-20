@@ -31,7 +31,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class FrogBrainMixin {
     @Shadow
     @Final
-    private static UniformIntProvider longJumpCooldownRange;
+    private static UniformIntProvider LONG_JUMP_COOLDOWN_RANGE;
 
     @Inject(
             method = "addLongJumpActivities",
@@ -43,11 +43,11 @@ public abstract class FrogBrainMixin {
             brain.setTaskList(
                     Activity.LONG_JUMP,
                     ImmutableList.of(
-                            Pair.of(0, new LeapingChargeTask(longJumpCooldownRange, SoundEvents.ENTITY_FROG_STEP)),
+                            Pair.of(0, new LeapingChargeTask(LONG_JUMP_COOLDOWN_RANGE, SoundEvents.ENTITY_FROG_STEP)),
                             Pair.of(
                                     1,
                                     new SepalsBiasedLongJumpTask<>(
-                                            longJumpCooldownRange,
+                                            LONG_JUMP_COOLDOWN_RANGE,
                                             2,
                                             4,
                                             3.5714288F,

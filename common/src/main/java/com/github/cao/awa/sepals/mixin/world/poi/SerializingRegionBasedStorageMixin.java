@@ -20,6 +20,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -35,7 +36,7 @@ public abstract class SerializingRegionBasedStorageMixin<R> implements RegionBas
     protected abstract Optional<R> get(long pos);
 
     @Shadow
-    protected abstract void loadDataAt(ChunkPos pos);
+    public abstract CompletableFuture<?> load(ChunkPos pos);
 
     @Shadow
     @Final
@@ -64,7 +65,9 @@ public abstract class SerializingRegionBasedStorageMixin<R> implements RegionBas
     )
     private void init(
             ChunkPosKeyedStorage storageAccess,
-            Function codecFactory,
+            Codec codec,
+            Function serializer,
+            BiFunction deserializer,
             Function factory,
             DynamicRegistryManager registryManager,
             ChunkErrorHandler errorHandler,
@@ -142,7 +145,7 @@ public abstract class SerializingRegionBasedStorageMixin<R> implements RegionBas
         BitSet flags = getNonEmptySections(pos, false);
 
         if (flags == null) {
-            loadDataAt(new ChunkPos(pos));
+            load(new ChunkPos(pos));
 
             return getNonEmptySections(pos, true);
         } else {

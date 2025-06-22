@@ -61,7 +61,7 @@ subprojects {
         implementation 'com.alibaba.fastjson2:fastjson2:2.0.50'
 
         implementation 'com.github.cao.awa:catheter:1.0.42'
-        implementation 'com.github.cao.awa:sinuatum:1.0.13'
+        implementation 'com.github.cao.awa:sinuatum:1.0.16'
     }
 
     java {

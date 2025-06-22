@@ -34,17 +34,17 @@ Sepals feature related: ```enableSepalsEntitiesCramming```.
 
 ## Config
 
-|               Config name               | Allowed value |
-|:---------------------------------------:|:-------------:|
-|          forceEnableSepalsPoi           |  bool value   |   
-|          enableSepalsVillager           |  bool value   |   
-|         enableSepalsFrogLookAt          |  bool value   |   
-|    enableSepalsFrogAttackableSensor     |  bool value   |   
-|      enableSepalsLivingTargetCache      |  bool value   |   
-| nearestLivingEntitiesSensorUseQuickSort |  bool value   |   
-|     enableSepalsBiasedLongJumpTask      |  bool value   |   
-|      enableSepalsEntitiesCramming       |  bool value   |   
-|          enableSepalsItemMerge          |  bool value   |
+|               Config name               | Allowed value | Allowed value |
+|:---------------------------------------:|:-------------:|:-------------:|
+|          forceEnableSepalsPoi           |  bool value   |     false     |    
+|          enableSepalsVillager           |  bool value   |     true      |    
+|         enableSepalsFrogLookAt          |  bool value   |     true      |    
+|    enableSepalsFrogAttackableSensor     |  bool value   |     true      |    
+|      enableSepalsLivingTargetCache      |  bool value   |     true      |    
+| nearestLivingEntitiesSensorUseQuickSort |  bool value   |     true      |    
+|     enableSepalsBiasedLongJumpTask      |  bool value   |     true      |    
+|      enableSepalsEntitiesCramming       |  bool value   |     true      |    
+|          enableSepalsItemMerge          |  bool value   |     true      |
 
 ## Performance
 

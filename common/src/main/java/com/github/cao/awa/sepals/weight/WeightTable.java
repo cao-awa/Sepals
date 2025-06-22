@@ -10,27 +10,26 @@ import net.minecraft.util.math.random.Random;
 import java.util.*;
 import java.util.function.ToIntFunction;
 
-public class WeightTable<T> {
-    public record Range<T>(int min, int max, T element) implements Ranged<T> {
+public interface WeightTable<T> extends Ranged<T> {
+
+}
+
+interface Ranged<T> {
+    default boolean isIn(int value) {
+        return !(min() > value || max() < value);
     }
 
-    public interface Ranged<T> {
-        default boolean isIn(int value) {
-            return !(min() > value || max() < value);
-        }
-
-        default boolean isSmaller(int value) {
-            return min() > value;
-        }
-
-        default boolean isBigger(int value) {
-            return max() < value;
-        }
-
-        int min();
-
-        int max();
-
-        T element();
+    default boolean isSmaller(int value) {
+        return min() > value;
     }
+
+    default boolean isBigger(int value) {
+        return max() < value;
+    }
+
+    int min();
+
+    int max();
+
+    T element();
 }

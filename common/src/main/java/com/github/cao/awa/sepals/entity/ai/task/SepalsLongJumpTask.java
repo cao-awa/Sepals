@@ -149,7 +149,7 @@ public class SepalsLongJumpTask<E extends MobEntity> extends MultiTickTask<E> {
                 }, precalculatedRange -> this.precalculatedRange = precalculatedRange);
 
         if (this.targets.isPresent()) {
-            if (this.precalculatedRange / this.precalculatedTargets.fetch(0).weightValue() == this.precalculatedTargets.count()) {
+            if (this.precalculatedRange / this.precalculatedTargets.fetch(0).weight() == this.precalculatedTargets.count()) {
                 this.isNoRange = true;
             }
         }
@@ -185,16 +185,14 @@ public class SepalsLongJumpTask<E extends MobEntity> extends MultiTickTask<E> {
             if (target == null) {
                 continue;
             }
-            BlockPos blockPos = target.getPos();
-
-            if (canJumpTo(entity, blockPos)) {
-                Vec3d vec3d2 = getJumpingVelocity(world, entity, Vec3d.ofCenter(blockPos));
+            if (canJumpTo(entity, target.pos)) {
+                Vec3d vec3d2 = getJumpingVelocity(world, entity, Vec3d.ofCenter(target.pos));
                 if (vec3d2 == null) {
                     continue;
                 }
 
-                entity.getBrain().remember(MemoryModuleType.LOOK_TARGET, new BlockPosLookTarget(blockPos));
-                Path path = entity.getNavigation().findPathTo(blockPos, 0, 8);
+                entity.getBrain().remember(MemoryModuleType.LOOK_TARGET, new BlockPosLookTarget(target.pos));
+                Path path = entity.getNavigation().findPathTo(target.pos, 0, 8);
                 if (path == null || !path.reachesTarget()) {
                     this.lastTarget = vec3d2;
                     this.targetTime = time;
@@ -220,7 +218,7 @@ public class SepalsLongJumpTask<E extends MobEntity> extends MultiTickTask<E> {
 
                 Target value = target.value();
                 if (value != null) {
-                    this.precalculatedRange -= value.weightValue();
+                    this.precalculatedRange -= value.weight();
 
                     return value;
                 }
@@ -289,28 +287,7 @@ public class SepalsLongJumpTask<E extends MobEntity> extends MultiTickTask<E> {
         }
     }
 
-
-    public static class Target implements WeightTable.Ranged<Target> {
-        private final BlockPos pos;
-        private final int weight;
-        private final int min;
-        private final int max;
-
-        public Target(BlockPos pos, int weight, int min, int max) {
-            this.pos = pos;
-            this.weight = weight;
-            this.min = min;
-            this.max = max;
-        }
-
-        public int weightValue() {
-            return this.weight;
-        }
-
-        public BlockPos getPos() {
-            return this.pos;
-        }
-
+    public record Target(BlockPos pos, int weight, int min, int max) implements WeightTable<Target> {
         @Override
         public int min() {
             return this.min;

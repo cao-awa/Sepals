@@ -5,7 +5,6 @@
   "compatibilityLevel": "JAVA_21",
   "plugin": "com.github.cao.awa.sepals.mixin.SepalsMixinPlugin",
   "mixins": [
-    "item.stack.ItemStackMixin",
     "block.BlockMixin",
     "entity.EntityMixin",
     "entity.EntityViewMixin",
@@ -34,7 +33,9 @@
     "world.poi.SerializingRegionBasedStorageMixin",
     "world.storage.PointOfInterestSetMixin",
     "world.storage.PointOfInterestStorageMixin",
-    "world.storage.SerializingRegionBasedStorageAccessor"
+    "world.storage.SerializingRegionBasedStorageAccessor",
+    "block.BlockStateMixin",
+    "item.stack.ItemStackMixin"
   ],
   "injectors": {
     "defaultRequire": 1

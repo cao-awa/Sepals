@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class Sepals {
     public static final Logger LOGGER = LogManager.getLogger("Sepals");
-    public static final String VERSION = "1.0.17-SNAPSHOT";
+    public static final String VERSION = "1.0.18-SNAPSHOT";
     public static final SepalsConfig CONFIG = new SepalsConfig();
     public static final SepalsConfig PERSISTENT_CONFIG = new SepalsConfig();
     public static Set<String> LOADED_MODS = CollectionFactor.hashSet();
@@ -30,5 +30,21 @@ public class Sepals {
 
     public static void writeConfig() {
         PERSISTENT_CONFIG.write();
+    }
+
+    public static boolean isAbleToUseSepalsGetInChunkFunction() {
+        if (Sepals.isLithiumLoaded || Sepals.isMoonriseLoaded) {
+            if (Sepals.isLithiumLoaded) {
+                LOGGER.warn("The server has loaded mod 'lithium', sepals cannot use sepals 'getInChunk' function");
+            }
+
+            if (Sepals.isMoonriseLoaded) {
+                LOGGER.warn("The server has loaded mod 'moonrise', sepals cannot use sepals 'getInChunk' function");
+            }
+
+            return false;
+        }
+
+        return true;
     }
 }

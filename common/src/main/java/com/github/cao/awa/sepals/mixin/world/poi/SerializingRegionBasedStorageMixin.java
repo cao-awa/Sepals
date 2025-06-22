@@ -8,10 +8,15 @@ import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.world.ChunkErrorHandler;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.ChunkSectionPos;
 import net.minecraft.world.HeightLimitView;
+import net.minecraft.world.poi.PointOfInterest;
+import net.minecraft.world.poi.PointOfInterestSet;
+import net.minecraft.world.poi.PointOfInterestStorage;
+import net.minecraft.world.poi.PointOfInterestType;
 import net.minecraft.world.storage.ChunkPosKeyedStorage;
 import net.minecraft.world.storage.SerializingRegionBasedStorage;
 import org.spongepowered.asm.mixin.*;
@@ -23,6 +28,10 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 // Modified from lithium common.
 @Mixin(SerializingRegionBasedStorage.class)
@@ -112,6 +121,15 @@ public abstract class SerializingRegionBasedStorageMixin<R> implements RegionBas
 
             flags.set(y, value.isPresent());
         }
+    }
+
+    @Override
+    public Stream<PointOfInterest> sepals$getInChunk(Predicate<RegistryEntry<PointOfInterestType>> typePredicate, ChunkPos chunkPos, PointOfInterestStorage.OccupationStatus occupationStatus) {
+        return IntStream.rangeClosed(this.world.getBottomSectionCoord(), this.world.getTopSectionCoord()).boxed().map((coord) -> {
+            return this.get(ChunkSectionPos.from(chunkPos, coord).asLong());
+        }).filter(Optional::isPresent).flatMap((poiSet) -> {
+            return ((PointOfInterestSet)poiSet.get()).get(typePredicate, occupationStatus);
+        });
     }
 
     @Override

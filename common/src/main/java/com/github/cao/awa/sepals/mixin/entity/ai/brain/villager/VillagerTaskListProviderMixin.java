@@ -1,18 +1,12 @@
 package com.github.cao.awa.sepals.mixin.entity.ai.brain.villager;
 
 import com.github.cao.awa.sepals.Sepals;
-import com.github.cao.awa.sepals.entity.ai.task.composite.SepalsCompositeSingleTask;
+import com.github.cao.awa.sepals.block.BlockStateAccessor;
 import com.github.cao.awa.sepals.entity.ai.task.composite.SepalsRandomTask;
-import com.github.cao.awa.sepals.entity.ai.task.iteraction.SepalsFindInteractionTargetTask;
-import com.github.cao.awa.sepals.entity.ai.task.look.SepalsFindEntityTask;
 import com.github.cao.awa.sepals.entity.ai.task.look.SepalsLookAtPlayerTask;
 import com.github.cao.awa.sepals.entity.ai.task.poi.SepalsFindPointOfInterestTask;
 import com.github.cao.awa.sepals.entity.ai.task.rest.SepalsWakeUpTask;
-import com.github.cao.awa.sepals.entity.ai.task.schedule.SepalsScheduleActivityTask;
-import com.github.cao.awa.sepals.entity.ai.task.rest.sleep.SepalsSleepTask;
 import com.github.cao.awa.sepals.entity.ai.task.wait.SepalsWaitTask;
-import com.github.cao.awa.sepals.entity.ai.task.walk.SepalsWalkHomeTask;
-import com.github.cao.awa.sepals.entity.ai.task.wander.SepalsWanderIndoorsTask;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -29,8 +23,6 @@ import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.village.VillagerProfession;
 import net.minecraft.world.poi.PointOfInterestTypes;
 import org.spongepowered.asm.mixin.Mixin;
@@ -87,7 +79,7 @@ public abstract class VillagerTaskListProviderMixin {
         if (Sepals.CONFIG.isEnableSepalsVillager()) {
             cir.setReturnValue(
                     ImmutableList.of(
-                            Pair.of(0, new StayAboveWaterTask(0.8F)),
+                            Pair.of(0, new StayAboveWaterTask<>(0.8F)),
                             Pair.of(0, OpenDoorsTask.create()),
                             Pair.of(0, new UpdateLookControlTask(45, 90)),
                             Pair.of(0, new PanicTask()),
@@ -99,24 +91,22 @@ public abstract class VillagerTaskListProviderMixin {
                             Pair.of(1, new MoveToTargetTask()),
                             Pair.of(2, WorkStationCompetitionTask.create()),
                             Pair.of(3, new FollowCustomerTask(speed)),
-                            new Pair[]{
-                                    Pair.of(5, WalkTowardsNearestVisibleWantedItemTask.create(speed, false, 4)),
-                                    Pair.of(6, SepalsFindPointOfInterestTask.create(profession.value().acquirableWorkstation(), MemoryModuleType.JOB_SITE, MemoryModuleType.POTENTIAL_JOB_SITE, true, Optional.empty(), (world, pos) -> true)),
-                                    Pair.of(7, new WalkTowardsJobSiteTask(speed)),
-                                    Pair.of(8, TakeJobSiteTask.create(speed)),
-                                    Pair.of(10, SepalsFindPointOfInterestTask.create((poiType) -> poiType.matchesKey(PointOfInterestTypes.HOME), MemoryModuleType.HOME, false, Optional.of((byte) 14), VillagerTaskListProviderMixin::isUnoccupiedBedAt)),
-                                    Pair.of(10, SepalsFindPointOfInterestTask.create((poiType) -> poiType.matchesKey(PointOfInterestTypes.MEETING), MemoryModuleType.MEETING_POINT, true, Optional.of((byte) 14))),
-                                    Pair.of(10, UpdateJobSiteTask.create()),
-                                    Pair.of(10, LoseJobOnSiteLossTask.create())
-                            }
+                            Pair.of(5, WalkTowardsNearestVisibleWantedItemTask.create(speed, false, 4)),
+                            Pair.of(6, SepalsFindPointOfInterestTask.create(profession.value().acquirableWorkstation(), MemoryModuleType.JOB_SITE, MemoryModuleType.POTENTIAL_JOB_SITE, true, Optional.empty(), (world, pos) -> true)),
+                            Pair.of(7, new WalkTowardsJobSiteTask(speed)),
+                            Pair.of(8, TakeJobSiteTask.create(speed)),
+                            Pair.of(10, SepalsFindPointOfInterestTask.create((poiType) -> poiType.matchesKey(PointOfInterestTypes.HOME), MemoryModuleType.HOME, false, Optional.of((byte) 14), (world, pos) -> {
+//                                BlockState blockState = world.getBlockState(pos);
+//                                return ((BlockStateAccessor) blockState).isBeds() && !blockState.get(BedBlock.OCCUPIED);
+                                BlockState blockState = world.getBlockState(pos);
+                                return blockState.isIn(BlockTags.BEDS) && !(Boolean) blockState.get(BedBlock.OCCUPIED);
+                            })),
+                            Pair.of(10, SepalsFindPointOfInterestTask.create((poiType) -> poiType.matchesKey(PointOfInterestTypes.MEETING), MemoryModuleType.MEETING_POINT, true, Optional.of((byte) 14))),
+                            Pair.of(10, UpdateJobSiteTask.create()),
+                            Pair.of(10, LoseJobOnSiteLossTask.create())
                     )
             );
         }
-    }
-
-    private static boolean isUnoccupiedBedAt(ServerWorld world, BlockPos pos) {
-        BlockState blockState = world.getBlockState(pos);
-        return blockState.isIn(BlockTags.BEDS) && !(Boolean) blockState.get(BedBlock.OCCUPIED);
     }
 
     @Inject(

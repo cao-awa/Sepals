@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
 public class SepalsPointOfInterestStorage {
@@ -32,10 +34,8 @@ public class SepalsPointOfInterestStorage {
             Predicate<RegistryEntry<PointOfInterestType>>,
             ChunkPos,
             PointOfInterestStorage.OccupationStatus,
-            Catheter<PointOfInterest>
-            > getInChunkFunction = (storage, typePredicate, chunkPos, occupationStatus) -> ((RegionBasedStorageSectionExtended<PointOfInterestSet>) storage)
-            .sepals$getWithinChunkColumn(chunkPos.x, chunkPos.z)
-            .flatTo(set -> get(set, typePredicate, occupationStatus));
+            Stream<PointOfInterest>
+            > getInChunkFunction = PointOfInterestStorage::getInChunk;
 
     public static void onLithiumLoaded() {
         onRequiredVanillaGetInChunk();
@@ -50,11 +50,22 @@ public class SepalsPointOfInterestStorage {
     }
 
     public static void onRequiredVanillaGetInChunk() {
-        getInChunkFunction = (storage, typePredicate, chunkPos, occupationStatus) -> Catheter.of(storage.getInChunk(
-                typePredicate,
-                chunkPos,
-                occupationStatus
-        ).toArray(PointOfInterest[]::new));
+        getInChunkFunction = PointOfInterestStorage::getInChunk;
+    }
+
+    public static void onRequiredSepalsGetInChunk() {
+        if (Sepals.isAbleToUseSepalsGetInChunkFunction()) {
+            getInChunkFunction = SepalsPointOfInterestStorage::sepalsGetInChunk;
+        }
+    }
+
+    public static void forceRequiredSepalsGetInChunk() {
+        if (Sepals.isAbleToUseSepalsGetInChunkFunction()) {
+            getInChunkFunction = SepalsPointOfInterestStorage::sepalsGetInChunk;
+        }
+    }
+    public static Stream<PointOfInterest> sepalsGetInChunk(PointOfInterestStorage storage, Predicate<RegistryEntry<PointOfInterestType>> typePredicate, ChunkPos chunkPos, PointOfInterestStorage.OccupationStatus occupationStatus) {
+        return ((RegionBasedStorageSectionExtended<PointOfInterestSet>) storage).sepals$getInChunk(typePredicate, chunkPos, occupationStatus);
     }
 
     public static Catheter<PointOfInterest> getInSquare(
@@ -65,16 +76,29 @@ public class SepalsPointOfInterestStorage {
             PointOfInterestStorage.OccupationStatus occupationStatus
     ) {
         int i = Math.floorDiv(radius, 16) + 1;
-        return Catheter.of(ChunkPos.stream(new ChunkPos(pos), i).toArray(ChunkPos[]::new))
-                .flatTo(chunkPos -> getInChunk(storage, typePredicate, chunkPos, occupationStatus))
-                .discard(poi -> {
-                    BlockPos blockPos2 = poi.getPos();
-                    return Math.abs(blockPos2.getX() - pos.getX()) > radius || Math.abs(blockPos2.getZ() - pos.getZ()) > radius;
-                });
+        return Catheter.of(ChunkPos.stream(new ChunkPos(pos), i).flatMap((chunkPos) -> getInChunk(storage, typePredicate, chunkPos, occupationStatus)).filter((poi) -> {
+            BlockPos blockPos2 = poi.getPos();
+            return Math.abs(blockPos2.getX() - pos.getX()) <= radius && Math.abs(blockPos2.getZ() - pos.getZ()) <= radius;
+        }).collect(Collectors.toSet()));
+//        return Catheter.of(ChunkPos.stream(new ChunkPos(pos), i).toArray(ChunkPos[]::new))
+//                .flatTo(chunkPos -> getInChunk(storage, typePredicate, chunkPos, occupationStatus))
+//                .discard(poi -> {
+//                    BlockPos blockPos2 = poi.getPos();
+//                    return Math.abs(blockPos2.getX() - pos.getX()) > radius || Math.abs(blockPos2.getZ() - pos.getZ()) > radius;
+//                });
     }
 
+//    @Debug
+//    public Stream<PointOfInterest> getInChunk(Predicate<RegistryEntry<PointOfInterestType>> typePredicate, ChunkPos chunkPos, PointOfInterestStorage.OccupationStatus occupationStatus) {
+//        return IntStream.rangeClosed(this.world.getBottomSectionCoord(), this.world.getTopSectionCoord()).boxed().map((coord) -> {
+//            return this.get(ChunkSectionPos.from(chunkPos, coord).asLong());
+//        }).filter(Optional::isPresent).flatMap((poiSet) -> {
+//            return ((PointOfInterestSet)poiSet.get()).get(typePredicate, occupationStatus);
+//        });
+//    }
+
     @Debug
-    public static Catheter<PointOfInterest> getInChunk(
+    public static Stream<PointOfInterest> getInChunk(
             PointOfInterestStorage storage,
             Predicate<RegistryEntry<PointOfInterestType>> typePredicate,
             ChunkPos chunkPos,

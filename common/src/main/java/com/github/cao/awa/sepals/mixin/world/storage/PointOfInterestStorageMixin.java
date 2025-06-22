@@ -37,7 +37,11 @@ public class PointOfInterestStorageMixin {
             cancellable = true
     )
     public void getInSquare(
-            Predicate<RegistryEntry<PointOfInterestType>> typePredicate, BlockPos pos, int radius, PointOfInterestStorage.OccupationStatus occupationStatus, CallbackInfoReturnable<Stream<PointOfInterest>> cir
+            Predicate<RegistryEntry<PointOfInterestType>> typePredicate,
+            BlockPos pos,
+            int radius,
+            PointOfInterestStorage.OccupationStatus occupationStatus,
+            CallbackInfoReturnable<Stream<PointOfInterest>> cir
     ) {
         cir.setReturnValue(SepalsPointOfInterestStorage.getInSquare(
                 instance(),
@@ -67,7 +71,7 @@ public class PointOfInterestStorageMixin {
                             typePredicate,
                             chunkPos,
                             occupationStatus
-                    ).stream()
+                    )
             );
         }
     }

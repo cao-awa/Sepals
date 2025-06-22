@@ -3,6 +3,7 @@ package com.github.cao.awa.sepals.mixin;
 import com.alibaba.fastjson2.JSONObject;
 import com.github.cao.awa.apricot.util.collection.ApricotCollectionFactor;
 import com.github.cao.awa.sepals.Sepals;
+import com.github.cao.awa.sepals.config.key.SepalsConfigKey;
 import com.github.cao.awa.sepals.transform.mixin.config.SepalsMixinConfig;
 import com.github.cao.awa.sepals.transform.mixin.handler.SepalsMixinHandler;
 import com.github.cao.awa.sinuatum.manipulate.Manipulate;
@@ -94,6 +95,7 @@ public class SepalsMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public void postApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
-
+        Sepals.LOGGER.info("Doing sepals configs change actions");
+        Sepals.CONFIG.collectEnabled().forEach(SepalsConfigKey::doChangeAction);
     }
 }

@@ -18,9 +18,14 @@ public abstract class BlockStateMixin implements BlockStateAccessor {
     @Shadow public abstract boolean isIn(TagKey<Block> tag);
 
     @Unique
+    private boolean isBeds = false;
+    @Unique
     private boolean isBedsInitialized = false;
     @Unique
-    private boolean isBeds = false;
+    private boolean isClimbale = false;
+    @Unique
+    private boolean isClimbaleInitialized = false;
+
 
     @Override
     public boolean sepals$isBed() {
@@ -28,7 +33,15 @@ public abstract class BlockStateMixin implements BlockStateAccessor {
             this.isBeds = isIn(BlockTags.BEDS);
             this.isBedsInitialized = true;
         }
-
         return this.isBeds;
+    }
+
+    @Override
+    public boolean sepals$isClimbale() {
+        if (!this.isClimbaleInitialized) {
+            this.isBeds = isIn(BlockTags.BEDS);
+            this.isClimbaleInitialized = true;
+        }
+        return this.isClimbale;
     }
 }

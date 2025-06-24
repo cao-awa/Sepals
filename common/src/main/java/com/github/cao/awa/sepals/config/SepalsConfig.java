@@ -22,12 +22,12 @@ import java.util.Set;
 public class SepalsConfig {
     private static final Logger LOGGER = LogManager.getLogger("SepalsConfig");
     private static final File CONFIG_FILE = new File("config/sepals.json");
-    public static final SepalsConfigKey<Boolean> FORCE_ENABLE_SEPALS_POI = SepalsConfigKey.create("forceEnableSepalsPoi", false, value -> SepalsPointOfInterestStorage.forceRequiredSepalsGetInChunk());
-    public static final SepalsConfigKey<Boolean> ENABLE_SEPALS_VILLAGER = SepalsConfigKey.create("enableSepalsVillager", true, enabled -> {
+    public static final SepalsConfigKey<Boolean> FORCE_ENABLE_SEPALS_POI = SepalsConfigKey.create("forceEnableSepalsPoi", false, enabled -> {
         if (enabled) {
             SepalsPointOfInterestStorage.onRequiredSepalsGetInChunk();
         }
     });
+    public static final SepalsConfigKey<Boolean> ENABLE_SEPALS_VILLAGER = SepalsConfigKey.create("enableSepalsVillager", true);
     public static final SepalsConfigKey<Boolean> ENABLE_SEPALS_FROG_LOOK_AT = SepalsConfigKey.create("enableSepalsFrogLookAt", true);
     public static final SepalsConfigKey<Boolean> ENABLE_SEPALS_FROG_ATTACKABLE_SENSOR = SepalsConfigKey.create("enableSepalsFrogAttackableSensor", true);
     public static final SepalsConfigKey<Boolean> ENABLE_SEPALS_LIVING_TARGET_CACHE = SepalsConfigKey.create("enableSepalsLivingTargetCache", true);
@@ -35,44 +35,55 @@ public class SepalsConfig {
     public static final SepalsConfigKey<Boolean> ENABLE_SEPALS_BIASED_LONG_JUMP_TASK = SepalsConfigKey.create("enableSepalsBiasedLongJumpTask", true);
     public static final SepalsConfigKey<Boolean> ENABLE_SEPALS_ENTITIES_CRAMMING = SepalsConfigKey.create("enableSepalsEntitiesCramming", true);
     public static final SepalsConfigKey<Boolean> ENABLE_SEPALS_ITEM_MERGE = SepalsConfigKey.create("enableSepalsItemMerge", true);
+    public static final SepalsConfigKey<Boolean> ENABLE_SEPALS_QUICK_CAN_BE_PUSH_BY_ENTITY_PREDICATE = SepalsConfigKey.create("enableSepalsQuickCanBePushByEntityPredicate", true);
+    public static final SepalsConfigKey<Boolean> ENABLE_SEPALS_BLOCK_STATE_TAG_CACHE = SepalsConfigKey.create("enableSepalsBlockStateTagCache", true);
 
     private final JSONObject config = new JSONObject();
 
     public boolean isForceEnableSepalsPoi() {
-        return getConfig(FORCE_ENABLE_SEPALS_POI);
+        return FORCE_ENABLE_SEPALS_POI.value();
     }
 
     public boolean isEnableSepalsVillager() {
-        return getConfig(ENABLE_SEPALS_VILLAGER);
+        return ENABLE_SEPALS_VILLAGER.value();
     }
 
     public boolean isEnableSepalsFrogLookAt() {
-        return getConfig(ENABLE_SEPALS_FROG_LOOK_AT);
+        return ENABLE_SEPALS_FROG_LOOK_AT.value();
     }
 
     public boolean isEnableSepalsFrogAttackableSensor() {
-        return getConfig(ENABLE_SEPALS_FROG_ATTACKABLE_SENSOR);
+        return ENABLE_SEPALS_FROG_ATTACKABLE_SENSOR.value();
     }
 
     public boolean isEnableSepalsLivingTargetCache() {
-        return getConfig(ENABLE_SEPALS_LIVING_TARGET_CACHE);
+        return ENABLE_SEPALS_LIVING_TARGET_CACHE.value();
     }
 
     public boolean isNearestLivingEntitiesSensorUseQuickSort() {
-        return getConfig(NEAREST_LIVING_ENTITIES_SENSOR_USE_QUICK_SORT);
+        return NEAREST_LIVING_ENTITIES_SENSOR_USE_QUICK_SORT.value();
     }
 
     public boolean isEnableSepalsBiasedLongJumpTask() {
-        return getConfig(ENABLE_SEPALS_BIASED_LONG_JUMP_TASK);
+        return ENABLE_SEPALS_BIASED_LONG_JUMP_TASK.value();
     }
 
     public boolean isEnableSepalsEntitiesCramming() {
-        return getConfig(ENABLE_SEPALS_ENTITIES_CRAMMING);
+        return ENABLE_SEPALS_ENTITIES_CRAMMING.value();
     }
 
     public boolean isEnableSepalsItemMerge() {
-        return getConfig(ENABLE_SEPALS_ITEM_MERGE);
+        return ENABLE_SEPALS_ITEM_MERGE.value();
     }
+
+    public boolean isEnableSepalsQuickCanBePushByEntityPredicate() {
+        return ENABLE_SEPALS_QUICK_CAN_BE_PUSH_BY_ENTITY_PREDICATE.value();
+    }
+
+    public boolean isEnableSepalsBlockStateTagCache() {
+        return ENABLE_SEPALS_BLOCK_STATE_TAG_CACHE.value();
+    }
+
 
     public <X> void setConfig(SepalsConfigKey<X> configKey, X value) {
         this.config.put(configKey.name(), configKey.checkLimits(checkOrThrow(configKey, value)));
@@ -116,6 +127,8 @@ public class SepalsConfig {
             setConfig(ENABLE_SEPALS_BIASED_LONG_JUMP_TASK, config);
             setConfig(ENABLE_SEPALS_ENTITIES_CRAMMING, config);
             setConfig(ENABLE_SEPALS_ITEM_MERGE, config);
+            setConfig(ENABLE_SEPALS_QUICK_CAN_BE_PUSH_BY_ENTITY_PREDICATE, config);
+            setConfig(ENABLE_SEPALS_BLOCK_STATE_TAG_CACHE, config);
         } catch (Exception e) {
             LOGGER.warn("Config not found, use default values", e);
         }
@@ -147,6 +160,8 @@ public class SepalsConfig {
         setConfig(ENABLE_SEPALS_BIASED_LONG_JUMP_TASK, ENABLE_SEPALS_BIASED_LONG_JUMP_TASK.value());
         setConfig(ENABLE_SEPALS_ENTITIES_CRAMMING, ENABLE_SEPALS_ENTITIES_CRAMMING.value());
         setConfig(ENABLE_SEPALS_ITEM_MERGE, ENABLE_SEPALS_ITEM_MERGE.value());
+        setConfig(ENABLE_SEPALS_QUICK_CAN_BE_PUSH_BY_ENTITY_PREDICATE, ENABLE_SEPALS_QUICK_CAN_BE_PUSH_BY_ENTITY_PREDICATE.value());
+        setConfig(ENABLE_SEPALS_BLOCK_STATE_TAG_CACHE, ENABLE_SEPALS_BLOCK_STATE_TAG_CACHE.value());
     }
 
     public void copyFrom(@NotNull SepalsConfig config) {
@@ -159,6 +174,8 @@ public class SepalsConfig {
         setConfig(ENABLE_SEPALS_BIASED_LONG_JUMP_TASK, config.isEnableSepalsBiasedLongJumpTask());
         setConfig(ENABLE_SEPALS_ENTITIES_CRAMMING, config.isEnableSepalsEntitiesCramming());
         setConfig(ENABLE_SEPALS_ITEM_MERGE, config.isEnableSepalsItemMerge());
+        setConfig(ENABLE_SEPALS_QUICK_CAN_BE_PUSH_BY_ENTITY_PREDICATE, config.isEnableSepalsQuickCanBePushByEntityPredicate());
+        setConfig(ENABLE_SEPALS_BLOCK_STATE_TAG_CACHE, config.isEnableSepalsBlockStateTagCache());
     }
 
     public void print() {
@@ -171,6 +188,8 @@ public class SepalsConfig {
         LOGGER.info("Sepals 'enableSepalsBiasedJumpLongTask' flag is {}", isEnableSepalsBiasedLongJumpTask());
         LOGGER.info("Sepals 'enableSepalsEntitiesCramming' flag is {}", isEnableSepalsEntitiesCramming());
         LOGGER.info("Sepals 'enableSepalsItemMerge' flag is {}", isEnableSepalsItemMerge());
+        LOGGER.info("Sepals 'enableSepalsQuickCanBePushByEntityPredicate' flag is {}", isEnableSepalsQuickCanBePushByEntityPredicate());
+        LOGGER.info("Sepals 'enableSepalsBlockStateTagCache' flag is {}", isEnableSepalsBlockStateTagCache());
     }
 
     public Set<SepalsConfigKey<?>> collect() {
@@ -185,6 +204,8 @@ public class SepalsConfig {
         configs.add(ENABLE_SEPALS_BIASED_LONG_JUMP_TASK);
         configs.add(ENABLE_SEPALS_ENTITIES_CRAMMING);
         configs.add(ENABLE_SEPALS_ITEM_MERGE);
+        configs.add(ENABLE_SEPALS_QUICK_CAN_BE_PUSH_BY_ENTITY_PREDICATE);
+        configs.add(ENABLE_SEPALS_BLOCK_STATE_TAG_CACHE);
 
         return configs;
     }

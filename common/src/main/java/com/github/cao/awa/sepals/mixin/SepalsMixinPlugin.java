@@ -95,7 +95,7 @@ public class SepalsMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public void postApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
-        Sepals.LOGGER.info("Doing sepals configs change actions");
+        Sepals.LOGGER.info("Doing sepals configs change actions for {}:{}", targetClassName, mixinClassName);
         Sepals.CONFIG.collectEnabled().forEach(SepalsConfigKey::doChangeAction);
     }
 }

@@ -64,9 +64,9 @@ public class PointOfInterestStorageMixin {
             PointOfInterestStorage.OccupationStatus occupationStatus,
             CallbackInfoReturnable<Stream<PointOfInterest>> cir
     ) {
-        if (!Sepals.isLithiumLoaded && !Sepals.isMoonriseLoaded) {
+        if (Sepals.isAbleToUseSepalsGetInChunkFunction() || Sepals.CONFIG.isForceEnableSepalsPoi()) {
             cir.setReturnValue(
-                    SepalsPointOfInterestStorage.getInChunk(
+                    SepalsPointOfInterestStorage.sepalsGetInChunk(
                             instance(),
                             typePredicate,
                             chunkPos,

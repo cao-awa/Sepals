@@ -55,15 +55,14 @@ public class SepalsPointOfInterestStorage {
 
     public static void onRequiredSepalsGetInChunk() {
         if (Sepals.isAbleToUseSepalsGetInChunkFunction()) {
-            getInChunkFunction = SepalsPointOfInterestStorage::sepalsGetInChunk;
+            forceRequiredSepalsGetInChunk();
         }
     }
 
     public static void forceRequiredSepalsGetInChunk() {
-        if (Sepals.isAbleToUseSepalsGetInChunkFunction()) {
-            getInChunkFunction = SepalsPointOfInterestStorage::sepalsGetInChunk;
-        }
+        getInChunkFunction = SepalsPointOfInterestStorage::sepalsGetInChunk;
     }
+
     public static Stream<PointOfInterest> sepalsGetInChunk(PointOfInterestStorage storage, Predicate<RegistryEntry<PointOfInterestType>> typePredicate, ChunkPos chunkPos, PointOfInterestStorage.OccupationStatus occupationStatus) {
         return ((RegionBasedStorageSectionExtended<PointOfInterestSet>) storage).sepals$getInChunk(typePredicate, chunkPos, occupationStatus);
     }

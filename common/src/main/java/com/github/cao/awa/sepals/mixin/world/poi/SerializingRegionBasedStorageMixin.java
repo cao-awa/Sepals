@@ -125,11 +125,12 @@ public abstract class SerializingRegionBasedStorageMixin<R> implements RegionBas
 
     @Override
     public Stream<PointOfInterest> sepals$getInChunk(Predicate<RegistryEntry<PointOfInterestType>> typePredicate, ChunkPos chunkPos, PointOfInterestStorage.OccupationStatus occupationStatus) {
-        return IntStream.rangeClosed(this.world.getBottomSectionCoord(), this.world.getTopSectionCoord()).boxed().map((coord) -> {
-            return this.get(ChunkSectionPos.from(chunkPos, coord).asLong());
-        }).filter(Optional::isPresent).flatMap((poiSet) -> {
-            return ((PointOfInterestSet)poiSet.get()).get(typePredicate, occupationStatus);
-        });
+        return IntStream.rangeClosed(
+                this.world.getBottomSectionCoord(),
+                this.world.getTopSectionCoord()
+        ).mapToObj((coordinate) -> get(
+                ChunkSectionPos.from(chunkPos, coordinate).asLong())
+        ).filter(Optional::isPresent).flatMap((poiSet) -> ((PointOfInterestSet)poiSet.get()).get(typePredicate, occupationStatus));
     }
 
     @Override

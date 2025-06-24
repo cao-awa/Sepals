@@ -35,11 +35,11 @@ public class Sepals {
     public static boolean isAbleToUseSepalsGetInChunkFunction() {
         if (Sepals.isLithiumLoaded || Sepals.isMoonriseLoaded) {
             if (Sepals.isLithiumLoaded) {
-                LOGGER.warn("The server has loaded mod 'lithium', sepals cannot use sepals 'getInChunk' function");
+                LOGGER.warn("The server has loaded mod 'lithium', sepals cannot use sepals 'getInChunk' function (but 'isForceEnableSepalsPoi' config will ignore this warning)");
             }
 
             if (Sepals.isMoonriseLoaded) {
-                LOGGER.warn("The server has loaded mod 'moonrise', sepals cannot use sepals 'getInChunk' function");
+                LOGGER.warn("The server has loaded mod 'moonrise', sepals cannot use sepals 'getInChunk' function (but 'isForceEnableSepalsPoi' config will ignore this warning)");
             }
 
             return false;

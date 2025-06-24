@@ -212,17 +212,21 @@ public class SepalsLongJumpTask<E extends MobEntity> extends MultiTickTask<E> {
                 target = SepalsWeighting.getRandom(world.random, this.precalculatedTargets, t -> this.precalculatedRange);
             }
 
-            if (target != null) {
-                this.targets.removeWithIndex(target.index());
-                this.precalculatedTargets.removeWithIndex(target.index());
-
-                Target value = target.value();
-                if (value != null) {
-                    this.precalculatedRange -= value.weight();
-
-                    return value;
-                }
+            if (target == null) {
+                return null;
             }
+
+            this.targets.removeWithIndex(target.index());
+            this.precalculatedTargets.removeWithIndex(target.index());
+
+            Target value = target.value();
+            if (value == null) {
+                return null;
+            }
+
+            this.precalculatedRange -= value.weight();
+
+            return value;
         }
         return null;
     }

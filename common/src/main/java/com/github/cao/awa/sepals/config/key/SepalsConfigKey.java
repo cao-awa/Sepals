@@ -41,6 +41,6 @@ public record SepalsConfigKey<T>(String name, Class<T> type, T value, Consumer<T
     }
 
     public void doChangeAction() {
-
+        this.onChangeAction.accept(this.value);
     }
 }

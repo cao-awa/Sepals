@@ -32,30 +32,12 @@ public abstract class LivingEntityMixin extends Entity {
         super(type, world);
     }
 
-    @Redirect(
-            method = "isClimbing",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/block/BlockState;isIn(Lnet/minecraft/registry/tag/TagKey;)Z"
-            )
-    )
-    protected boolean sepalsLivingEntityClibaleCache(BlockState instance, TagKey<Block> tagKey) {
-//        Useless checks.
-
-//        if (tagKey == BlockTags.CLIMBABLE) {
-//            return ((BlockStateAccessor) instance).sepals$isClimbale();
-//        } else {
-//            return instance.isIn(BlockTags.CLIMBABLE)
-//        }
-        return ((BlockStateAccessor) instance).sepals$isClimbale();
-    }
-
     @Inject(
             method = "tickCramming",
             at = @At("HEAD"),
             cancellable = true
     )
-    protected void sepalsForceCramming(CallbackInfo ci) {
+    public void sepalsForceCramming(CallbackInfo ci) {
         if (getWorld() instanceof ServerWorld serverWorld && Sepals.CONFIG.isEnableSepalsEntitiesCramming()) {
             int maxCramming = serverWorld.getGameRules().getInt(GameRules.MAX_ENTITY_CRAMMING);
             int crammingLimit = maxCramming - 1;

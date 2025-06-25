@@ -28,4 +28,4 @@ ordering = "NONE"
 side = "BOTH"
 
 [[mixins]]
-config = "sepals.mixins.json"
+config = ["sepals.mixins.json", "sepals-neoforged.mixins.json"]

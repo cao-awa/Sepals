@@ -7,6 +7,7 @@
   "mixins": [
     "block.BlockMixin",
     "entity.EntityMixin",
+    "entity.LivingEntityMixin",
     "entity.EntityViewMixin",
     "entity.item.ItemEntityAccessor",
     "entity.item.ItemEntityMixin",
@@ -15,7 +16,6 @@
   "client": [
   ],
   "server": [
-    "entity.LivingEntityMixin",
     "entity.ai.brain.BrainMixin",
     "entity.ai.brain.frog.FrogBrainMixin",
     "entity.ai.brain.sensor.frog.FrogAttackablesSensorMixin",

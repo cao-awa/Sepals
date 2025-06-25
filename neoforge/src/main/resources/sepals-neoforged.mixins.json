@@ -1,7 +1,7 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "com.github.cao.awa.fapals.mixin",
+  "package": "com.github.cao.awa.neopals.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "entity.LivingEntityMixin"
@@ -9,7 +9,7 @@
   "client": [
   ],
   "server": [
-    "block.command.CommandBlockMixin"
+
   ],
   "injectors": {
     "defaultRequire": 1

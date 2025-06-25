@@ -42,8 +42,8 @@ dependencies {
 
     shadowBundle 'com.alibaba.fastjson2:fastjson2:2.0.50'
 
-    shadowBundle 'com.github.cao.awa:catheter:1.0.42'
-    shadowBundle 'com.github.cao.awa:sinuatum:1.0.13'
+    shadowBundle 'com.github.cao.awa:catheter:1.0.43'
+    shadowBundle 'com.github.cao.awa:sinuatum:1.0.17'
 }
 
 processResources {

@@ -45,6 +45,8 @@ Sepals feature related: ```enableSepalsEntitiesCramming```.
 |     enableSepalsBiasedLongJumpTask      |  bool value   |     true      |    
 |      enableSepalsEntitiesCramming       |  bool value   |     true      |    
 |          enableSepalsItemMerge          |  bool value   |     true      |
+|          enableSepalsQuickCanBePushByEntityPredicate          |  bool value   |     true      |
+|          enableSepalsBlockStateTagCache          |  bool value   |     true      |
 
 ## Performance
 
@@ -266,3 +268,19 @@ Default enabled
 |      With lithium       |      10.2 ms       |  61 %   |      3.2 ms      |        24 %         |       6 ms        |        113 %         |      0.5 ms       |         25 %         |       0.5 ms       |         100 %         |
 |       With Sepals       |        9 ms        |  53 %   |      3.3 ms      |        16 %         |      4.7 ms       |         78 %         |      0.7 ms       |         35 %         |       0.3 ms       |         60 %          |
 | With Sepals and lithium |       8.7 ms       |  52 %   |      2.9 ms      |        11 %         |      4.6 ms       |         76 %         |      0.7 ms       |         35 %         |       0.5 ms       |         100 %         |
+
+### Predicate optimization
+1172 frogs cramming in a 3x3 space:
+
+|                                      Environment |  time  | Percent(Avg.) |
+|-------------------------------------------------:|:------:|:-------------:|
+|     Vanilla (java.util.function.Predicate.lambda$and$0()) | 49.01 ms  |     100 %     |
+|         With Sepals (com.github.cao.awa.sepals.entity.predicate.SepalsEntityPredicates$$Lambda/0x000002d8f116e000.test()) | 22.6 ms |      46 %      |
+
+### Block tag caching
+1172 frogs cramming in a 3x3 space (lag from 'isIn(BlockTags.CLIMBABLE) and 'SetN.probe()'):
+
+|                                      Environment |  time  | Percent(Avg.) |
+|-------------------------------------------------:|:------:|:-------------:|
+|     Vanilla (net.minecraft.entity.LivingEntity.isClimbing()) | 26.07 ms  |     100 %     |
+|         With Sepals (net.minecraft.entity.LivingEntity.isClimbing() but cached) | N/A |      0 %      |

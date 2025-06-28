@@ -2,6 +2,7 @@ package com.github.cao.awa.fapals;
 
 import com.github.cao.awa.apricot.util.collection.ApricotCollectionFactor;
 import com.github.cao.awa.fapals.command.SepalsDebugCommand;
+import com.github.cao.awa.fapals.command.config.SepalsFabricConfigCommand;
 import com.github.cao.awa.sepals.Sepals;
 import com.github.cao.awa.sepals.command.SepalsConfigCommand;
 import com.github.cao.awa.sepals.transform.mixin.handler.SepalsMixinHandler;
@@ -33,7 +34,7 @@ public class Fapals implements ModInitializer {
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {
             Sepals.LOGGER.info("Registering commands");
             SepalsDebugCommand.register(server);
-            SepalsConfigCommand.register(server);
+            SepalsConfigCommand.register(server.getCommandManager().getDispatcher());
         });
     }
 }

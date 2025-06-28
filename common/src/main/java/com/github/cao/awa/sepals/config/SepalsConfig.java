@@ -49,39 +49,39 @@ public class SepalsConfig {
     }
 
     public boolean isEnableSepalsFrogLookAt() {
-        return ENABLE_SEPALS_FROG_LOOK_AT.value();
+        return getConfig(ENABLE_SEPALS_FROG_LOOK_AT);
     }
 
     public boolean isEnableSepalsFrogAttackableSensor() {
-        return ENABLE_SEPALS_FROG_ATTACKABLE_SENSOR.value();
+        return getConfig(ENABLE_SEPALS_FROG_ATTACKABLE_SENSOR);
     }
 
     public boolean isEnableSepalsLivingTargetCache() {
-        return ENABLE_SEPALS_LIVING_TARGET_CACHE.value();
+        return getConfig(ENABLE_SEPALS_LIVING_TARGET_CACHE);
     }
 
     public boolean isNearestLivingEntitiesSensorUseQuickSort() {
-        return NEAREST_LIVING_ENTITIES_SENSOR_USE_QUICK_SORT.value();
+        return getConfig(NEAREST_LIVING_ENTITIES_SENSOR_USE_QUICK_SORT);
     }
 
     public boolean isEnableSepalsBiasedLongJumpTask() {
-        return ENABLE_SEPALS_BIASED_LONG_JUMP_TASK.value();
+        return getConfig(ENABLE_SEPALS_BIASED_LONG_JUMP_TASK);
     }
 
     public boolean isEnableSepalsEntitiesCramming() {
-        return ENABLE_SEPALS_ENTITIES_CRAMMING.value();
+        return getConfig(ENABLE_SEPALS_ENTITIES_CRAMMING);
     }
 
     public boolean isEnableSepalsItemMerge() {
-        return ENABLE_SEPALS_ITEM_MERGE.value();
+        return getConfig(ENABLE_SEPALS_ITEM_MERGE);
     }
 
     public boolean isEnableSepalsQuickCanBePushByEntityPredicate() {
-        return ENABLE_SEPALS_QUICK_CAN_BE_PUSH_BY_ENTITY_PREDICATE.value();
+        return getConfig(ENABLE_SEPALS_QUICK_CAN_BE_PUSH_BY_ENTITY_PREDICATE);
     }
 
     public boolean isEnableSepalsBlockStateTagCache() {
-        return ENABLE_SEPALS_BLOCK_STATE_TAG_CACHE.value();
+        return getConfig(ENABLE_SEPALS_BLOCK_STATE_TAG_CACHE);
     }
 
 

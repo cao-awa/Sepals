@@ -1,16 +1,12 @@
 package com.github.cao.awa.sepals.mixin.entity;
 
 import com.github.cao.awa.sepals.Sepals;
-import com.github.cao.awa.sepals.block.BlockStateAccessor;
 import com.github.cao.awa.sepals.entity.intersects.SepalsWorldEntityIntersects;
 import com.github.cao.awa.sepals.entity.predicate.SepalsEntityPredicates;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.predicate.entity.EntityPredicates;
-import net.minecraft.registry.tag.TagKey;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
@@ -18,17 +14,16 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.function.Predicate;
 
 @Mixin(LivingEntity.class)
-public abstract class LivingEntityMixin extends Entity {
+public abstract class ServerLivingEntityMixin extends Entity {
     @Shadow
     protected abstract void pushAway(Entity entity);
 
-    public LivingEntityMixin(EntityType<?> type, World world) {
+    public ServerLivingEntityMixin(EntityType<?> type, World world) {
         super(type, world);
     }
 

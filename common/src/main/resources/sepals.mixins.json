@@ -7,7 +7,6 @@
   "mixins": [
     "block.BlockMixin",
     "entity.EntityMixin",
-    "entity.LivingEntityMixin",
     "entity.EntityViewMixin",
     "entity.item.ItemEntityAccessor",
     "entity.item.ItemEntityMixin",
@@ -23,6 +22,7 @@
     "entity.ai.brain.sensor.nearest.NearestPlayersSensorMixin",
     "entity.ai.brain.sensor.villager.VillagerBabiesSensorMixin",
     "entity.ai.brain.villager.VillagerTaskListProviderMixin",
+    "entity.ServerLivingEntityMixin",
     "server.MinecraftServerMixin",
     "world.MinecraftServerAccessor",
     "world.WorldAccessor",

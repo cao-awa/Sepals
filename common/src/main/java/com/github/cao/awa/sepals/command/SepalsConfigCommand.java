@@ -44,6 +44,8 @@ public class SepalsConfigCommand {
                         .then(createBoolConfigNode(SepalsConfig.ENABLE_SEPALS_BIASED_LONG_JUMP_TASK))
                         .then(createBoolConfigNode(SepalsConfig.ENABLE_SEPALS_ENTITIES_CRAMMING))
                         .then(createBoolConfigNode(SepalsConfig.ENABLE_SEPALS_ITEM_MERGE))
+                        .then(createBoolConfigNode(SepalsConfig.ENABLE_SEPALS_QUICK_CAN_BE_PUSH_BY_ENTITY_PREDICATE))
+                        .then(createBoolConfigNode(SepalsConfig.ENABLE_SEPALS_BLOCK_STATE_TAG_CACHE))
         );
     }
 

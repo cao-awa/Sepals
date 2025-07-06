@@ -6,6 +6,7 @@
   "plugin": "com.github.cao.awa.sepals.mixin.SepalsMixinPlugin",
   "mixins": [
     "block.BlockMixin",
+    "block.BlockStateMixin",
     "entity.EntityMixin",
     "entity.EntityViewMixin",
     "entity.item.ItemEntityAccessor",
@@ -34,7 +35,6 @@
     "world.storage.PointOfInterestSetMixin",
     "world.storage.PointOfInterestStorageMixin",
     "world.storage.SerializingRegionBasedStorageAccessor",
-    "block.BlockStateMixin",
     "item.stack.ItemStackMixin"
   ],
   "injectors": {

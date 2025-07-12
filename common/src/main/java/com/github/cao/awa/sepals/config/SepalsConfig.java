@@ -36,7 +36,6 @@ public class SepalsConfig {
     public static final SepalsConfigKey<Boolean> ENABLE_SEPALS_ENTITIES_CRAMMING = SepalsConfigKey.create("enableSepalsEntitiesCramming", true);
     public static final SepalsConfigKey<Boolean> ENABLE_SEPALS_ITEM_MERGE = SepalsConfigKey.create("enableSepalsItemMerge", true);
     public static final SepalsConfigKey<Boolean> ENABLE_SEPALS_QUICK_CAN_BE_PUSH_BY_ENTITY_PREDICATE = SepalsConfigKey.create("enableSepalsQuickCanBePushByEntityPredicate", true);
-    public static final SepalsConfigKey<Boolean> ENABLE_SEPALS_BLOCK_STATE_TAG_CACHE = SepalsConfigKey.create("enableSepalsBlockStateTagCache", true);
 
     private final JSONObject config = new JSONObject();
 
@@ -79,11 +78,6 @@ public class SepalsConfig {
     public boolean isEnableSepalsQuickCanBePushByEntityPredicate() {
         return getConfig(ENABLE_SEPALS_QUICK_CAN_BE_PUSH_BY_ENTITY_PREDICATE);
     }
-
-    public boolean isEnableSepalsBlockStateTagCache() {
-        return getConfig(ENABLE_SEPALS_BLOCK_STATE_TAG_CACHE);
-    }
-
 
     public <X> void setConfig(SepalsConfigKey<X> configKey, X value) {
         this.config.put(configKey.name(), configKey.checkLimits(checkOrThrow(configKey, value)));
@@ -128,7 +122,6 @@ public class SepalsConfig {
             setConfig(ENABLE_SEPALS_ENTITIES_CRAMMING, config);
             setConfig(ENABLE_SEPALS_ITEM_MERGE, config);
             setConfig(ENABLE_SEPALS_QUICK_CAN_BE_PUSH_BY_ENTITY_PREDICATE, config);
-            setConfig(ENABLE_SEPALS_BLOCK_STATE_TAG_CACHE, config);
         } catch (Exception e) {
             LOGGER.warn("Config not found, use default values", e);
         }
@@ -161,7 +154,6 @@ public class SepalsConfig {
         setConfig(ENABLE_SEPALS_ENTITIES_CRAMMING, ENABLE_SEPALS_ENTITIES_CRAMMING.value());
         setConfig(ENABLE_SEPALS_ITEM_MERGE, ENABLE_SEPALS_ITEM_MERGE.value());
         setConfig(ENABLE_SEPALS_QUICK_CAN_BE_PUSH_BY_ENTITY_PREDICATE, ENABLE_SEPALS_QUICK_CAN_BE_PUSH_BY_ENTITY_PREDICATE.value());
-        setConfig(ENABLE_SEPALS_BLOCK_STATE_TAG_CACHE, ENABLE_SEPALS_BLOCK_STATE_TAG_CACHE.value());
     }
 
     public void copyFrom(@NotNull SepalsConfig config) {
@@ -175,7 +167,6 @@ public class SepalsConfig {
         setConfig(ENABLE_SEPALS_ENTITIES_CRAMMING, config.isEnableSepalsEntitiesCramming());
         setConfig(ENABLE_SEPALS_ITEM_MERGE, config.isEnableSepalsItemMerge());
         setConfig(ENABLE_SEPALS_QUICK_CAN_BE_PUSH_BY_ENTITY_PREDICATE, config.isEnableSepalsQuickCanBePushByEntityPredicate());
-        setConfig(ENABLE_SEPALS_BLOCK_STATE_TAG_CACHE, config.isEnableSepalsBlockStateTagCache());
     }
 
     public void print() {
@@ -189,7 +180,6 @@ public class SepalsConfig {
         LOGGER.info("Sepals 'enableSepalsEntitiesCramming' flag is {}", isEnableSepalsEntitiesCramming());
         LOGGER.info("Sepals 'enableSepalsItemMerge' flag is {}", isEnableSepalsItemMerge());
         LOGGER.info("Sepals 'enableSepalsQuickCanBePushByEntityPredicate' flag is {}", isEnableSepalsQuickCanBePushByEntityPredicate());
-        LOGGER.info("Sepals 'enableSepalsBlockStateTagCache' flag is {}", isEnableSepalsBlockStateTagCache());
     }
 
     public Set<SepalsConfigKey<?>> collect() {
@@ -205,7 +195,6 @@ public class SepalsConfig {
         configs.add(ENABLE_SEPALS_ENTITIES_CRAMMING);
         configs.add(ENABLE_SEPALS_ITEM_MERGE);
         configs.add(ENABLE_SEPALS_QUICK_CAN_BE_PUSH_BY_ENTITY_PREDICATE);
-        configs.add(ENABLE_SEPALS_BLOCK_STATE_TAG_CACHE);
 
         return configs;
     }

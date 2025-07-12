@@ -6,7 +6,6 @@
   "plugin": "com.github.cao.awa.sepals.mixin.SepalsMixinPlugin",
   "mixins": [
     "block.BlockMixin",
-    "block.BlockStateMixin",
     "entity.EntityMixin",
     "entity.EntityViewMixin",
     "entity.item.ItemEntityAccessor",
@@ -16,6 +15,7 @@
   "client": [
   ],
   "server": [
+    "entity.ServerLivingEntityMixin",
     "entity.ai.brain.BrainMixin",
     "entity.ai.brain.frog.FrogBrainMixin",
     "entity.ai.brain.sensor.frog.FrogAttackablesSensorMixin",
@@ -23,7 +23,7 @@
     "entity.ai.brain.sensor.nearest.NearestPlayersSensorMixin",
     "entity.ai.brain.sensor.villager.VillagerBabiesSensorMixin",
     "entity.ai.brain.villager.VillagerTaskListProviderMixin",
-    "entity.ServerLivingEntityMixin",
+    "item.stack.ItemStackMixin",
     "server.MinecraftServerMixin",
     "world.MinecraftServerAccessor",
     "world.WorldAccessor",
@@ -34,8 +34,7 @@
     "world.poi.SerializingRegionBasedStorageMixin",
     "world.storage.PointOfInterestSetMixin",
     "world.storage.PointOfInterestStorageMixin",
-    "world.storage.SerializingRegionBasedStorageAccessor",
-    "item.stack.ItemStackMixin"
+    "world.storage.SerializingRegionBasedStorageAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -46,7 +46,6 @@ Sepals feature related: ```enableSepalsEntitiesCramming```.
 |        enableSepalsEntitiesCramming         |  bool value   |     true      |    
 |            enableSepalsItemMerge            |  bool value   |     true      |
 | enableSepalsQuickCanBePushByEntityPredicate |  bool value   |     true      |
-|       enableSepalsBlockStateTagCache        |  bool value   |     true      |
 
 ## Performance
 
@@ -277,12 +276,3 @@ Default enabled
 |------------------------------------------------------------------------------------------------------------------:|:--------:|:-------------:|
 |                                                             Vanilla (java.util.function.Predicate.lambda$and$0()) | 49.01 ms |     100 %     |
 | With Sepals (com.github.cao.awa.sepals.entity.predicate.SepalsEntityPredicates$$Lambda/0x000002d8f116e000.test()) | 22.6 ms  |     46 %      |
-
-### Block tag caching
-
-1172 frogs cramming in a 3x3 space (lag from 'isIn(BlockTags.CLIMBABLE) and 'SetN.probe()'):
-
-|                                                             Environment |   time   | Percent(Avg.) |
-|------------------------------------------------------------------------:|:--------:|:-------------:|
-|                Vanilla (net.minecraft.entity.LivingEntity.isClimbing()) | 26.07 ms |     100 %     |
-| With Sepals (net.minecraft.entity.LivingEntity.isClimbing() but cached) |   N/A    |      0 %      |

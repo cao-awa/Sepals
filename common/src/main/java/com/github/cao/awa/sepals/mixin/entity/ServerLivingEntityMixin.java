@@ -37,7 +37,7 @@ public abstract class ServerLivingEntityMixin extends Entity {
             int maxCramming = serverWorld.getGameRules().getInt(GameRules.MAX_ENTITY_CRAMMING);
             int crammingLimit = maxCramming - 1;
 
-            Predicate <Entity> canBePushedByPredicate;
+            Predicate<Entity> canBePushedByPredicate;
 
             if (Sepals.CONFIG.isEnableSepalsQuickCanBePushByEntityPredicate()) {
                 canBePushedByPredicate = SepalsEntityPredicates.quickCanBePushedBy(this);
@@ -46,21 +46,19 @@ public abstract class ServerLivingEntityMixin extends Entity {
             }
 
             if (maxCramming > 0) {
-                synchronized (serverWorld) {
-                    new SepalsWorldEntityIntersects().quickInterestOtherEntities(
-                            serverWorld,
-                            this,
-                            getBoundingBox(),
-                            canBePushedByPredicate,
-                            this::pushAway,
-                            (target) -> {
-                                if (this.random.nextInt(4) == 0) {
-                                    damage(serverWorld, getDamageSources().cramming(), 6.0F);
-                                }
-                            },
-                            crammingLimit
-                    );
-                }
+                new SepalsWorldEntityIntersects().quickInterestOtherEntities(
+                        serverWorld,
+                        this,
+                        getBoundingBox(),
+                        canBePushedByPredicate,
+                        this::pushAway,
+                        (target) -> {
+                            if (this.random.nextInt(4) == 0) {
+                                damage(serverWorld, getDamageSources().cramming(), 6.0F);
+                            }
+                        },
+                        crammingLimit
+                );
             } else {
                 new SepalsWorldEntityIntersects().quickInterestOtherEntities(
                         serverWorld,

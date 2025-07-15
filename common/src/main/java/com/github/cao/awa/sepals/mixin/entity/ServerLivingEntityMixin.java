@@ -46,19 +46,21 @@ public abstract class ServerLivingEntityMixin extends Entity {
             }
 
             if (maxCramming > 0) {
-                new SepalsWorldEntityIntersects().quickInterestOtherEntities(
-                        serverWorld,
-                        this,
-                        getBoundingBox(),
-                        canBePushedByPredicate,
-                        this::pushAway,
-                        (target) -> {
-                            if (this.random.nextInt(4) == 0) {
-                                damage(serverWorld, getDamageSources().cramming(), 6.0F);
-                            }
-                        },
-                        crammingLimit
-                );
+                synchronized (serverWorld) {
+                    new SepalsWorldEntityIntersects().quickInterestOtherEntities(
+                            serverWorld,
+                            this,
+                            getBoundingBox(),
+                            canBePushedByPredicate,
+                            this::pushAway,
+                            (target) -> {
+                                if (this.random.nextInt(4) == 0) {
+                                    damage(serverWorld, getDamageSources().cramming(), 6.0F);
+                                }
+                            },
+                            crammingLimit
+                    );
+                }
             } else {
                 new SepalsWorldEntityIntersects().quickInterestOtherEntities(
                         serverWorld,

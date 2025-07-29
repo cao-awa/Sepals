@@ -1,14 +1,17 @@
 package com.github.cao.awa.sepals.mixin.world;
 
+import com.github.cao.awa.sepals.explosion.SepalsExplosionStorage;
 import com.github.cao.awa.sepals.item.BoxedItemEntities;
 import com.github.cao.awa.sinuatum.util.collection.CollectionFactor;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.explosion.ExplosionImpl;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Collection;
@@ -61,6 +64,28 @@ public class ServerWorldMixin implements BoxedItemEntities {
 
         return this.entities.values();
     }
+
+//    @Redirect(
+//            method = "createExplosion",
+//            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/explosion/ExplosionImpl;explode()V")
+//    )
+//    private void createExplosion(ExplosionImpl instance) {
+//        SepalsExplosionStorage.INSTANCE.add(instance);
+//    }
+//
+//    @Inject(
+//            method = "tick",
+//            at = @At(
+//                    value = "TAIL"
+//            )
+//    )
+//    public void doExplosion(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
+//        try {
+//            SepalsExplosionStorage.INSTANCE.doExplosion();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     @Inject(
             method = "tick",

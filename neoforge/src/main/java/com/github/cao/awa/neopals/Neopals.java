@@ -3,6 +3,7 @@ package com.github.cao.awa.neopals;
 import com.github.cao.awa.apricot.util.collection.ApricotCollectionFactor;
 import com.github.cao.awa.sepals.Sepals;
 import com.github.cao.awa.sepals.command.SepalsConfigCommand;
+import com.github.cao.awa.sepals.command.SepalsTestCommand;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
@@ -40,5 +41,6 @@ public final class Neopals {
         Sepals.LOGGER.info("Registering commands");
 
         SepalsConfigCommand.register(event.getDispatcher());
+        SepalsTestCommand.register(event.getDispatcher());
     }
 }

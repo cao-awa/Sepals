@@ -1,4 +1,5 @@
 # Sepals
+> Warning: This mod are pausing to updates and bug fixes now
 
 An extremely radical and experimental optimization for Minecraft server performances.
 

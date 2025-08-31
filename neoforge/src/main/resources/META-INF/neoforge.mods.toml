@@ -16,14 +16,14 @@ Sepals is an extremely radical and experimental optimization for Minecraft serve
 [[dependencies.sepals]]
 modId = "neoforge"
 type = "required"
-versionRange = "[21.1.186,)"
+versionRange = "[21.8.9,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.sepals]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.21.7]"
+versionRange = "[1.21.8,)"
 ordering = "NONE"
 side = "BOTH"
 

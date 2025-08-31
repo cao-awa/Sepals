@@ -6,6 +6,7 @@
   "plugin": "com.github.cao.awa.sepals.mixin.SepalsMixinPlugin",
   "mixins": [
     "block.BlockMixin",
+    "entity.EntityListAccessor",
     "entity.EntityMixin",
     "entity.EntityViewMixin",
     "entity.item.ItemEntityAccessor",

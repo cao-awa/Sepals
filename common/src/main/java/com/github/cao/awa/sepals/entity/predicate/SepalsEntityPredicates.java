@@ -51,16 +51,19 @@ public class SepalsEntityPredicates {
                         return currentEntityNoPushOtherTeams;
                     }
                 } else {
-                    assert currentTeam != null;
-                    boolean isTeamEqual = currentTeam.isEqual(otherTeam);
-                    AbstractTeam.CollisionRule otherCollisionRule = otherTeam.getCollisionRule();
-                    boolean otherEntityNoPushOwnTeam = otherCollisionRule != AbstractTeam.CollisionRule.PUSH_OWN_TEAM;
-                    if (isTeamEqual) {
-                        return currentEntityNoPushOwnTeams && otherEntityNoPushOwnTeam;
+                    if (currentTeam == null) {
+                        return false;
                     } else {
-                        boolean otherEntityNoPushOtherTeams = otherCollisionRule != AbstractTeam.CollisionRule.PUSH_OTHER_TEAMS;
+                        boolean isTeamEqual = currentTeam.isEqual(otherTeam);
+                        AbstractTeam.CollisionRule otherCollisionRule = otherTeam.getCollisionRule();
+                        boolean otherEntityNoPushOwnTeam = otherCollisionRule != AbstractTeam.CollisionRule.PUSH_OWN_TEAM;
+                        if (isTeamEqual) {
+                            return currentEntityNoPushOwnTeams && otherEntityNoPushOwnTeam;
+                        } else {
+                            boolean otherEntityNoPushOtherTeams = otherCollisionRule != AbstractTeam.CollisionRule.PUSH_OTHER_TEAMS;
 
-                        return currentEntityNoPushOtherTeams && otherEntityNoPushOtherTeams;
+                            return currentEntityNoPushOtherTeams && otherEntityNoPushOtherTeams;
+                        }
                     }
                 }
             } else {

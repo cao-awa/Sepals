@@ -1,6 +1,5 @@
 package com.github.cao.awa.sepals.mixin.world;
 
-import com.github.cao.awa.lunaria.consumer.group.GroupConsumerLunaria;
 import com.github.cao.awa.sepals.Sepals;
 import com.github.cao.awa.sepals.config.SepalsConfig;
 import com.github.cao.awa.sepals.explosion.SepalsExplosionStorage;

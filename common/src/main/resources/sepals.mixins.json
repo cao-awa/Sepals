@@ -11,6 +11,7 @@
     "entity.EntityViewMixin",
     "entity.item.ItemEntityAccessor",
     "entity.item.ItemEntityMixin",
+    "server.chunk.ServerChunkManagerMixin",
     "world.ServerWorldMixin"
   ],
   "client": [

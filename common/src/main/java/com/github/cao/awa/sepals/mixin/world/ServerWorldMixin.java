@@ -1,16 +1,24 @@
 package com.github.cao.awa.sepals.mixin.world;
 
+import com.github.cao.awa.lunaria.consumer.group.GroupConsumerLunaria;
+import com.github.cao.awa.sepals.Sepals;
+import com.github.cao.awa.sepals.config.SepalsConfig;
+import com.github.cao.awa.sepals.explosion.SepalsExplosionStorage;
 import com.github.cao.awa.sepals.item.BoxedItemEntities;
+import com.github.cao.awa.sepals.mixin.entity.EntityListAccessor;
 import com.github.cao.awa.sinuatum.util.collection.CollectionFactor;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.EntityList;
+import net.minecraft.world.explosion.ExplosionImpl;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Collection;
 import java.util.List;
@@ -86,14 +94,14 @@ public class ServerWorldMixin implements BoxedItemEntities {
 //        }
 //    }
 
-    @Redirect(
+    @Inject(
             method = "tick",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/world/EntityList;forEach(Ljava/util/function/Consumer;)V"
             )
     )
-    public void resetItemEntities(EntityList instance, Consumer<Entity> action) {
+    public void resetItemEntities(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
         clearItemBoxed();
     }
 }

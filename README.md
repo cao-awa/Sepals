@@ -1,26 +1,27 @@
 # Sepals
-> Warning: This mod are pausing to updates and bug fixes now
 
 An extremely radical and experimental optimization for Minecraft server performances.
+
+We recommended using Sepals with [lithium](https://modrinth.com/mod/lithium) to make the best performances.
 
 ![](https://count.getloli.com/@@cao-awa.sepals?name=%40cao-awa.sepals&theme=rule34&padding=7&offset=0&align=top&scale=1&pixelated=1&darkmode=auto)
 
 ## Compatibility
 
-Currently, sepals are compatible to almost all mods.
+Currently, sepals are compatible with almost all mods (~~if no new issue opened~~).
 
-Here is verified mod list:
+Here is the verified mod list with the latest Sepals version:
 
-|                                            Target mod |   Target mod version    | Recommend target version | Sepals version | Recommend sepals version |
-|------------------------------------------------------:|:-----------------------:|:------------------------:|:--------------:|:------------------------:|
-|             [sodium](https://modrinth.com/mod/sodium) |           all           |           all            |      all       |          latest          |
-|                 [iris](https://modrinth.com/mod/iris) |           all           |           all            |      all       |          latest          |
-|  [ferritecore](https://modrinth.com/mod/ferrite-core) |           all           |           all            |      all       |          latest          |
-|           [krypton](https://modrinth.com/mod/krypton) |           all           |           all            |      all       |          latest          |
-|           [lithium](https://modrinth.com/mod/lithium) |        >=0.14.1         |          latest          |    \>=1.0.4    |          latest          |
-|   [c2me-fabric](https://modrinth.com/mod/c2me-fabric) |  \>=0.3.0+alpha.0.295   |          latest          |    \>=1.0.5    |          latest          |
-| [moonrise-opt](https://modrinth.com/mod/moonrise-opt) |     \>=0.1.0-beta8      |         unknown          |    \>=1.0.6    |          latest          |
-|               [async](https://modrinth.com/mod/async) | \>=0.1.5+alpha.8-1.21.4 |         unknown          |   \>=1.0.11    |          latest          |
+|                                            Target mod | Required target version | 
+|------------------------------------------------------:|:-----------------------:|
+|             [sodium](https://modrinth.com/mod/sodium) |           all           |  
+|                 [iris](https://modrinth.com/mod/iris) |           all           |   
+|  [ferritecore](https://modrinth.com/mod/ferrite-core) |           all           |    
+|           [krypton](https://modrinth.com/mod/krypton) |           all           | 
+|           [lithium](https://modrinth.com/mod/lithium) |        >=0.18.0         |   
+|   [c2me-fabric](https://modrinth.com/mod/c2me-fabric) |      \>=0.3.4.0.0       |        
+| [moonrise-opt](https://modrinth.com/mod/moonrise-opt) | \>=0.6.0-beta.1+45edfd7 |    
+|               [async](https://modrinth.com/mod/async) | \>=0.1.7+alpha.7-1.21.8 | 
 
 If you don't know which version to choose, please use the latest version of all the optimization mods, Sepals will
 ensure compatibility with them.
@@ -29,7 +30,7 @@ ensure compatibility with them.
 
 When Sepals work with mod [Async](https://modrinth.com/mod/async)
 testing on different platforms has different results, please use configurations to disable Sepals features or Async
-features to test which is more worthwhile if you want to use both together.
+features to test, find which is more worthwhile if you want to use both together.
 
 Sepals feature related: ```enableSepalsEntitiesCramming```.
 
@@ -275,5 +276,5 @@ Default enabled
 
 |                                                                                                       Environment |   time   | Percent(Avg.) |
 |------------------------------------------------------------------------------------------------------------------:|:--------:|:-------------:|
-|                                                             Vanilla (java.util.function.Predicate.lambda$and$0()) | 49.01 ms |     100 %     |
+|                                                           Vanilla (java.util.function.Predicate.lambda\$and\$0()) | 49.01 ms |     100 %     |
 | With Sepals (com.github.cao.awa.sepals.entity.predicate.SepalsEntityPredicates$$Lambda/0x000002d8f116e000.test()) | 22.6 ms  |     46 %      |

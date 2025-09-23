@@ -1,7 +1,6 @@
-package com.github.cao.awa.neopals;
+package com.github.cao.awa.sepals;
 
 import com.github.cao.awa.apricot.util.collection.ApricotCollectionFactor;
-import com.github.cao.awa.sepals.Sepals;
 import com.github.cao.awa.sepals.command.SepalsConfigCommand;
 import com.github.cao.awa.sepals.command.SepalsTestCommand;
 import net.neoforged.bus.api.IEventBus;
@@ -16,8 +15,8 @@ import java.util.Optional;
 import java.util.Set;
 
 @Mod("sepals")
-public final class Neopals {
-    public Neopals(IEventBus modEventBus) {
+public final class SepalsNeoForged {
+    public SepalsNeoForged(IEventBus modEventBus) {
         modEventBus.addListener(FMLCommonSetupEvent.class, this::onCommonSetup);
 
         NeoForge.EVENT_BUS.addListener(RegisterCommandsEvent.class, this::registerConfig);

@@ -1,8 +1,7 @@
-package com.github.cao.awa.fapals;
+package com.github.cao.awa.sepals;
 
 import com.github.cao.awa.apricot.util.collection.ApricotCollectionFactor;
-import com.github.cao.awa.fapals.command.SepalsDebugCommand;
-import com.github.cao.awa.sepals.Sepals;
+import com.github.cao.awa.sepals.command.SepalsDebugCommand;
 import com.github.cao.awa.sepals.command.SepalsConfigCommand;
 import com.github.cao.awa.sepals.command.SepalsTestCommand;
 import com.github.cao.awa.sepals.transform.mixin.handler.SepalsMixinHandler;
@@ -14,7 +13,7 @@ import net.fabricmc.loader.api.ModContainer;
 import java.util.Optional;
 import java.util.Set;
 
-public class Fapals implements ModInitializer {
+public class SepalsFabric implements ModInitializer {
     @Override
     public void onInitialize() {
         Sepals.loadingPlatform = "fabric";

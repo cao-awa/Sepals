@@ -1,7 +1,6 @@
 package com.github.cao.awa.sepals.mixin.entity.ai.brain.villager;
 
 import com.github.cao.awa.sepals.Sepals;
-import com.github.cao.awa.sepals.block.BlockStateAccessor;
 import com.github.cao.awa.sepals.entity.ai.task.composite.SepalsRandomTask;
 import com.github.cao.awa.sepals.entity.ai.task.look.SepalsLookAtPlayerTask;
 import com.github.cao.awa.sepals.entity.ai.task.poi.SepalsFindPointOfInterestTask;
@@ -96,8 +95,6 @@ public abstract class VillagerTaskListProviderMixin {
                             Pair.of(7, new WalkTowardsJobSiteTask(speed)),
                             Pair.of(8, TakeJobSiteTask.create(speed)),
                             Pair.of(10, SepalsFindPointOfInterestTask.create((poiType) -> poiType.matchesKey(PointOfInterestTypes.HOME), MemoryModuleType.HOME, false, Optional.of((byte) 14), (world, pos) -> {
-//                                BlockState blockState = world.getBlockState(pos);
-//                                return ((BlockStateAccessor) blockState).isBeds() && !blockState.get(BedBlock.OCCUPIED);
                                 BlockState blockState = world.getBlockState(pos);
                                 return blockState.isIn(BlockTags.BEDS) && !(Boolean) blockState.get(BedBlock.OCCUPIED);
                             })),

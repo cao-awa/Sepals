@@ -29,7 +29,7 @@ public class SepalsLookAtPlayerTask extends SepalsSingleTickTask<LivingEntity> {
             Optional<? extends LivingEntity> optional;
             if (cache instanceof SepalsLivingTargetCache sepalsCache) {
                 optional = entity.hasPassengers() ?
-                        sepalsCache.findFirstPlayer(distance::test, entity::hasPassenger) :
+                        sepalsCache.findFirstPlayer(distance::test, target -> !entity.hasPassenger(target)) :
                         sepalsCache.findFirstPlayer(distance::test);
             } else {
                 optional = entity.hasPassengers() ?

@@ -30,7 +30,7 @@ public class SepalsWaitTask implements Task<LivingEntity>, DetailedDebuggableTas
     public final boolean tryStarting(ServerWorld world, LivingEntity entity, long time) {
         this.status = MultiTickTask.Status.RUNNING;
         int i = this.minRunTime + world.getRandom().nextInt(this.maxRunTime + 1 - this.minRunTime);
-        this.waitUntil = time + (long)i;
+        this.waitUntil = time + i;
         return true;
     }
 
@@ -39,7 +39,7 @@ public class SepalsWaitTask implements Task<LivingEntity>, DetailedDebuggableTas
         this.currentTime = time;
 
         if (time > this.waitUntil) {
-            this.stop(world, entity, time);
+            stop(world, entity, time);
         }
     }
 

@@ -1,4 +1,4 @@
-package com.github.cao.awa.fapals.command;
+package com.github.cao.awa.sepals.command;
 
 import com.github.cao.awa.apricot.util.collection.ApricotCollectionFactor;
 import com.github.cao.awa.catheter.action.BooleanPredicate;

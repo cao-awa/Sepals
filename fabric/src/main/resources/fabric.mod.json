@@ -16,7 +16,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.github.cao.awa.fapals.Fapals"
+      "com.github.cao.awa.sepals.SepalsFabric"
     ],
     "client": [
     ],
@@ -25,7 +25,7 @@
   },
   "mixins": [
     "sepals.mixins.json",
-    "fapals.mixins.json"
+    "sepals-fabric.mixins.json"
   ],
   "depends": {
     "fabricloader": "*",

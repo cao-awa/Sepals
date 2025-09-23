@@ -1,6 +1,6 @@
-package com.github.cao.awa.fapals.mixin.block.command;
+package com.github.cao.awa.sepals.mixin.block.command;
 
-import com.github.cao.awa.fapals.command.SepalsDebugCommand;
+import com.github.cao.awa.sepals.command.SepalsDebugCommand;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CommandBlock;
 import net.minecraft.server.world.ServerWorld;

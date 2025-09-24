@@ -4,6 +4,7 @@ import com.github.cao.awa.apricot.util.collection.ApricotCollectionFactor;
 import com.github.cao.awa.catheter.Catheter;
 import com.github.cao.awa.sepals.collection.listener.ActivableLong2ObjectMap;
 import com.github.cao.awa.sepals.world.poi.RegionBasedStorageSectionExtended;
+import com.github.cao.awa.sepals.world.poi.SepalsPointOfInterestSet;
 import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
@@ -14,7 +15,6 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.ChunkSectionPos;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.poi.PointOfInterest;
-import net.minecraft.world.poi.PointOfInterestSet;
 import net.minecraft.world.poi.PointOfInterestStorage;
 import net.minecraft.world.poi.PointOfInterestType;
 import net.minecraft.world.storage.ChunkPosKeyedStorage;
@@ -29,7 +29,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -129,8 +128,16 @@ public abstract class SerializingRegionBasedStorageMixin<R> implements RegionBas
                 this.world.getBottomSectionCoord(),
                 this.world.getTopSectionCoord()
         ).mapToObj((coordinate) -> get(
-                ChunkSectionPos.from(chunkPos, coordinate).asLong())
-        ).filter(Optional::isPresent).flatMap((poiSet) -> ((PointOfInterestSet)poiSet.get()).get(typePredicate, occupationStatus));
+                        ChunkSectionPos.from(chunkPos, coordinate).asLong()
+                )
+        ).filter(
+                Optional::isPresent
+        ).flatMap((poiSet) -> SepalsPointOfInterestSet.get(
+                        ((PointOfInterestSetAccessor) poiSet.get()).getPointsOfInterestByType(),
+                        typePredicate,
+                        occupationStatus
+                ).stream()
+        );
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.github.cao.awa.sepals.mixin.world;
+package com.github.cao.awa.sepals.mixin.server;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.storage.LevelStorage;

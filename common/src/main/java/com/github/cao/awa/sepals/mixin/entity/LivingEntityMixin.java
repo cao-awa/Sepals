@@ -1,12 +1,17 @@
 package com.github.cao.awa.sepals.mixin.entity;
 
 import com.github.cao.awa.sepals.Sepals;
+import com.github.cao.awa.sepals.block.state.BlockStateTagAccessor;
 import com.github.cao.awa.sepals.entity.intersects.SepalsWorldEntityIntersects;
 import com.github.cao.awa.sepals.entity.predicate.SepalsEntityPredicates;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.predicate.entity.EntityPredicates;
+import net.minecraft.registry.tag.BlockTags;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
@@ -14,17 +19,35 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.function.Predicate;
 
 @Mixin(LivingEntity.class)
-public abstract class ServerLivingEntityMixin extends Entity {
+public abstract class LivingEntityMixin extends Entity {
     @Shadow
     protected abstract void pushAway(Entity entity);
 
-    public ServerLivingEntityMixin(EntityType<?> type, World world) {
+    public LivingEntityMixin(EntityType<?> type, World world) {
         super(type, world);
+    }
+
+    @Redirect(
+            method = "isClimbing",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/block/BlockState;isIn(Lnet/minecraft/registry/tag/TagKey;)Z"
+            )
+    )
+    public boolean isClimbing(BlockState blockState, TagKey<Block> tagKey) {
+        BlockStateTagAccessor tagAccessor = (BlockStateTagAccessor) blockState;
+
+        if (tagAccessor.sepals$isClimbableInitialized()) {
+            return tagAccessor.isClimbable();
+        }
+
+        return blockState.isIn(tagKey);
     }
 
     @Inject(
@@ -32,7 +55,7 @@ public abstract class ServerLivingEntityMixin extends Entity {
             at = @At("HEAD"),
             cancellable = true
     )
-    public void sepalsForceCramming(CallbackInfo ci) {
+    public void sepalsCramming(CallbackInfo ci) {
         if (getWorld() instanceof ServerWorld serverWorld && Sepals.CONFIG.isEnableSepalsEntitiesCramming()) {
             int maxCramming = serverWorld.getGameRules().getInt(GameRules.MAX_ENTITY_CRAMMING);
             int crammingLimit = maxCramming - 1;

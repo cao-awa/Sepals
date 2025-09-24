@@ -35,18 +35,14 @@ public class SepalsPointOfInterestStorage {
             ChunkPos,
             PointOfInterestStorage.OccupationStatus,
             Stream<PointOfInterest>
-            > getInChunkFunction = PointOfInterestStorage::getInChunk;
+            > getInChunkFunction = SepalsPointOfInterestStorage::sepalsGetInChunk;
 
     public static void onLithiumLoaded() {
         onRequiredVanillaGetInChunk();
-
-        Sepals.isLithiumLoaded = true;
     }
 
     public static void onMoonriseLoaded() {
         onRequiredVanillaGetInChunk();
-
-        Sepals.isMoonriseLoaded = true;
     }
 
     public static void onRequiredVanillaGetInChunk() {

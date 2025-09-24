@@ -1,0 +1,5 @@
+Fix bug of unable to change config 'enableSepalsVillager' and 'forceEnableSepalsPoi'.
+More simply SepalsEntityPredicates.
+'sepalsGetInChunk' be default getInChunk supporter.
+Fix problem of something optimizations doesn't apply in singleplayer.
+Caching 'isIn' result, prevent too much set contains probe.

@@ -40,11 +40,11 @@ public class SepalsConfig {
     private final JSONObject config = new JSONObject();
 
     public boolean isForceEnableSepalsPoi() {
-        return FORCE_ENABLE_SEPALS_POI.value();
+        return getConfig(FORCE_ENABLE_SEPALS_POI);
     }
 
     public boolean isEnableSepalsVillager() {
-        return ENABLE_SEPALS_VILLAGER.value();
+        return getConfig(ENABLE_SEPALS_VILLAGER);
     }
 
     public boolean isEnableSepalsFrogLookAt() {

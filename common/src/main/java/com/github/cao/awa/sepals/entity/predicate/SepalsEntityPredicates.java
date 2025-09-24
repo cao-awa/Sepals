@@ -3,7 +3,6 @@ package com.github.cao.awa.sepals.entity.predicate;
 import com.google.common.base.Predicates;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.scoreboard.AbstractTeam;
 
 import java.util.function.Predicate;
@@ -22,53 +21,40 @@ public class SepalsEntityPredicates {
             }
         }
 
-        boolean currentEntityPushOwnTeam = currentCollisionRule == AbstractTeam.CollisionRule.PUSH_OWN_TEAM;
-        boolean currentEntityNoPushOwnTeams = !currentEntityPushOwnTeam;
+        boolean currentEntityNoPushOwnTeam = currentCollisionRule != AbstractTeam.CollisionRule.PUSH_OWN_TEAM;
         boolean currentEntityNoPushOtherTeams = currentCollisionRule != AbstractTeam.CollisionRule.PUSH_OTHER_TEAMS;
 
         boolean currentEntityIsClient = currentEntity.getWorld().isClient;
 
-        return EntityPredicates.EXCEPT_SPECTATOR.and((otherEntity) -> {
-            if (otherEntity.isPushable()) {
-                if (currentEntityIsClient) {
-                    label62:
-                    {
-                        if (otherEntity instanceof PlayerEntity playerEntity) {
-                            if (playerEntity.isMainPlayer()) {
-                                break label62;
-                            }
-                        }
-
-                        return false;
-                    }
-                }
-
-                AbstractTeam otherTeam = otherEntity.getScoreboardTeam();
-                if (otherTeam == null) {
-                    if (currentEntityPushOwnTeam) {
-                        return false;
-                    } else {
-                        return currentEntityNoPushOtherTeams;
-                    }
-                } else {
-                    if (currentTeam == null) {
-                        return false;
-                    } else {
-                        boolean isTeamEqual = currentTeam.isEqual(otherTeam);
-                        AbstractTeam.CollisionRule otherCollisionRule = otherTeam.getCollisionRule();
-                        boolean otherEntityNoPushOwnTeam = otherCollisionRule != AbstractTeam.CollisionRule.PUSH_OWN_TEAM;
-                        if (isTeamEqual) {
-                            return currentEntityNoPushOwnTeams && otherEntityNoPushOwnTeam;
-                        } else {
-                            boolean otherEntityNoPushOtherTeams = otherCollisionRule != AbstractTeam.CollisionRule.PUSH_OTHER_TEAMS;
-
-                            return currentEntityNoPushOtherTeams && otherEntityNoPushOtherTeams;
-                        }
-                    }
-                }
-            } else {
+        return otherEntity -> {
+            if (otherEntity.isSpectator() || !otherEntity.isPushable()) {
                 return false;
             }
-        });
+
+            if (currentEntityIsClient) {
+                if (otherEntity instanceof PlayerEntity playerEntity) {
+                    if (!playerEntity.isMainPlayer()) {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            }
+
+            AbstractTeam otherTeam = otherEntity.getScoreboardTeam();
+            if (otherTeam == null) {
+                return currentEntityNoPushOwnTeam && currentEntityNoPushOtherTeams;
+            } else {
+                AbstractTeam.CollisionRule otherCollisionRule = otherTeam.getCollisionRule();
+                if (otherTeam.isEqual(currentTeam)) {
+                    boolean otherEntityNoPushOwnTeam = otherCollisionRule != AbstractTeam.CollisionRule.PUSH_OWN_TEAM;
+                    return currentEntityNoPushOwnTeam && otherEntityNoPushOwnTeam;
+                } else {
+                    boolean otherEntityNoPushOtherTeams = otherCollisionRule != AbstractTeam.CollisionRule.PUSH_OTHER_TEAMS;
+
+                    return currentEntityNoPushOtherTeams && otherEntityNoPushOtherTeams;
+                }
+            }
+        };
     }
 }

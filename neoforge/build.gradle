@@ -40,9 +40,7 @@ dependencies {
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')
 
-    shadowBundle 'com.alibaba.fastjson2:fastjson2:2.0.50'
-
-    shadowBundle 'com.github.cao.awa:catheter:1.0.43'
+    shadowBundle 'com.github.cao.awa:catheter:1.0.46'
     shadowBundle 'com.github.cao.awa:sinuatum:1.0.17'
 }
 

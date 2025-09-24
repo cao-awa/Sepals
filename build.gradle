@@ -58,9 +58,7 @@ subprojects {
             it.mappings("dev.architectury:yarn-mappings-patch-neoforge:$rootProject.yarn_mappings_patch_neoforge_version")
         }
 
-        implementation 'com.alibaba.fastjson2:fastjson2:2.0.50'
-
-        implementation 'com.github.cao.awa:catheter:1.0.45'
+        implementation 'com.github.cao.awa:catheter:1.0.46'
         implementation 'com.github.cao.awa:sinuatum:1.0.17'
     }
 

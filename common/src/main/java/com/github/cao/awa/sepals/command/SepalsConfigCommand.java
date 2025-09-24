@@ -30,29 +30,29 @@ public class SepalsConfigCommand {
                             return 0;
                         })
                         .requires(context -> context.hasPermissionLevel(4))
-                        .then(createBoolConfigNode(SepalsConfig.FORCE_ENABLE_SEPALS_POI))
-                        .then(createBoolConfigNode(SepalsConfig.ENABLE_SEPALS_VILLAGER))
-                        .then(createBoolConfigNode(SepalsConfig.ENABLE_SEPALS_FROG_LOOK_AT))
-                        .then(createBoolConfigNode(SepalsConfig.ENABLE_SEPALS_FROG_ATTACKABLE_SENSOR))
-                        .then(createBoolConfigNode(SepalsConfig.ENABLE_SEPALS_LIVING_TARGET_CACHE))
-                        .then(createBoolConfigNode(SepalsConfig.NEAREST_LIVING_ENTITIES_SENSOR_USE_QUICK_SORT))
-                        .then(createBoolConfigNode(SepalsConfig.ENABLE_SEPALS_BIASED_LONG_JUMP_TASK))
-                        .then(createBoolConfigNode(SepalsConfig.ENABLE_SEPALS_ENTITIES_CRAMMING))
-                        .then(createBoolConfigNode(SepalsConfig.ENABLE_SEPALS_ITEM_MERGE))
-                        .then(createBoolConfigNode(SepalsConfig.ENABLE_SEPALS_QUICK_CAN_BE_PUSH_BY_ENTITY_PREDICATE))
+                        .then(createConfigNode(SepalsConfig.FORCE_ENABLE_SEPALS_POI))
+                        .then(createConfigNode(SepalsConfig.ENABLE_SEPALS_VILLAGER))
+                        .then(createConfigNode(SepalsConfig.ENABLE_SEPALS_FROG_LOOK_AT))
+                        .then(createConfigNode(SepalsConfig.ENABLE_SEPALS_FROG_ATTACKABLE_SENSOR))
+                        .then(createConfigNode(SepalsConfig.ENABLE_SEPALS_LIVING_TARGET_CACHE))
+                        .then(createConfigNode(SepalsConfig.NEAREST_LIVING_ENTITIES_SENSOR_USE_QUICK_SORT))
+                        .then(createConfigNode(SepalsConfig.ENABLE_SEPALS_BIASED_LONG_JUMP_TASK))
+                        .then(createConfigNode(SepalsConfig.ENABLE_SEPALS_ENTITIES_CRAMMING))
+                        .then(createConfigNode(SepalsConfig.ENABLE_SEPALS_ITEM_MERGE))
+                        .then(createConfigNode(SepalsConfig.ENABLE_SEPALS_QUICK_CAN_BE_PUSH_BY_ENTITY_PREDICATE))
         );
     }
 
-    private static <X> int changeConfigTemporary(CommandContext<ServerCommandSource> context, SepalsConfigKey<X> key, BiFunction<CommandContext<ServerCommandSource>, String, X> argument) {
+    private static int changeConfigTemporary(CommandContext<ServerCommandSource> context, SepalsConfigKey key, BiFunction<CommandContext<ServerCommandSource>, String, Boolean> argument) {
         return changeConfig(context, key, argument, true);
     }
 
-    private static <X> int changeConfig(CommandContext<ServerCommandSource> context, SepalsConfigKey<X> key, BiFunction<CommandContext<ServerCommandSource>, String, X> argument) {
+    private static int changeConfig(CommandContext<ServerCommandSource> context, SepalsConfigKey key, BiFunction<CommandContext<ServerCommandSource>, String, Boolean> argument) {
         return changeConfig(context, key, argument, false);
     }
 
-    private static <X> int changeConfig(CommandContext<ServerCommandSource> context, SepalsConfigKey<X> key, BiFunction<CommandContext<ServerCommandSource>, String, X> argument, boolean temporary) {
-        X value = argument.apply(context, key.name());
+    private static int changeConfig(CommandContext<ServerCommandSource> context, SepalsConfigKey key, BiFunction<CommandContext<ServerCommandSource>, String, Boolean> argument, boolean temporary) {
+        boolean value = argument.apply(context, key.name());
         Sepals.CONFIG.setConfig(key, value);
         if (temporary) {
             context.getSource().sendFeedback(
@@ -71,15 +71,11 @@ public class SepalsConfigCommand {
         return 0;
     }
 
-    private static LiteralArgumentBuilder<ServerCommandSource> createBoolConfigNode(SepalsConfigKey<Boolean> key) {
+    private static LiteralArgumentBuilder<ServerCommandSource> createConfigNode(SepalsConfigKey key) {
         return createConfigNode(key, BoolArgumentType::bool, BoolArgumentType::getBool);
     }
 
-    private static LiteralArgumentBuilder<ServerCommandSource> createIntConfigNode(SepalsConfigKey<Integer> key) {
-        return createConfigNode(key, IntegerArgumentType::integer, IntegerArgumentType::getInteger);
-    }
-
-    private static <X> LiteralArgumentBuilder<ServerCommandSource> createConfigNode(SepalsConfigKey<X> key, Supplier<ArgumentType<X>> argumentType, BiFunction<CommandContext<ServerCommandSource>, String, X> argument) {
+    private static LiteralArgumentBuilder<ServerCommandSource> createConfigNode(SepalsConfigKey key, Supplier<ArgumentType<Boolean>> argumentType, BiFunction<CommandContext<ServerCommandSource>, String, Boolean> argument) {
         String configName = key.name();
 
         return CommandManager.literal(configName)

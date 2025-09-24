@@ -1,43 +1,45 @@
 package com.github.cao.awa.sepals.config;
 
-import com.alibaba.fastjson2.JSONObject;
-import com.alibaba.fastjson2.JSONWriter;
+import com.github.cao.awa.catheter.Catheter;
 import com.github.cao.awa.sepals.config.key.SepalsConfigKey;
 import com.github.cao.awa.sepals.world.poi.SepalsPointOfInterestStorage;
-import com.github.cao.awa.sinuatum.manipulate.Manipulate;
 import com.github.cao.awa.sinuatum.util.collection.CollectionFactor;
 import com.github.cao.awa.sinuatum.util.io.IOUtil;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import it.unimi.dsi.fastutil.objects.Object2BooleanArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import net.minecraft.util.JsonHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.nio.charset.StandardCharsets;
-import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 
 public class SepalsConfig {
     private static final Logger LOGGER = LogManager.getLogger("SepalsConfig");
     private static final File CONFIG_FILE = new File("config/sepals.json");
-    public static final SepalsConfigKey<Boolean> FORCE_ENABLE_SEPALS_POI = SepalsConfigKey.create("forceEnableSepalsPoi", false, enabled -> {
+    public static final SepalsConfigKey FORCE_ENABLE_SEPALS_POI = SepalsConfigKey.create("forceEnableSepalsPoi", false, enabled -> {
         if (enabled) {
             SepalsPointOfInterestStorage.onRequiredSepalsGetInChunk();
         }
     });
-    public static final SepalsConfigKey<Boolean> ENABLE_SEPALS_VILLAGER = SepalsConfigKey.create("enableSepalsVillager", true);
-    public static final SepalsConfigKey<Boolean> ENABLE_SEPALS_FROG_LOOK_AT = SepalsConfigKey.create("enableSepalsFrogLookAt", true);
-    public static final SepalsConfigKey<Boolean> ENABLE_SEPALS_FROG_ATTACKABLE_SENSOR = SepalsConfigKey.create("enableSepalsFrogAttackableSensor", true);
-    public static final SepalsConfigKey<Boolean> ENABLE_SEPALS_LIVING_TARGET_CACHE = SepalsConfigKey.create("enableSepalsLivingTargetCache", true);
-    public static final SepalsConfigKey<Boolean> NEAREST_LIVING_ENTITIES_SENSOR_USE_QUICK_SORT = SepalsConfigKey.create("nearestLivingEntitiesSensorUseQuickSort", true);
-    public static final SepalsConfigKey<Boolean> ENABLE_SEPALS_BIASED_LONG_JUMP_TASK = SepalsConfigKey.create("enableSepalsBiasedLongJumpTask", true);
-    public static final SepalsConfigKey<Boolean> ENABLE_SEPALS_ENTITIES_CRAMMING = SepalsConfigKey.create("enableSepalsEntitiesCramming", true);
-    public static final SepalsConfigKey<Boolean> ENABLE_SEPALS_ITEM_MERGE = SepalsConfigKey.create("enableSepalsItemMerge", true);
-    public static final SepalsConfigKey<Boolean> ENABLE_SEPALS_QUICK_CAN_BE_PUSH_BY_ENTITY_PREDICATE = SepalsConfigKey.create("enableSepalsQuickCanBePushByEntityPredicate", true);
+    public static final SepalsConfigKey ENABLE_SEPALS_VILLAGER = SepalsConfigKey.create("enableSepalsVillager", true);
+    public static final SepalsConfigKey ENABLE_SEPALS_FROG_LOOK_AT = SepalsConfigKey.create("enableSepalsFrogLookAt", true);
+    public static final SepalsConfigKey ENABLE_SEPALS_FROG_ATTACKABLE_SENSOR = SepalsConfigKey.create("enableSepalsFrogAttackableSensor", true);
+    public static final SepalsConfigKey ENABLE_SEPALS_LIVING_TARGET_CACHE = SepalsConfigKey.create("enableSepalsLivingTargetCache", true);
+    public static final SepalsConfigKey NEAREST_LIVING_ENTITIES_SENSOR_USE_QUICK_SORT = SepalsConfigKey.create("nearestLivingEntitiesSensorUseQuickSort", true);
+    public static final SepalsConfigKey ENABLE_SEPALS_BIASED_LONG_JUMP_TASK = SepalsConfigKey.create("enableSepalsBiasedLongJumpTask", true);
+    public static final SepalsConfigKey ENABLE_SEPALS_ENTITIES_CRAMMING = SepalsConfigKey.create("enableSepalsEntitiesCramming", true);
+    public static final SepalsConfigKey ENABLE_SEPALS_ITEM_MERGE = SepalsConfigKey.create("enableSepalsItemMerge", true);
+    public static final SepalsConfigKey ENABLE_SEPALS_QUICK_CAN_BE_PUSH_BY_ENTITY_PREDICATE = SepalsConfigKey.create("enableSepalsQuickCanBePushByEntityPredicate", true);
 
-    private final JSONObject config = new JSONObject();
+    private final Map<String, Boolean> config = new Object2BooleanArrayMap<>();
 
     public boolean isForceEnableSepalsPoi() {
         return getConfig(FORCE_ENABLE_SEPALS_POI);
@@ -79,38 +81,27 @@ public class SepalsConfig {
         return getConfig(ENABLE_SEPALS_QUICK_CAN_BE_PUSH_BY_ENTITY_PREDICATE);
     }
 
-    public <X> void setConfig(SepalsConfigKey<X> configKey, X value) {
-        this.config.put(configKey.name(), configKey.checkLimits(checkOrThrow(configKey, value)));
+    public void setConfig(SepalsConfigKey configKey, boolean value) {
+        this.config.put(configKey.name(), value);
     }
 
-    public <X> void setConfig(SepalsConfigKey<X> configKey, JSONObject json) {
-        this.config.put(configKey.name(), configKey.checkLimits(checkOrThrow(configKey, json.get(configKey.name()))));
+    public void setConfig(SepalsConfigKey configKey, Map<String, Boolean> map) {
+        this.config.put(configKey.name(), map.get(configKey.name()));
     }
 
-    public <X> X getConfig(@NotNull SepalsConfigKey<X> configKey) {
-        Object value = this.config.get(configKey.name());
+    public boolean getConfig(@NotNull SepalsConfigKey configKey) {
+        Boolean value = this.config.get(configKey.name());
         if (value == null) {
             return configKey.value();
         }
-        return checkOrThrow(configKey, value);
-    }
-
-    @NotNull
-    private static <X> X checkOrThrow(@NotNull SepalsConfigKey<X> configKey, Object value) {
-        if (value == null) {
-            throw new NullPointerException("Config value should not be null");
-        }
-        if (configKey.type().isInstance(value) || configKey.type().isAssignableFrom(value.getClass())) {
-            return Manipulate.cast(value);
-        }
-        throw new IllegalArgumentException("Config '" + configKey.name() + "' required '" + configKey.type() + "' but got '" + value.getClass() + "'");
+        return value;
     }
 
     public void load() {
         loadAsDefault();
 
         try {
-            final JSONObject config = JSONObject.parse(IOUtil.read(new FileReader(CONFIG_FILE, StandardCharsets.UTF_8)));
+            final Map<String, Boolean> config = toMap(IOUtil.read(new FileReader(CONFIG_FILE, StandardCharsets.UTF_8)));
 
             setConfig(FORCE_ENABLE_SEPALS_POI, config);
             setConfig(ENABLE_SEPALS_VILLAGER, config);
@@ -129,14 +120,51 @@ public class SepalsConfig {
         write();
     }
 
+    public SepalsConfigKey getConfigKey(String name) {
+        return switch (name) {
+            case "forceEnableSepalsPoi" -> FORCE_ENABLE_SEPALS_POI;
+            case "enableSepalsVillager" -> ENABLE_SEPALS_VILLAGER;
+            case "enableSepalsFrogLookAt" -> ENABLE_SEPALS_FROG_LOOK_AT;
+            case "enableSepalsFrogAttackableSensor" -> ENABLE_SEPALS_FROG_ATTACKABLE_SENSOR;
+            case "enableSepalsLivingTargetCache" -> ENABLE_SEPALS_LIVING_TARGET_CACHE;
+            case "nearestLivingEntitiesSensorUseQuickSort" -> NEAREST_LIVING_ENTITIES_SENSOR_USE_QUICK_SORT;
+            case "enableSepalsBiasedLongJumpTask" -> ENABLE_SEPALS_BIASED_LONG_JUMP_TASK;
+            case "enableSepalsEntitiesCramming" -> ENABLE_SEPALS_ENTITIES_CRAMMING;
+            case "enableSepalsItemMerge" -> ENABLE_SEPALS_ITEM_MERGE;
+            case "enableSepalsQuickCanBePushByEntityPredicate" -> ENABLE_SEPALS_QUICK_CAN_BE_PUSH_BY_ENTITY_PREDICATE;
+            default -> throw new IllegalArgumentException("Unable to find config key: " + name);
+        };
+    }
+
+    public Map<String, Boolean> toMap(String data) {
+        Map<String, JsonElement> jsonMap = JsonHelper.deserialize(data).asMap();
+
+        Map<String, Boolean> sepalsMap = new Object2ObjectOpenHashMap<>();
+
+        return Catheter.of(
+                jsonMap.entrySet()
+        ).varyMap(
+                sepalsMap,
+                (identity, entry) -> {
+                    identity.put(entry.getKey(), entry.getValue().getAsBoolean());
+                }
+        );
+    }
+
     public void write() {
         try {
             if (!CONFIG_FILE.getParentFile().exists()) {
                 CONFIG_FILE.getParentFile().mkdirs();
             }
+            JsonObject json = new JsonObject();
+
+            for (Map.Entry<String, Boolean> entry : this.config.entrySet()) {
+                json.addProperty(entry.getKey(), entry.getValue());
+            }
+
             IOUtil.write(
                     new FileWriter(CONFIG_FILE, StandardCharsets.UTF_8),
-                    this.config.toString(JSONWriter.Feature.PrettyFormat)
+                    json.toString()
             );
         } catch (Exception e) {
             LOGGER.warn("Failed to save config", e);
@@ -182,8 +210,8 @@ public class SepalsConfig {
         LOGGER.info("Sepals 'enableSepalsQuickCanBePushByEntityPredicate' flag is {}", isEnableSepalsQuickCanBePushByEntityPredicate());
     }
 
-    public Set<SepalsConfigKey<?>> collect() {
-        Set<SepalsConfigKey<?>> configs = CollectionFactor.hashSet();
+    public Set<SepalsConfigKey> collect() {
+        Set<SepalsConfigKey> configs = CollectionFactor.hashSet();
 
         configs.add(FORCE_ENABLE_SEPALS_POI);
         configs.add(ENABLE_SEPALS_VILLAGER);
@@ -199,8 +227,8 @@ public class SepalsConfig {
         return configs;
     }
 
-    public Set<SepalsConfigKey<?>> collectEnabled() {
-        Set<SepalsConfigKey<?>> enabled = CollectionFactor.hashSet();
+    public Set<SepalsConfigKey> collectEnabled() {
+        Set<SepalsConfigKey> enabled = CollectionFactor.hashSet();
 
         if (isForceEnableSepalsPoi()) {
             enabled.add(FORCE_ENABLE_SEPALS_POI);

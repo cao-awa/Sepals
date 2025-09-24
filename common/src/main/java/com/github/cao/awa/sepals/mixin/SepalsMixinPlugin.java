@@ -1,15 +1,12 @@
 package com.github.cao.awa.sepals.mixin;
 
-import com.alibaba.fastjson2.JSONObject;
-import com.github.cao.awa.apricot.util.collection.ApricotCollectionFactor;
 import com.github.cao.awa.sepals.Sepals;
 import com.github.cao.awa.sepals.config.key.SepalsConfigKey;
 import com.github.cao.awa.sepals.transform.mixin.config.SepalsMixinConfig;
 import com.github.cao.awa.sepals.transform.mixin.handler.SepalsMixinHandler;
 import com.github.cao.awa.sinuatum.manipulate.Manipulate;
 import com.github.cao.awa.sinuatum.util.io.IOUtil;
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.ModContainer;
+import net.minecraft.util.JsonHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.tree.ClassNode;
@@ -40,7 +37,7 @@ public class SepalsMixinPlugin implements IMixinConfigPlugin {
                     throw new IllegalArgumentException("The specified resource 'sepals.mixin-handlers.json' was invalid or could not be read");
                 }
                 try {
-                    return SepalsMixinConfig.create(JSONObject.parse(IOUtil.read(new InputStreamReader(resource))));
+                    return SepalsMixinConfig.create(JsonHelper.deserialize(IOUtil.read(new InputStreamReader(resource))));
                 } catch (IOException e) {
                     LOGGER.warn(e);
                 }

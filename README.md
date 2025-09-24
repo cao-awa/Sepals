@@ -2,7 +2,7 @@
 
 An extremely radical and experimental optimization for Minecraft server performances.
 
-We recommended using Sepals with [lithium](https://modrinth.com/mod/lithium) to make the best performances.
+We recommended using Sepals with [lithium](https://modrinth.com/mod/lithium) and [async](https://modrinth.com/mod/async) to make the best performances.
 
 ![](https://count.getloli.com/@@cao-awa.sepals?name=%40cao-awa.sepals&theme=rule34&padding=7&offset=0&align=top&scale=1&pixelated=1&darkmode=auto)
 

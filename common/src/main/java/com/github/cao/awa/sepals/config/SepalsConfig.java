@@ -15,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.nio.charset.StandardCharsets;
@@ -38,6 +39,7 @@ public class SepalsConfig {
     public static final SepalsConfigKey ENABLE_SEPALS_ENTITIES_CRAMMING = SepalsConfigKey.create("enableSepalsEntitiesCramming", true);
     public static final SepalsConfigKey ENABLE_SEPALS_ITEM_MERGE = SepalsConfigKey.create("enableSepalsItemMerge", true);
     public static final SepalsConfigKey ENABLE_SEPALS_QUICK_CAN_BE_PUSH_BY_ENTITY_PREDICATE = SepalsConfigKey.create("enableSepalsQuickCanBePushByEntityPredicate", true);
+    public static final SepalsConfigKey ENABLE_SEPALS_REGISTRY_PROBE = SepalsConfigKey.create("enableSepalsRegistryProbe", true);
 
     private final Map<String, Boolean> config = new Object2BooleanArrayMap<>();
 
@@ -81,12 +83,24 @@ public class SepalsConfig {
         return getConfig(ENABLE_SEPALS_QUICK_CAN_BE_PUSH_BY_ENTITY_PREDICATE);
     }
 
+    public boolean isEnableSepalsRegistryProbe() {
+        return getConfig(ENABLE_SEPALS_REGISTRY_PROBE);
+    }
+
     public void setConfig(SepalsConfigKey configKey, boolean value) {
         this.config.put(configKey.name(), value);
     }
 
     public void setConfig(SepalsConfigKey configKey, Map<String, Boolean> map) {
-        this.config.put(configKey.name(), map.get(configKey.name()));
+        this.config.put(configKey.name(), getOrDefault(configKey, map));
+    }
+
+    private boolean getOrDefault(SepalsConfigKey configKey, Map<String, Boolean> map) {
+        Boolean result = map.get(configKey.name());
+        if (result == null) {
+            return configKey.value();
+        }
+        return result;
     }
 
     public boolean getConfig(@NotNull SepalsConfigKey configKey) {
@@ -113,8 +127,11 @@ public class SepalsConfig {
             setConfig(ENABLE_SEPALS_ENTITIES_CRAMMING, config);
             setConfig(ENABLE_SEPALS_ITEM_MERGE, config);
             setConfig(ENABLE_SEPALS_QUICK_CAN_BE_PUSH_BY_ENTITY_PREDICATE, config);
+            setConfig(ENABLE_SEPALS_REGISTRY_PROBE, config);
+        } catch (FileNotFoundException e) {
+            LOGGER.warn("Config not found, will use default config values");
         } catch (Exception e) {
-            LOGGER.warn("Config not found, use default values", e);
+            LOGGER.warn("Happening unexpected exception, config system cannot resolve it, will use default config values", e);
         }
 
         write();
@@ -132,6 +149,7 @@ public class SepalsConfig {
             case "enableSepalsEntitiesCramming" -> ENABLE_SEPALS_ENTITIES_CRAMMING;
             case "enableSepalsItemMerge" -> ENABLE_SEPALS_ITEM_MERGE;
             case "enableSepalsQuickCanBePushByEntityPredicate" -> ENABLE_SEPALS_QUICK_CAN_BE_PUSH_BY_ENTITY_PREDICATE;
+            case "enableSepalsRegistryProbe" -> ENABLE_SEPALS_REGISTRY_PROBE;
             default -> throw new IllegalArgumentException("Unable to find config key: " + name);
         };
     }
@@ -182,6 +200,7 @@ public class SepalsConfig {
         setConfig(ENABLE_SEPALS_ENTITIES_CRAMMING, ENABLE_SEPALS_ENTITIES_CRAMMING.value());
         setConfig(ENABLE_SEPALS_ITEM_MERGE, ENABLE_SEPALS_ITEM_MERGE.value());
         setConfig(ENABLE_SEPALS_QUICK_CAN_BE_PUSH_BY_ENTITY_PREDICATE, ENABLE_SEPALS_QUICK_CAN_BE_PUSH_BY_ENTITY_PREDICATE.value());
+        setConfig(ENABLE_SEPALS_REGISTRY_PROBE, ENABLE_SEPALS_REGISTRY_PROBE.value());
     }
 
     public void copyFrom(@NotNull SepalsConfig config) {
@@ -195,6 +214,7 @@ public class SepalsConfig {
         setConfig(ENABLE_SEPALS_ENTITIES_CRAMMING, config.isEnableSepalsEntitiesCramming());
         setConfig(ENABLE_SEPALS_ITEM_MERGE, config.isEnableSepalsItemMerge());
         setConfig(ENABLE_SEPALS_QUICK_CAN_BE_PUSH_BY_ENTITY_PREDICATE, config.isEnableSepalsQuickCanBePushByEntityPredicate());
+        setConfig(ENABLE_SEPALS_REGISTRY_PROBE, config.isEnableSepalsRegistryProbe());
     }
 
     public void print() {
@@ -208,6 +228,7 @@ public class SepalsConfig {
         LOGGER.info("Sepals 'enableSepalsEntitiesCramming' flag is {}", isEnableSepalsEntitiesCramming());
         LOGGER.info("Sepals 'enableSepalsItemMerge' flag is {}", isEnableSepalsItemMerge());
         LOGGER.info("Sepals 'enableSepalsQuickCanBePushByEntityPredicate' flag is {}", isEnableSepalsQuickCanBePushByEntityPredicate());
+        LOGGER.info("Sepals 'enableSepalsRegistryProbe' flag is {}", isEnableSepalsRegistryProbe());
     }
 
     public Set<SepalsConfigKey> collect() {
@@ -223,6 +244,7 @@ public class SepalsConfig {
         configs.add(ENABLE_SEPALS_ENTITIES_CRAMMING);
         configs.add(ENABLE_SEPALS_ITEM_MERGE);
         configs.add(ENABLE_SEPALS_QUICK_CAN_BE_PUSH_BY_ENTITY_PREDICATE);
+        configs.add(ENABLE_SEPALS_REGISTRY_PROBE);
 
         return configs;
     }
@@ -264,6 +286,10 @@ public class SepalsConfig {
 
         if (isEnableSepalsItemMerge()) {
             enabled.add(ENABLE_SEPALS_ITEM_MERGE);
+        }
+
+        if (isEnableSepalsRegistryProbe()) {
+            enabled.add(ENABLE_SEPALS_REGISTRY_PROBE);
         }
 
         return enabled;

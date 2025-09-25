@@ -33,23 +33,6 @@ public abstract class LivingEntityMixin extends Entity {
         super(type, world);
     }
 
-    @Redirect(
-            method = "isClimbing",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/block/BlockState;isIn(Lnet/minecraft/registry/tag/TagKey;)Z"
-            )
-    )
-    public boolean isClimbing(BlockState blockState, TagKey<Block> tagKey) {
-        BlockStateTagAccessor tagAccessor = (BlockStateTagAccessor) blockState;
-
-        if (tagAccessor.sepals$isClimbableInitialized()) {
-            return tagAccessor.isClimbable();
-        }
-
-        return blockState.isIn(tagKey);
-    }
-
     @Inject(
             method = "tickCramming",
             at = @At("HEAD"),

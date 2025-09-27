@@ -1,4 +1,4 @@
-package com.github.cao.awa.sepals.mixin;
+package com.github.cao.awa.sepals.mixin.plugin;
 
 import com.github.cao.awa.sepals.Sepals;
 import com.github.cao.awa.sepals.config.key.SepalsConfigKey;
@@ -28,22 +28,27 @@ public class SepalsMixinPlugin implements IMixinConfigPlugin {
     public void onLoad(String mixinPackage) {
         LOGGER.info("Sepals plugin for version '{}' is loading", Sepals.VERSION);
 
+        LOGGER.info("Handling mixin package {}", mixinPackage);
+
         if (config == null) {
             SepalsMixinHandler.registerDefaultHandlers();
             config = Manipulate.supplyLater(() -> {
-                IMixinService service = MixinService.getService();
-                InputStream resource = service.getResourceAsStream("sepals.mixin-handlers.json");
-                if (resource == null) {
-                    throw new IllegalArgumentException("The specified resource 'sepals.mixin-handlers.json' was invalid or could not be read");
-                }
-                try {
-                    return SepalsMixinConfig.create(JsonHelper.deserialize(IOUtil.read(new InputStreamReader(resource))));
-                } catch (IOException e) {
-                    LOGGER.warn(e);
-                }
+                        IMixinService service = MixinService.getService();
+                        InputStream resource = service.getResourceAsStream("sepals.mixin-handlers.json");
+                        if (resource == null) {
+                            throw new IllegalArgumentException("The specified resource 'sepals.mixin-handlers.json' was invalid or could not be read");
+                        }
+                        try {
+                            return SepalsMixinConfig.create(JsonHelper.deserialize(IOUtil.read(new InputStreamReader(resource))));
+                        } catch (IOException e) {
+                            LOGGER.warn(e);
+                        }
 
-                return null;
-            }).catching(Exception.class, Exception::printStackTrace).get();
+                        return null;
+                    }
+            ).catching(
+                    Exception.class, Exception::printStackTrace
+            ).get();
         }
     }
 
@@ -92,7 +97,7 @@ public class SepalsMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public void postApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
-        Sepals.LOGGER.info("Doing sepals configs change actions for {}:{}", targetClassName, mixinClassName);
+        Sepals.LOGGER.info("Sepals mixin change actions for {}:{}", targetClassName, mixinClassName);
         Sepals.CONFIG.collectEnabled().forEach(SepalsConfigKey::doChangeAction);
     }
 }

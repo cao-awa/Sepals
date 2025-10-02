@@ -46,7 +46,7 @@ public class SepalsSleepTask extends MultiTickTask<LivingEntity> {
 
                 BlockState blockState = world.getBlockState(globalPos.pos());
 
-                return globalPos.pos().isWithinDistance(entity.getPos(), 2.0) && blockState.isIn(BlockTags.BEDS) && !blockState.get(BedBlock.OCCUPIED);
+                return globalPos.pos().isWithinDistance(entity.getEntityPos(), 2.0) && blockState.isIn(BlockTags.BEDS) && !blockState.get(BedBlock.OCCUPIED);
             }
         }
     }
@@ -59,7 +59,7 @@ public class SepalsSleepTask extends MultiTickTask<LivingEntity> {
         } else {
             BlockPos blockPos = optional.get().pos();
 
-            return entity.getBrain().hasActivity(Activity.REST) && entity.getY() > blockPos.getY() + 0.4 && blockPos.isWithinDistance(entity.getPos(), 1.14);
+            return entity.getBrain().hasActivity(Activity.REST) && entity.getY() > blockPos.getY() + 0.4 && blockPos.isWithinDistance(entity.getEntityPos(), 1.14);
         }
     }
 

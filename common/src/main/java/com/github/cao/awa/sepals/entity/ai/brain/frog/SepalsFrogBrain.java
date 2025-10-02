@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 public class SepalsFrogBrain {
     public static <E extends MobEntity> boolean shouldJumpTo(E frog, BlockPos pos) {
-        World world = frog.getWorld();
+        World world = frog.getEntityWorld();
 
         BlockState posState = world.getBlockState(pos);
         boolean posStateIsAir = posState.isAir();
@@ -68,7 +68,7 @@ public class SepalsFrogBrain {
             return false;
         }
 
-        World world = entity.getWorld();
+        World world = entity.getEntityWorld();
 
         if (world instanceof ServerWorld serverWorld) {
             return !isTargetUnreachable(entity, target) && Sensor.testAttackableTargetPredicate(serverWorld, entity, target);

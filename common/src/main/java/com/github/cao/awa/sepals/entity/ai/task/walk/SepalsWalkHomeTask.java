@@ -12,7 +12,6 @@ import net.minecraft.entity.ai.brain.WalkTarget;
 import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.server.network.DebugInfoSender;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.poi.PointOfInterestStorage;
@@ -87,7 +86,7 @@ public class SepalsWalkHomeTask extends SepalsSingleTickTask<PathAwareEntity> im
                     Optional<RegistryEntry<PointOfInterestType>> optional2 = pointOfInterestStorage.getType(blockPos);
                     if (optional2.isPresent()) {
                         remember(MemoryModuleType.WALK_TARGET, new WalkTarget(blockPos, this.speed, 1));
-                        DebugInfoSender.sendPointOfInterest(world, blockPos);
+                        world.getSubscriptionTracker().onPoiUpdated(blockPos);
                     }
                 }
 

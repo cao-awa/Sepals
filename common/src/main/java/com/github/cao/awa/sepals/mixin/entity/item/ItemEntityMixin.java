@@ -45,7 +45,7 @@ public abstract class ItemEntityMixin extends Entity {
         if (Sepals.CONFIG.isEnableSepalsItemMerge()) {
             if (canMerge()) {
                 getBoxedEntities(
-                        getWorld(),
+                        getEntityWorld(),
                         getBoundingBox().expand(0.5, 0.0, 0.5),
                         itemEntity -> {
                             tryMerge(itemEntity);

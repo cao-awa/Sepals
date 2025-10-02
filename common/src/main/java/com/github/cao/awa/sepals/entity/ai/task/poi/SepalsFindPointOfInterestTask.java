@@ -10,7 +10,6 @@ import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.server.network.DebugInfoSender;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
@@ -101,7 +100,7 @@ public class SepalsFindPointOfInterestTask {
                                                 queryResult.remember(GlobalPos.create(world.getRegistryKey(), blockPos));
                                                 entityStatus.ifPresent(status -> world.sendEntityStatus(entity, status));
                                                 long2ObjectMap.clear();
-                                                DebugInfoSender.sendPointOfInterest(world, blockPos);
+                                                world.getSubscriptionTracker().onPoiUpdated(blockPos);
                                             });
                                         }
 

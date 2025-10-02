@@ -102,7 +102,7 @@ public class SepalsLongJumpTask<E extends MobEntity> extends MultiTickTask<E> {
 
     protected boolean shouldKeepRunning(ServerWorld serverWorld, MobEntity mobEntity, long l) {
         boolean bl = this.lastPos != null
-                && this.lastPos.equals(mobEntity.getPos())
+                && this.lastPos.equals(mobEntity.getEntityPos())
                 && this.cooldown > 0
                 && !mobEntity.isTouchingWater()
                 && (this.lastTarget != null || this.targets.isPresent());
@@ -117,7 +117,7 @@ public class SepalsLongJumpTask<E extends MobEntity> extends MultiTickTask<E> {
     protected void run(ServerWorld serverWorld, E mobEntity, long l) {
         this.lastTarget = null;
         this.cooldown = 20;
-        this.lastPos = mobEntity.getPos();
+        this.lastPos = mobEntity.getEntityPos();
         BlockPos blockPos = mobEntity.getBlockPos();
         int i = blockPos.getX();
         int j = blockPos.getY();

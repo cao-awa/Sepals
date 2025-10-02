@@ -24,7 +24,7 @@ public class SepalsEntityPredicates {
         boolean currentEntityNoPushOwnTeam = currentCollisionRule != AbstractTeam.CollisionRule.PUSH_OWN_TEAM;
         boolean currentEntityNoPushOtherTeams = currentCollisionRule != AbstractTeam.CollisionRule.PUSH_OTHER_TEAMS;
 
-        boolean currentEntityIsClient = currentEntity.getWorld().isClient;
+        boolean currentEntityIsClient = currentEntity.getEntityWorld().isClient();
 
         return otherEntity -> {
             if (otherEntity.isSpectator() || !otherEntity.isPushable()) {

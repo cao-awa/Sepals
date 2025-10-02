@@ -144,7 +144,7 @@ public abstract class BrainMixin<E extends LivingEntity> implements TaskDelegate
             )
     )
     private void startTasks(Brain<E> instance, ServerWorld world, E entity) {
-        long time = entity.getWorld().getTime();
+        long time = entity.getEntityWorld().getTime();
 
         Catheter<Task<? super E>> running = getTasks().filterTo(task -> {
             if (SepalsTaskStatus.isStopped(task.getStatus())) {
@@ -168,7 +168,7 @@ public abstract class BrainMixin<E extends LivingEntity> implements TaskDelegate
             )
     )
     private void updateTasks(Brain<E> instance, ServerWorld world, E entity) {
-        long time = entity.getWorld().getTime();
+        long time = entity.getEntityWorld().getTime();
 
         getRunningTasks().filter(task -> {
             boolean running = SepalsTaskStatus.isRunning(task.getStatus());
@@ -185,7 +185,7 @@ public abstract class BrainMixin<E extends LivingEntity> implements TaskDelegate
             cancellable = true
     )
     private void stopAllTasks(ServerWorld world, E entity, CallbackInfo ci) {
-        long time = entity.getWorld().getTime();
+        long time = entity.getEntityWorld().getTime();
 
         getRunningTasks().each(task -> task.stop(world, entity, time));
 

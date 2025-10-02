@@ -39,7 +39,7 @@ public abstract class LivingEntityMixin extends Entity {
             cancellable = true
     )
     public void sepalsCramming(CallbackInfo ci) {
-        if (getWorld() instanceof ServerWorld serverWorld && Sepals.CONFIG.isEnableSepalsEntitiesCramming()) {
+        if (getEntityWorld() instanceof ServerWorld serverWorld && Sepals.CONFIG.isEnableSepalsEntitiesCramming()) {
             int maxCramming = serverWorld.getGameRules().getInt(GameRules.MAX_ENTITY_CRAMMING);
             int crammingLimit = maxCramming - 1;
 

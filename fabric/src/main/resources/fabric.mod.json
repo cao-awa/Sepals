@@ -29,7 +29,7 @@
   ],
   "depends": {
     "fabricloader": "*",
-    "minecraft": ">=1.21",
+    "minecraft": "1.21.9",
     "fabric": "*"
   }
 }

@@ -38,7 +38,7 @@ public class SepalsTestCommand {
 
                                             if (player != null) {
                                                 BlockPos pos = player.getBlockPos();
-                                                World world = player.getWorld();
+                                                World world = player.getEntityWorld();
 
                                                 for (int i = 0; i < explosionCount; i++) {
                                                     world.createExplosion(

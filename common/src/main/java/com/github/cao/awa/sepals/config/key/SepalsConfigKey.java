@@ -1,6 +1,6 @@
 package com.github.cao.awa.sepals.config.key;
 
-import com.github.cao.awa.consumer.BooleanConsumer;
+import com.github.cao.awa.sepals.consumer.BooleanConsumer;
 
 public record SepalsConfigKey(String name, boolean value, BooleanConsumer onChangeAction) {
     public static SepalsConfigKey create(String name, boolean defaultValue) {

@@ -43,7 +43,7 @@ public class SepalsFindPointOfInterestTask {
             Optional<Byte> entityStatus, BiPredicate<ServerWorld, BlockPos> worldPosBiPredicate
     ) {
         MutableLong mutableLong = new MutableLong(0L);
-        Long2ObjectMap<RetryMarker> long2ObjectMap = new Long2ObjectOpenHashMap<>();
+        Long2ObjectMap<RetryMarker> retryMarkers = new Long2ObjectOpenHashMap<>();
         SingleTickTask<PathAwareEntity> singleTickTask = TaskTriggerer.task(
                 taskContext -> taskContext.group(taskContext.queryMemoryAbsent(potentialPoiPosModule))
                         .apply(
@@ -59,9 +59,9 @@ public class SepalsFindPointOfInterestTask {
                                     } else {
                                         mutableLong.setValue(time + 20L + (long) world.getRandom().nextInt(20));
                                         PointOfInterestStorage pointOfInterestStorage = world.getPointOfInterestStorage();
-                                        long2ObjectMap.long2ObjectEntrySet().removeIf(entry -> !entry.getValue().isAttempting(time));
+                                        retryMarkers.long2ObjectEntrySet().removeIf(entry -> !entry.getValue().isAttempting(time));
                                         Predicate<BlockPos> predicate2 = pos -> {
-                                            RetryMarker retryMarker = long2ObjectMap.get(pos.asLong());
+                                            RetryMarker retryMarker = retryMarkers.get(pos.asLong());
                                             if (retryMarker == null) {
                                                 return true;
                                             } else if (!retryMarker.shouldRetry(time)) {
@@ -71,7 +71,7 @@ public class SepalsFindPointOfInterestTask {
                                                 return true;
                                             }
                                         };
-                                        Pair<RegistryEntry<PointOfInterestType>, BlockPos>[] set = SepalsPointOfInterestStorage.getSortedTypesAndPositions(
+                                        Pair<RegistryEntry<PointOfInterestType>, BlockPos>[] poiPoses = SepalsPointOfInterestStorage.getSortedTypesAndPositions(
                                                         pointOfInterestStorage,
                                                         poiPredicate, predicate2, entity.getBlockPos(), 48, PointOfInterestStorage.OccupationStatus.HAS_SPACE
                                                 )
@@ -79,12 +79,12 @@ public class SepalsFindPointOfInterestTask {
                                                 .distinct()
                                                 .safeArray();
 
-                                        Path path = findPathToPoi(entity, set);
+                                        Path path = findPathToPoi(entity, poiPoses);
                                         if (path == null || !path.reachesTarget()) {
-                                            for (Pair<RegistryEntry<PointOfInterestType>, BlockPos> pair : set) {
-                                                long2ObjectMap.computeIfAbsent(
+                                            for (Pair<RegistryEntry<PointOfInterestType>, BlockPos> pair : poiPoses) {
+                                                retryMarkers.computeIfAbsent(
                                                         pair.getSecond().asLong(),
-                                                        (Long2ObjectFunction<? extends RetryMarker>) (m -> new RetryMarker(world.random, time))
+                                                        x -> new RetryMarker(world.random, time)
                                                 );
                                             }
                                         } else {
@@ -99,7 +99,7 @@ public class SepalsFindPointOfInterestTask {
                                                 );
                                                 queryResult.remember(GlobalPos.create(world.getRegistryKey(), blockPos));
                                                 entityStatus.ifPresent(status -> world.sendEntityStatus(entity, status));
-                                                long2ObjectMap.clear();
+                                                retryMarkers.clear();
                                                 world.getSubscriptionTracker().onPoiUpdated(blockPos);
                                             });
                                         }

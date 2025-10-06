@@ -27,26 +27,9 @@ subprojects {
     }
 
     repositories {
-        // Add repositories to retrieve artifacts from in here.
-        // You should only use this when depending on other mods because
-        // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-        // See https://docs.gradle.org/current/userguide/declaring_repositories.html
-        // for more information about repositories.
         maven {
-            name = "GitHubPackages"
-            url = "https://maven.pkg.github.com/cao-awa/Catheter"
-            credentials {
-                username = "cao-awa"
-                password = "ghp_UgALm1Ta2ONYeNh" + "S2m0XoWSc27BcE22v4Umn"
-            }
-        }
-        maven {
-            name = "GitHubPackages"
-            url = "https://maven.pkg.github.com/cao-awa/Sinuatum"
-            credentials {
-                username = "cao-awa"
-                password = "ghp_UgALm1Ta2ONYeNh" + "S2m0XoWSc27BcE22v4Umn"
-            }
+            name = "Modrinth"
+            url = "https://api.modrinth.com/maven"
         }
         mavenCentral()
     }
@@ -58,8 +41,7 @@ subprojects {
             it.mappings("dev.architectury:yarn-mappings-patch-neoforge:$rootProject.yarn_mappings_patch_neoforge_version")
         }
 
-        implementation 'com.github.cao.awa:catheter:1.0.46'
-        implementation 'com.github.cao.awa:sinuatum:1.0.17'
+        implementation 'maven.modrinth:daisy:1.0.1'
     }
 
     java {

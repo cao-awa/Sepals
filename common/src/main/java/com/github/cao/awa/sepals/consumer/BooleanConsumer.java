@@ -1,4 +1,4 @@
-package com.github.cao.awa.consumer;
+package com.github.cao.awa.sepals.consumer;
 
 import java.util.Objects;
 

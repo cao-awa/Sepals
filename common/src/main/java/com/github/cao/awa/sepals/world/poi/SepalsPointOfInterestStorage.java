@@ -75,22 +75,7 @@ public class SepalsPointOfInterestStorage {
             BlockPos blockPos2 = poi.getPos();
             return Math.abs(blockPos2.getX() - pos.getX()) <= radius && Math.abs(blockPos2.getZ() - pos.getZ()) <= radius;
         }).collect(Collectors.toSet()));
-//        return Catheter.of(ChunkPos.stream(new ChunkPos(pos), i).toArray(ChunkPos[]::new))
-//                .flatTo(chunkPos -> getInChunk(storage, typePredicate, chunkPos, occupationStatus))
-//                .discard(poi -> {
-//                    BlockPos blockPos2 = poi.getPos();
-//                    return Math.abs(blockPos2.getX() - pos.getX()) > radius || Math.abs(blockPos2.getZ() - pos.getZ()) > radius;
-//                });
     }
-
-//    @Debug
-//    public Stream<PointOfInterest> getInChunk(Predicate<RegistryEntry<PointOfInterestType>> typePredicate, ChunkPos chunkPos, PointOfInterestStorage.OccupationStatus occupationStatus) {
-//        return IntStream.rangeClosed(this.world.getBottomSectionCoord(), this.world.getTopSectionCoord()).boxed().map((coord) -> {
-//            return this.get(ChunkSectionPos.from(chunkPos, coord).asLong());
-//        }).filter(Optional::isPresent).flatMap((poiSet) -> {
-//            return ((PointOfInterestSet)poiSet.get()).get(typePredicate, occupationStatus);
-//        });
-//    }
 
     @Debug
     public static Stream<PointOfInterest> getInChunk(

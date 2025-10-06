@@ -1,10 +1,10 @@
 package com.github.cao.awa.sepals;
 
-import com.github.cao.awa.apricot.util.collection.ApricotCollectionFactor;
 import com.github.cao.awa.sepals.command.SepalsDebugCommand;
 import com.github.cao.awa.sepals.command.SepalsConfigCommand;
 import com.github.cao.awa.sepals.command.SepalsTestCommand;
 import com.github.cao.awa.sepals.transform.mixin.handler.SepalsMixinHandler;
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
@@ -19,12 +19,12 @@ public class SepalsFabric implements ModInitializer {
         Sepals.loadingPlatform = "fabric";
 
         Sepals.LOADED_MODS = Optional.of(FabricLoader.getInstance().getAllMods()).map(mods -> {
-            Set<String> modsSet = ApricotCollectionFactor.hashSet();
+            Set<String> modsSet = new ObjectLinkedOpenHashSet<>();
             for (ModContainer mod : mods) {
                 modsSet.add(mod.getMetadata().getId());
             }
             return modsSet;
-        }).orElseGet(ApricotCollectionFactor::hashSet);
+        }).orElseGet(ObjectLinkedOpenHashSet::new);
 
         SepalsMixinHandler.startPostProcess();
 

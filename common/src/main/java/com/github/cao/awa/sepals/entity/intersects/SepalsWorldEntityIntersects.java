@@ -5,7 +5,6 @@ import com.github.cao.awa.sinuatum.util.collection.CollectionFactor;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.boss.dragon.EnderDragonPart;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.profiler.Profilers;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,15 +28,16 @@ public class SepalsWorldEntityIntersects {
 
             entities.add(entity);
         });
+
         for (Entity entity : entities) {
             if (predicate.test(entity)) {
-                tryDoEntityInterestWithoutCramming(entity, action);
+                action.accept(entity);
             }
         }
 
         for (EnderDragonPart enderDragonPart : world.getEnderDragonParts()) {
             if (enderDragonPart != except && enderDragonPart.owner != except && predicate.test(enderDragonPart) && box.intersects(enderDragonPart.getBoundingBox())) {
-                tryDoEntityInterestWithoutCramming(enderDragonPart, action);
+                action.accept(enderDragonPart);
             }
         }
     }
@@ -71,23 +71,13 @@ public class SepalsWorldEntityIntersects {
         }
     }
 
-    private void tryDoEntityInterestWithoutCramming(@NotNull final Entity entity, final Consumer<Entity> action) {
-        tryDoEntityActionInterest(entity, action);
-    }
-
     private void tryDoEntityInterest(@NotNull final Entity entity, final Consumer<Entity> action, final Consumer<Entity> crammingAction, final int crammingLimit) {
         if (!entity.hasVehicle()) {
             ++this.crammingCount;
         }
-        tryDoEntityActionInterest(entity, action);
-        tryEntityCrammingInterest(entity, crammingAction, crammingLimit);
-    }
 
-    private void tryDoEntityActionInterest(@NotNull final Entity entity, Consumer<Entity> action) {
         action.accept(entity);
-    }
 
-    private void tryEntityCrammingInterest(@NotNull final Entity entity, final Consumer<Entity> action, final int crammingLimit) {
         if (this.crammingCount > crammingLimit) {
             action.accept(entity);
         }

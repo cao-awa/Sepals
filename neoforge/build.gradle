@@ -40,8 +40,7 @@ dependencies {
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')
 
-    shadowBundle 'com.github.cao.awa:catheter:1.0.46'
-    shadowBundle 'com.github.cao.awa:sinuatum:1.0.17'
+    implementation 'maven.modrinth:daisy:1.0.1'
 }
 
 processResources {

@@ -33,14 +33,12 @@ public abstract class NearestLivingEntitiesSensorMixin<T extends LivingEntity> {
     private void sense(ServerWorld world, T entity, CallbackInfo ci) {
         Box box = entity.getBoundingBox().expand(16.0D, 16.0D, 16.0D);
 
-        Comparator<LivingEntity> comparator = Comparator.comparingDouble(entity::squaredDistanceTo);
-        Brain<?> brain = entity.getBrain();
-
         List<LivingEntity> mobs = world.getEntitiesByClass(LivingEntity.class, box, livingEntity -> livingEntity != entity && livingEntity.isAlive());
 
         boolean useQuickSort = Sepals.CONFIG.isNearestLivingEntitiesSensorUseQuickSort();
 
         LivingTargetCache cache;
+        Comparator<LivingEntity> comparator = Comparator.comparingDouble(entity::squaredDistanceTo);
 
         if (Sepals.CONFIG.isEnableSepalsLivingTargetCache()) {
             Catheter<LivingEntity> entities = Catheter.of(mobs, LivingEntity[]::new);
@@ -48,7 +46,7 @@ public abstract class NearestLivingEntitiesSensorMixin<T extends LivingEntity> {
             if (useQuickSort) {
                 ObjectArrays.quickSort(entities.dArray(), comparator);
             } else {
-                Arrays.sort(entities.dArray(), comparator);
+                mobs.sort(comparator);
             }
 
             LivingEntity[] sources = entities.array();
@@ -77,6 +75,7 @@ public abstract class NearestLivingEntitiesSensorMixin<T extends LivingEntity> {
             cache = new LivingTargetCache(world, entity, mobs);
         }
 
+        Brain<?> brain = entity.getBrain();
         brain.remember(MemoryModuleType.MOBS, mobs);
         brain.remember(MemoryModuleType.VISIBLE_MOBS, cache);
 

@@ -239,11 +239,10 @@ public class SepalsPointOfInterestStorage {
         catheter.each(list::add);
         Collections.shuffle(list, new java.util.Random(random.nextLong()));
 
-        return Optional.ofNullable(
-                list.stream().filter(poi -> positionPredicate.test(poi.getPos()))
-                        .findFirst()
-                        .orElse(null)
-        ).map(PointOfInterest::getPos);
+        return list.stream()
+                .filter(poi -> positionPredicate.test(poi.getPos()))
+                .findFirst()
+                .map(PointOfInterest::getPos);
     }
 
     public static <T> void shuffle(T[] elements, Random random) {

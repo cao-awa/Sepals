@@ -19,7 +19,10 @@ import net.minecraft.world.poi.PointOfInterestSet;
 import net.minecraft.world.poi.PointOfInterestStorage;
 import net.minecraft.world.poi.PointOfInterestType;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiPredicate;
@@ -231,10 +234,15 @@ public class SepalsPointOfInterestStorage {
             Random random
     ) {
         Catheter<PointOfInterest> catheter = getInCircle(storage, typePredicate, pos, radius, occupationStatus);
-        catheter.shuffle(random::nextLong);
+
+        List<PointOfInterest> list = new ArrayList<>();
+        catheter.each(list::add);
+        Collections.shuffle(list, new java.util.Random(random.nextLong()));
+
         return Optional.ofNullable(
-                catheter.filter(poi -> positionPredicate.test(poi.getPos()))
-                        .findFirst(x -> true)
+                list.stream().filter(poi -> positionPredicate.test(poi.getPos()))
+                        .findFirst()
+                        .orElse(null)
         ).map(PointOfInterest::getPos);
     }
 
